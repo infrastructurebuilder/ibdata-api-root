@@ -42,6 +42,10 @@
       <scope>test</scope>
       <type>test-jar</type>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -149,10 +153,10 @@
         <artifactId>modello-maven-plugin</artifactId>
         <configuration>
             <models>
-            <!--
-             -->
               <model>target/classes/${project.artifactId}.mdo</model>
+            <!--
               <model>target/classes/ibdata-schema.mdo</model>
+             -->
             </models>
         </configuration>
       </plugin>

@@ -17,15 +17,21 @@ package org.infrastructurebuilder.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.infrastructurebuilder.data.transform.Transformer;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.PathSupplier;
+import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -76,6 +82,117 @@ public class IBDataTransformerTest {
   @Test
   public void test() {
     assertFalse(i.respondsTo(null));
+    assertTrue(i.respondsTo(new IBDataStream() {
+
+      @Override
+      public InputStream get() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public void close() throws Exception {
+        // TODO Auto-generated method stub
+
+      }
+
+      @Override
+      public UUID getId() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Optional<String> getURL() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Optional<String> getName() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Optional<String> getDescription() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public String getSha512() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Date getCreationDate() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Object getMetadata() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public String getMimeType() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public String getPath() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public String getOriginalLength() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public String getOriginalRowCount() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Optional<UUID> getReferencedSchemaId() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Optional<IBDataProvenance> getProvenance() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public IBDataStream relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e) {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Optional<IBDataStructuredDataMetadata> getIBDataStructuredDataMetadata() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+    }));
   }
 
 }

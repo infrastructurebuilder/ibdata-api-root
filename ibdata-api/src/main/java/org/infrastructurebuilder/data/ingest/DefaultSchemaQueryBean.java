@@ -13,28 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.data.ingest;
 
-import static java.util.stream.Collectors.toMap;
-import static org.infrastructurebuilder.util.artifacts.ChecksumEnabled.safeMapUUID;
-
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
-public interface IBDataStructuredDataMetadata {
-  String getUuid();
+public class DefaultSchemaQueryBean implements Supplier<Optional<UUID>> {
 
-  default Optional<UUID> getId() {
-    return safeMapUUID.apply(getUuid());
+  private String byUUID = null;
+  private String byLookup = null;
+
+  public void setByLookup(String byLookup) {
+    this.byLookup = byLookup;
   }
 
-  List<? extends IBDataStructuredDataFieldMetadata> getFields();
+  public void setByUUID(String byUUID) {
+    this.byUUID = byUUID;
+  }
 
-  default Map<Integer, ? extends IBDataStructuredDataFieldMetadata> getFieldMap() {
-    return getFields().stream().collect(toMap(k -> k.getIndex(), Function.identity()));
+  @Override
+  public Optional<UUID> get() {
+    return Optional.ofNullable(getUUID()).map(UUID::fromString);
+  }
+
+  private String getUUID() {
+    // FIXME Fix the query lookup. This is definitely not OK
+    return this.byUUID;
   }
 
 }

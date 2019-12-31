@@ -79,4 +79,14 @@ public class IBDataStreamIdentifierTest extends AbstractModelTest {
     stream.getChecksum();
 
   }
+
+  @Test
+  public void testGetSchema() {
+    assertFalse(stream.getSchema().isPresent());
+  }
+
+  @Test
+  public void testGetEngine() {
+    assertFalse(stream.getEngine().isPresent());
+  }
 }

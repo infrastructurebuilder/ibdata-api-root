@@ -17,6 +17,7 @@ package org.infrastructurebuilder.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,6 +90,10 @@ public class IBDataStreamRecordFinalizerTest {
   @Test
   public void testAccepts() {
     assertFalse(i.accepts().isPresent());
+  }
+  @Test
+  public void testGet() {
+    assertNull(i.get());
   }
 
 }

@@ -24,11 +24,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.IBDataException;
+import org.infrastructurebuilder.data.IBDataProvenance;
 import org.infrastructurebuilder.data.IBDataStreamIdentifier;
 import org.infrastructurebuilder.data.IBDataStructuredDataMetadata;
 import org.infrastructurebuilder.data.IBMetadataUtils;
+import org.infrastructurebuilder.data.IBSchema;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.w3c.dom.Document;
 
@@ -38,13 +41,15 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
   private String name;
   private String sha512;
   private String url;
-  private Xpp3Dom metadata;
+  private XmlPlexusConfiguration metadata;
   private String mimeType;
   private String description;
   private String path;
   private Date creationDate;
   private UUID id;
   private boolean expandArchives;
+  private DefaultSchemaQueryBean schemaQuery = new DefaultSchemaQueryBean();
+
 
   public DefaultIBDataStreamIdentifierConfigBean() {
   }
@@ -131,8 +136,8 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
     return this.id;
   }
 
-  public void setMetadata(Xpp3Dom metadata) {
-    this.metadata = translateToXpp3Dom.apply(metadata);
+  public void setMetadata(XmlPlexusConfiguration metadata) {
+    this.metadata = metadata;
   }
 
   @Override
@@ -212,6 +217,26 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
   @Override
   public String getOriginalRowCount() {
     return null; // Not yet determinable
+  }
+
+  @Override
+  public Optional<IBSchema> getSchema() {
+    Optional<UUID> schemaId = this.schemaQuery.get();
+    return empty(); // FIXME Lookup the schema
+  }
+
+  /**
+   * Configurations can never provide provenance directly.  It is inferred from the dependency chain.
+   */
+  @Override
+  public Optional<IBDataProvenance> getProvenance() {
+    return empty();
+  }
+
+  @Override
+  public Optional<UUID> getReferencedSchemaId() {
+    // TODO Get referenced Schema Id for a given config bean
+    return empty();
   }
 
 }

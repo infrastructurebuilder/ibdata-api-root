@@ -35,6 +35,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.infrastructurebuilder.data.IBDataEngine;
 import org.infrastructurebuilder.data.IBDataSet;
 import org.infrastructurebuilder.data.IBDataStream;
+import org.infrastructurebuilder.data.IBSchema;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
@@ -72,7 +73,7 @@ public class DataSetReadWriteModel0_11Test {
     IBDataEngine ibDataEngine = new IBDataEngine() {
 
       @Override
-      public List<UUID> getAvailableIds() {
+      public List<UUID> getAvailableDataStreamIds() {
         return Collections.emptyList();
       }
 
@@ -94,6 +95,11 @@ public class DataSetReadWriteModel0_11Test {
       @Override
       public int prepopulate() {
         return 0;
+      }
+
+      @Override
+      public Optional<IBSchema> fetchSchemaById(UUID id) {
+        return Optional.empty();
       }
 
     };

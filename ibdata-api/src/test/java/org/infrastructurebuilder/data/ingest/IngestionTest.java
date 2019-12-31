@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.junit.Before;
@@ -39,7 +40,7 @@ public class IngestionTest {
   private DefaultIBDataSetIdentifier ds;
   private Map<String, Object> fc;
   private DataSet targetDs;
-  private final Xpp3Dom metadata = new Xpp3Dom("metadata");
+  private final XmlPlexusConfiguration metadata = new XmlPlexusConfiguration("metadata");
   BiFunction<? extends DataSet, ? extends DataSet, Boolean> equalser;
   private DefaultIBDataSetIdentifier ids;
 
@@ -110,9 +111,15 @@ public class IngestionTest {
 
   @Test
   public void testAsDataSet() {
-    assertEquals(targetDs, i.asDataSet());
+
+    DataSet x = i.asDataSet();
+    x.setCreationDate(null);
+    targetDs.setCreationDate(null);
+    assertEquals(targetDs, x);
     i.setDataSet(ids);
-    assertEquals(targetDs, ids.asDataSet());
+    DataSet y = ids.asDataSet();
+    y.setCreationDate(null);
+    assertEquals(targetDs, y);
 
   }
 

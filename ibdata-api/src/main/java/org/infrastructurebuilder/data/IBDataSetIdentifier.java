@@ -23,6 +23,9 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
+import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 /**
@@ -35,7 +38,7 @@ import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
  * @author mykel.alvis
  *
  */
-public interface IBDataSetIdentifier {
+public interface IBDataSetIdentifier extends ChecksumEnabled {
 
   //
   // Comparator Work
@@ -73,6 +76,18 @@ public interface IBDataSetIdentifier {
    * @return
    */
   String getPath();
+
+  default Checksum asChecksum() {
+    return ChecksumBuilder.newInstance() //
+        .addChecksumEnabled(getGAV())//
+        .addString(getName())//
+        .addString(getDescription())//
+        .addDate(getCreationDate()) //
+        .addString(Optional.ofNullable(getMetadata()).map(s -> s.toString())) //
+        // fin
+        .asChecksum();
+
+  }
 
 
 }

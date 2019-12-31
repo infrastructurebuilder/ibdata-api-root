@@ -98,9 +98,6 @@ public class IBDataModelUtils {
     }).orElse(s.getPath());
   }
 
-  public final static Function<String, Optional<UUID>> safeMapUUID = (s) -> cet
-      .withReturningTranslation(() -> ofNullable(s).map(UUID::fromString));
-
   public final static Function<String, Optional<URL>> safeMapURL = (s) -> ofNullable(s)
       .map(u -> cet.withReturningTranslation(() -> IBUtils.translateToWorkableArchiveURL(u)));
 

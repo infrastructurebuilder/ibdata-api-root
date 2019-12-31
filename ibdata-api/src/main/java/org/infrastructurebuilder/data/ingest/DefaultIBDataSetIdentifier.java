@@ -17,6 +17,7 @@ package org.infrastructurebuilder.data.ingest;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 
 import java.util.ArrayList;
@@ -24,9 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.IBDataSetIdentifier;
 import org.infrastructurebuilder.data.IBMetadataUtils;
@@ -36,7 +36,9 @@ import org.w3c.dom.Document;
 /**
  * Configuration Bean for plugin
  *
- * Inbound metadata is XmlPlexusConfiguration transformed to Xpp3Dom (because it's easy)
+ * Inbound metadata is XmlPlexusConfiguration transformed to Xpp3Dom (because
+ * it's easy)
+ *
  * @author mykel.alvis
  *
  */
@@ -46,12 +48,13 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
   private String description = null;
   private String path = null;
   private UUID id = null;
-  private String groupId = null, artifactId = null, version = null; // Not actually params.  Injected by ingestion process
+  private String groupId = null, artifactId = null, version = null; // Not actually params. Injected by ingestion
+                                                                    // process
 
   private List<DefaultIBDataStreamIdentifierConfigBean> streams = new ArrayList<>();
   private Date creationDate;
 
-  private Xpp3Dom metadata;
+  private XmlPlexusConfiguration metadata;
 
   public DefaultIBDataSetIdentifier() {
     this.name = "default";
@@ -65,9 +68,8 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
     this.groupId = i.getGroupId();
     this.artifactId = i.getArtifactId();
     this.version = i.getVersion();
-    this.metadata = translateToXpp3Dom.apply(i.getMetadata());
-    this.streams = i.getStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new)
-        .collect(Collectors.toList());
+    this.metadata = new XmlPlexusConfiguration(translateToXpp3Dom.apply(i.getMetadata()));
+    this.streams = i.getStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList());
   }
 
   @Override
@@ -99,11 +101,11 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
 
   public List<DefaultIBDataStreamIdentifierConfigBean> getStreams() {
 
-    return streams.stream().collect(Collectors.toList());
+    return streams.stream().collect(toList());
   }
 
-  public void setMetadata(Xpp3Dom metadata) {
-    this.metadata = translateToXpp3Dom.apply(metadata);
+  public void setMetadata(XmlPlexusConfiguration metadata) {
+    this.metadata = metadata;
   }
 
   public void setDescription(String description) {
@@ -164,8 +166,10 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
     ds.setDataSetDescription(getDescription().orElse(null));
     ds.setMetadata(translateToXpp3Dom.apply(getMetadata()));
     ds.setPath(getPath());
+    ds.setCreationDate(getCreationDate());
+    ds.setStreams(ds.getStreams().stream().collect(toList()));
+    ds.setSchemas(ds.getSchemas().stream().collect(toList()));
     return ds;
   }
-
 
 }

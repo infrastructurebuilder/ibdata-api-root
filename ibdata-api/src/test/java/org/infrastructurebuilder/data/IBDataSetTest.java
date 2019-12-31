@@ -46,6 +46,10 @@ public class IBDataSetTest extends AbstractModelTest {
   }
 
   @Test
+  public void testChecksum() {
+    assertEquals("52ea2fe6-5467-34ec-bea9-c61454946c96", ds.asChecksum().asUUID().get().toString());
+  }
+  @Test
   public void testGetStreamSuppliers() {
     assertEquals("183d3030-6dae-4f33-acde-79eacbaa8c2d", ds.getStreamSuppliers().get(0).get().getId().toString());
   }

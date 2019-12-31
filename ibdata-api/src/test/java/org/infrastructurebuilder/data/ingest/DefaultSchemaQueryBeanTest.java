@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.model;
+package org.infrastructurebuilder.data.ingest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,7 +23,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ModelloModelTest {
+public class DefaultSchemaQueryBeanTest {
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -34,13 +33,11 @@ public class ModelloModelTest {
   public static void tearDownAfterClass() throws Exception {
   }
 
-  private DataSet dds;
-  private DataStream dstr;
+  private DefaultSchemaQueryBean d;
 
   @Before
   public void setUp() throws Exception {
-    dds = new DataSet();
-    dstr= new DataStream();
+    d = new DefaultSchemaQueryBean();
   }
 
   @After
@@ -48,30 +45,15 @@ public class ModelloModelTest {
   }
 
   @Test
-  public void testHashCode() {
-    // Detects model change
-    assertNotEquals(0,dds.hashCode());
-    assertNotEquals(0,dstr.hashCode());
+  public void testSetByLookup() {
+    d.setByLookup("ABC");
+    assertFalse(d.get().isPresent());
   }
 
   @Test
-  public void testClone() {
-    DataSet sq = dds.clone();
-    assertEquals(dds, sq);
-    sq.addStream(dstr);
-    assertEquals(sq.clone().getStreams().get(0), dstr);
-  }
-
-  @Test
-  public void testDataSetDataSet() {
-    dds.addStream(dstr);
-    DataSet ds2 = new DataSet(dds);
-    assertEquals(dds.clone(), ds2);
-  }
-
-  @Test
-  public void testCompareTo() {
-    assertEquals(0,dds.compareTo(dds.clone()));
+  public void testSetByUUID() {
+    d.setByUUID("52ea2fe6-5467-34ec-bea9-c61454946c96");
+    assertEquals("52ea2fe6-5467-34ec-bea9-c61454946c96", d.get().get().toString());
   }
 
 }

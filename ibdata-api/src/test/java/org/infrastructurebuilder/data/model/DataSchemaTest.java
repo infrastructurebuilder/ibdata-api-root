@@ -15,16 +15,21 @@
  */
 package org.infrastructurebuilder.data.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.infrastructurebuilder.data.IBSchema;
+import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ModelloModelTest {
+public class DataSchemaTest {
+  public final static Logger log = LoggerFactory.getLogger(DataSchemaTest.class);
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -34,13 +39,20 @@ public class ModelloModelTest {
   public static void tearDownAfterClass() throws Exception {
   }
 
-  private DataSet dds;
-  private DataStream dstr;
+  private DataSchema d,e;
+  private SchemaField f;
 
   @Before
   public void setUp() throws Exception {
-    dds = new DataSet();
-    dstr= new DataStream();
+    d = new DataSchema();
+    d.setMetadata(new Xpp3Dom("metadata"));
+    f  = new SchemaField();
+
+    d.addField(f);
+    Thread.currentThread().sleep(10L);
+    e = new DataSchema();
+    e.addField(f);
+    e.setMetadata(new Xpp3Dom("metadata"));
   }
 
   @After
@@ -48,30 +60,12 @@ public class ModelloModelTest {
   }
 
   @Test
-  public void testHashCode() {
-    // Detects model change
-    assertNotEquals(0,dds.hashCode());
-    assertNotEquals(0,dstr.hashCode());
-  }
-
-  @Test
-  public void testClone() {
-    DataSet sq = dds.clone();
-    assertEquals(dds, sq);
-    sq.addStream(dstr);
-    assertEquals(sq.clone().getStreams().get(0), dstr);
-  }
-
-  @Test
-  public void testDataSetDataSet() {
-    dds.addStream(dstr);
-    DataSet ds2 = new DataSet(dds);
-    assertEquals(dds.clone(), ds2);
-  }
-
-  @Test
-  public void testCompareTo() {
-    assertEquals(0,dds.compareTo(dds.clone()));
+  public void test() {
+    Checksum k = d.asChecksum();
+    Checksum j = e.asChecksum();
+    int v = d.compareTo(e);
+    log.info("k = " + k + " \nj = " + j + " \nv = " + v);
+    assertTrue(v != 0);
   }
 
 }

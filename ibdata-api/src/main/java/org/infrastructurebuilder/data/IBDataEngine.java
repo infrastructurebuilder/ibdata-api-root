@@ -42,7 +42,7 @@ public interface IBDataEngine {
     return API_ENGINE_VERSION;
   }
 
-  List<UUID> getAvailableIds();
+  List<UUID> getAvailableDataStreamIds();
 
   Optional<IBDataSet> fetchDataSetById(UUID id);
 
@@ -54,6 +54,8 @@ public interface IBDataEngine {
     return this.fetchDataStreamByMetadataPatternMatcher(patternMap.entrySet().stream()
         .collect(Collectors.toMap(k -> k.getKey().toString(), v -> Pattern.compile(v.getValue()))));
   }
+
+  Optional<IBSchema> fetchSchemaById(UUID id);
 
   /**
    * Execute a (probably extremely expensive) read of all available items in the classpath to acquire DOM objects for the metadata

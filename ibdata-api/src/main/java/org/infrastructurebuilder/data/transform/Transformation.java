@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.DataSetEnabled;
 import org.infrastructurebuilder.data.model.DataSet;
@@ -41,7 +42,7 @@ public class Transformation implements DataSetEnabled {
 
   // Not set with plugin config
   private String groupId, artifactId, version, name, description;
-  private Xpp3Dom metadata;
+  private XmlPlexusConfiguration metadata;
 
   @Override
   public String toString() {
@@ -66,8 +67,8 @@ public class Transformation implements DataSetEnabled {
     this.finalizerConfig = finalizerConfig;
   }
 
-  public void setMetadata(Object metadata) {
-    this.metadata = translateToXpp3Dom.apply(metadata);
+  public void setMetadata(XmlPlexusConfiguration metadata) {
+    this.metadata = metadata;
   }
 
   public void setArtifactId(String artifactId) {
@@ -120,7 +121,8 @@ public class Transformation implements DataSetEnabled {
     setArtifactId(artifactId);
     setVersion(version);
     if (this.metadata == null)
-      this.metadata = new Xpp3Dom("metadata"); // FIXME Where do we make metadata happen for a transformer
+      this.metadata = new XmlPlexusConfiguration("metadata"); // FIXME Where do we make metadata happen for a
+                                                              // transformer
   }
 
   @Override
@@ -131,7 +133,7 @@ public class Transformation implements DataSetEnabled {
     dsi.setVersion(this.version);
     dsi.setDataSetName(this.name);
     dsi.setDataSetDescription(this.description);
-    dsi.setMetadata(metadata);
+    dsi.setMetadata(translateToXpp3Dom.apply(metadata));
     return dsi;
   }
 

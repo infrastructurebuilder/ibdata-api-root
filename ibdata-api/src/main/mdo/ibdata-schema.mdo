@@ -287,6 +287,9 @@
       <interfaces>
         <interface>org.infrastructurebuilder.util.artifacts.ChecksumEnabled</interface>
       </interfaces>
+      <interfaces>
+        <interface><![CDATA[Comparable<IBSchema>]]></interface>
+      </interfaces>
 
       <fields>
         <field>
@@ -350,6 +353,18 @@
         .addString(getMetadata().toString())
         .addListChecksumEnabled(getFields().stream().collect(java.util.stream.Collectors.toList()))
         .asChecksum();
+  }
+
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public int compareTo(IBSchema s) {
+    return asChecksum().toString().compareTo(asChecksum().toString());
   }
 
             ]]>

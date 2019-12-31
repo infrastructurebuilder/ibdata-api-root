@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -218,8 +219,6 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
     return false;
   }
 
-  Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata();
-
   default Optional<Path> getPathIfAvailable() {
     return empty();
   }
@@ -248,5 +247,35 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
    * @return
    */
   String getOriginalRowCount();
+
+  Optional<UUID> getReferencedSchemaId();
+
+  /**
+   * Return the id IBSchema that this stream references.
+   *
+   * @return
+   */
+  default Optional<IBSchema> getSchema() {
+    return getReferencedSchemaId().flatMap(id -> {
+      return getParent().flatMap(IBDataSet::getEngine).flatMap(e -> e.fetchSchemaById(id));
+    });
+  }
+
+  Optional<IBDataProvenance> getProvenance();
+
+  Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata();
+
+  /**
+   * Certain instances will not have an available parent
+   *
+   * @return
+   */
+  default Optional<IBDataSet> getParent() {
+    return empty();
+  }
+
+  default Optional<IBDataEngine> getEngine() {
+    return empty();
+  }
 
 }

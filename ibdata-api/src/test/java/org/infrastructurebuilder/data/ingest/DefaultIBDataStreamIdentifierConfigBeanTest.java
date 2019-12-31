@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.IBDataSourceSupplier;
@@ -73,13 +74,13 @@ public class DefaultIBDataStreamIdentifierConfigBeanTest {
     properties.setProperty("user.home", "override");
     Path workingPath = wps.get();
     ds = new DefaultIBDataSetIdentifier();
-    ds.setMetadata(new Xpp3Dom("metadata"));
+    ds.setMetadata(new XmlPlexusConfiguration("metadata"));
     ds.setDescription("Descc");
     ds.setName("thename");
     ds.injectGAV("X", "Y", "1.0.0-SNAPSHOT");
 
     dsMulti = new DefaultIBDataSetIdentifier();
-    dsMulti.setMetadata(new Xpp3Dom("metadata"));
+    dsMulti.setMetadata(new XmlPlexusConfiguration("metadata"));
     dsMulti.setDescription("Multi");
     dsMulti.setName("theMulti");
 
@@ -104,7 +105,7 @@ public class DefaultIBDataStreamIdentifierConfigBeanTest {
     ds2.setMimeType("application/pdf");
     ds2.setUrl("https://file-examples.com/wp-content/uploads/2017/02/file-sample_100kB.doc");
     ds3 = new DefaultIBDataStreamIdentifierConfigBean();
-    ds3.setMetadata(new Xpp3Dom("metadata"));
+    ds3.setMetadata(new XmlPlexusConfiguration("metadata"));
     ds3.setId("temp3");
     ds3.getId();
     ds3.setPath(".");

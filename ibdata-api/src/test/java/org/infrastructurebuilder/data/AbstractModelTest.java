@@ -99,6 +99,7 @@ public class AbstractModelTest {
   public final static class FakeIBDataSet extends DataSet implements IBDataSet {
 
     private final List<FakeIBDataStreamSupplier> suppliers = new ArrayList<>();
+    private final List<IBSchema> schemas = new ArrayList<>();
 
     public FakeIBDataSet(DataSet set, List<Path> paths) {
       super(set);
@@ -110,6 +111,12 @@ public class AbstractModelTest {
     @Override
     public List<Supplier<IBDataStream>> getStreamSuppliers() {
       return suppliers.stream().collect(toList());
+    }
+
+    @Override
+    public List<IBSchema> getSchemaSuppliers() {
+      // TODO Auto-generated method stub
+      return schemas;
     }
   }
 
@@ -144,6 +151,7 @@ public class AbstractModelTest {
       Files.copy(is, tStream);
     }
     stream.setPath(tStream.toString());
+    stream.setReferencedSchema(UUID.randomUUID().toString());
     tStream.toFile().deleteOnExit();
     stream.setUuid(stream.getChecksum().asUUID().get().toString());
 

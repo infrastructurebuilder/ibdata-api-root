@@ -39,4 +39,6 @@ public interface IBDataStream extends Supplier<InputStream>, AutoCloseable, IBDa
 
   Optional<IBDataStructuredDataMetadata> getIBDataStructuredDataMetadata();
 
+
+
 }
