@@ -20,7 +20,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-  <groupId>org.infrastructurebuilder.data</groupId>
+    <groupId>org.infrastructurebuilder.data</groupId>
     <artifactId>ibdata-api-root</artifactId>
     <version>0.16.0-SNAPSHOT</version>
   </parent>
@@ -30,7 +30,7 @@
   <description>APIs for dealing with data streams</description>
   <!-- URL for site gen -->
   <properties>
-    <test.coverage.percentage.required>95</test.coverage.percentage.required>
+    <test.coverage.percentage.required>89</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
     <ibcore.bom.version>0.16.0.0-SNAPSHOT</ibcore.bom.version>
   </properties>
@@ -83,17 +83,16 @@
           </configuration>
           <executions>
             <execution>
-              <id>myModel</id>
+              <id>make-java-sources</id>
               <phase>generate-sources</phase>
               <goals>
                 <goal>java</goal>
                 <goal>xpp3-reader</goal>
                 <goal>xpp3-extended-reader</goal>
-                <goal>xpp3-writer</goal>
               </goals>
             </execution>
             <execution>
-              <id>myModel-site-xsd</id>
+              <id>make-site-xsd</id>
               <phase>generate-sources</phase>
               <goals>
                 <goal>xsd</goal>
@@ -103,10 +102,28 @@
               </configuration>
             </execution>
             <execution>
-              <id>myModel-site-doc</id>
+              <id>make-site-doc</id>
               <phase>pre-site</phase>
               <goals>
                 <goal>xdoc</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.infrastructurebuilder.modello</groupId>
+          <artifactId>modello-maven-plugin-usurped</artifactId>
+          <version>1.11.0.0-SNAPSHOT</version>
+          <configuration>
+            <version>1.0.0</version>
+            <useJava5>true</useJava5>
+          </configuration>
+          <executions>
+            <execution>
+              <id>make-java-sources</id>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>xpp3-writer-reflect</goal>
               </goals>
             </execution>
           </executions>
@@ -152,14 +169,23 @@
         <groupId>org.codehaus.modello</groupId>
         <artifactId>modello-maven-plugin</artifactId>
         <configuration>
-            <models>
-              <model>target/classes/${project.artifactId}.mdo</model>
-            <!--
-              <model>target/classes/ibdata-schema.mdo</model>
-             -->
-            </models>
+          <models>
+            <model>target/classes/${project.artifactId}.mdo</model>
+            <!-- <model>target/classes/ibdata-schema.mdo</model> -->
+          </models>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.infrastructurebuilder.modello</groupId>
+        <artifactId>modello-maven-plugin-usurped</artifactId>
+        <configuration>
+          <models>
+            <model>target/classes/${project.artifactId}.mdo</model>
+            <!-- <model>target/classes/ibdata-schema.mdo</model> -->
+          </models>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.eclipse.sisu</groupId>
         <artifactId>sisu-maven-plugin</artifactId>

@@ -58,7 +58,7 @@ package org.infrastructurebuilder.data;
 public enum IBDataStructuredDataMetadataType {
 
   /**
-   * A STREAM is the primary special case, and is the default schema type for all unstructured data.
+   * A STREAM is the primary special case, and is the default schema type for all relatively unstructured data.
    * A STREAM indicates a "single record consisting of all the bytes in the DataStream". You
    * might cleverly note that this means "the file contents"
    *
@@ -152,10 +152,15 @@ public enum IBDataStructuredDataMetadataType {
   NLDELIMITEDSTRINGS,
 
   /**
+   * Newline delimited JSON.
+   */
+  NLDELIMITEDJSON,
+
+  /**
    * Supported as a const if the implementing framework allows it.  Otherwise, used as
    * a replacement value.
    *
-   * Note that substitutions in the format must be managed
+   * Note that substitutions in re: the format must be managed by the implementer.
    */
   CONST
 

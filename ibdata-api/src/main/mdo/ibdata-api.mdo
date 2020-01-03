@@ -43,7 +43,7 @@
       <fields>
 
         <!-- ====================================================================== -->
-        <!-- Deployment Version -->
+        <!-- DataSet Version -->
         <!-- ====================================================================== -->
         <field>
           <name>modelVersion</name>
@@ -75,27 +75,28 @@
           <description>Version of the dataset.  This defaults to the project.version of the building project</description>
           <type>String</type>
         </field>
-        <field>
+        <field java.getter="false">
           <name>uuid</name>
           <version>1.0.0+</version>
           <required>true</required>
           <description>UUID identifier of the dataset.  This is the UUID from the Checksums of all the DataStream elements</description>
           <type>String</type>
         </field>
-        <field>
-          <name>dataSetName</name>
+        <field java.getter="false">
+          <name>name</name>
           <version>1.0.0+</version>
           <required>true</required>
           <description>The full name of the dataset.  This defaults to the project.name of the building project</description>
           <type>String</type>
         </field>
-        <field>
-          <name>dataSetDescription</name>
+        <field java.getter="false">
+          <name>description</name>
           <version>1.0.0+</version>
           <description>A detailed description of the dataset.  This defaults to the project.description of the building project</description>
           <type>String</type>
         </field>
-        <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSS">
+        <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSS"
+          java.getter="false">
           <name>creationDate</name>
           <version>1.0.0+</version>
           <required>true</required>
@@ -122,14 +123,14 @@
             <multiplicity>*</multiplicity>
           </association>
         </field>
-        <field>
+        <field java.getter="false">
           <name>path</name>
           <version>1.0.0+</version>
           <required>false</required>
           <description>Describes a path to the dataset</description>
           <type>String</type>
         </field>
-        <field>
+        <field java.getter="false">
           <name>metadata</name>
           <version>1.0.0+</version>
           <required>true</required>
@@ -146,7 +147,7 @@
   // Default constructor (Must do this if you supply a constructor)
   public DataSet() {
     setCreationDate(new java.util.Date());
-    setStreams(new java.util.ArrayList<>());
+//    setStreams(new java.util.ArrayList<>());
   }
   ]]>
           </code>
@@ -160,15 +161,19 @@
   public DataSet(DataSet ds) {
     this.setArtifactId(ds.getArtifactId());
     this.setCreationDate(ds.getCreationDate());
-    this.setDataSetDescription(ds.getDataSetDescription());
-    this.setDataSetName(ds.getDataSetName());
+    this.setDescription(ds.getDescription().orElse(null));
+    this.setName(ds.getName().orElse(null));
     this.setGroupId(ds.getGroupId());
     this.setMetadata(ds.getMetadata());
     this.setModelVersion(ds.getModelVersion());
-    this.setPath(ds.getPath());
+    this.setPath(ds.getPath().orElse(null));
     this.setStreams(ds.getStreams().stream().map(DataStream::new).collect(java.util.stream.Collectors.toList()));
-    this.setUuid(ds.getUuid());
+    this.setUuid(java.util.Optional.ofNullable(ds.getUuid()).map(java.util.UUID::toString).orElse(null));
     this.setVersion(ds.getVersion());
+  }
+
+  public org.codehaus.plexus.util.xml.Xpp3Dom getMetadata() {
+    return (org.codehaus.plexus.util.xml.Xpp3Dom) this.metadata;
   }
   ]]>
           </code>
@@ -214,7 +219,7 @@
   // Hashcode and equals
   @Override
   public int hashCode() {
-    return java.util.Objects.hash(artifactId, creationDate, dataSetDescription, dataSetName, groupId, metadata, modelEncoding,
+    return java.util.Objects.hash(artifactId, creationDate, description, name, groupId, metadata, modelEncoding,
         modelVersion, path, streams, uuid, version);
   }
 
@@ -232,8 +237,8 @@
     DataSet other = (DataSet) obj;
     return java.util.Objects.equals(artifactId, other.artifactId)
         && java.util.Objects.equals(creationDate, other.creationDate)
-        && java.util.Objects.equals(dataSetDescription, other.dataSetDescription)
-        && java.util.Objects.equals(dataSetName, other.dataSetName)
+        && java.util.Objects.equals(description, other.description)
+        && java.util.Objects.equals(name, other.name)
         && java.util.Objects.equals(groupId, other.groupId)
         && java.util.Objects.equals(metadata, other.metadata)
         && java.util.Objects.equals(modelEncoding, other.modelEncoding)
@@ -241,7 +246,7 @@
         && java.util.Objects.equals(path, other.path)
         && java.util.Objects.equals(uuid, other.uuid)
         && java.util.Objects.equals(version, other.version)
-        && java.util.Objects.equals(streams, other.streams)
+        && java.util.Objects.equals(getStreams(), other.getStreams())
         ;
   }
 
@@ -255,7 +260,7 @@
             <![CDATA[
   @Override
   public java.util.Optional<String> getName() {
-    return java.util.Optional.ofNullable(getDataSetName());
+    return java.util.Optional.ofNullable(name);
   }
 
   ]]>
@@ -267,7 +272,33 @@
             <![CDATA[
   @Override
   public java.util.Optional<String> getDescription() {
-    return java.util.Optional.ofNullable(getDataSetDescription());
+    return java.util.Optional.ofNullable(description);
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public java.util.Optional<String> getPath() {
+    return java.util.Optional.ofNullable(path);
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public java.util.Date getCreationDate() {
+    if (this.creationDate == null)
+      this.creationDate = new java.util.Date();
+    return this.creationDate;
   }
 
   ]]>
@@ -295,8 +326,8 @@
             // ID mapper Work
             //
   @Override
-  public java.util.UUID getId() {
-     return nullableSafeMapUUID.apply(getUuid());
+  public java.util.UUID getUuid() {
+     return nullableSafeMapUUID.apply(uuid);
   }            ]]>
           </code>
         </codeSegment>
@@ -328,15 +359,15 @@
           <description>UUID identifier of the datastream, which is the UUID of the bytes of the checksum of the data.</description>
           <type>String</type>
         </field>
-        <field>
-          <name>dataStreamName</name>
+        <field java.getter="false">
+          <name>name</name>
           <version>1.0.0+</version>
           <required>true</required>
           <description>The full name of the datastream.</description>
           <type>String</type>
         </field>
-        <field>
-          <name>dataStreamDescription</name>
+        <field java.getter="false">
+          <name>description</name>
           <version>1.0.0+</version>
           <description>A detailed description of the datastream</description>
           <type>String</type>
@@ -356,8 +387,8 @@
           <description>Creation date of this stream, required</description>
           <type>Date</type>
         </field>
-        <field>
-          <name>sourceURL</name>
+        <field java.getter="false">
+          <name>url</name>
           <version>1.0.0+</version>
           <required>false</required>
           <description>URL of the source of this stream, if available</description>
@@ -401,15 +432,15 @@
           <description>Number of rows of the stream</description>
           <type>String</type>
         </field>
-        <field>
+        <field java.getter="false">
           <name>metadata</name>
           <version>1.0.0+</version>
           <required>true</required>
           <description>Additional metadata</description>
           <type>DOM</type>
         </field>
-        <field xml.tagName="provenance">
-          <name>dataStreamProvenance</name>
+        <field java.getter="false">
+          <name>provenance</name>
           <version>1.0.0+</version>
           <required>false</required>
           <description>Datastream provenance</description>
@@ -446,19 +477,24 @@
             // "Copy constructor"
   public DataStream(DataStream ds) {
     this.setCreationDate(ds.getCreationDate());
-    this.setDataStreamDescription(ds.getDataStreamDescription());
-    this.setDataStreamName(ds.getDataStreamName());
+    this.setDescription(ds.getDescription().orElse(null));
+    this.setName(ds.getName().orElse(null));
     this.setMetadata(ds.getMetadata());
     this.setMimeType(ds.getMimeType());
     this.setPath(ds.getPath());
     this.setSha512(ds.getSha512());
-    this.setSourceURL(ds.getSourceURL());
+    this.setUrl(ds.getUrl().orElse(null));
     this.setUuid(ds.getUuid());
     this.setOriginalLength(ds.getOriginalLength());
     this.setOriginalRowCount(ds.getOriginalRowCount());
-    this.setDataStreamProvenance(ds.getProvenance().map(DataStreamProvenance::new).orElse(null));
+    this.setProvenance(ds.getProvenance().map(DataStreamProvenance::new).orElse(null));
     this.setReferencedSchema(ds.getReferencedSchema());
   }
+
+  public org.codehaus.plexus.util.xml.Xpp3Dom getMetadata() {
+    return (org.codehaus.plexus.util.xml.Xpp3Dom) this.metadata;
+  }
+
             ]]>
           </code>
         </codeSegment>
@@ -484,8 +520,8 @@
 
   @Override
   public int hashCode() {
-    return java.util.Objects.hash(creationDate, dataStreamDescription, dataStreamName, metadata, mimeType, path, sha512,
-        sourceURL, uuid, originalLength, originalRowCount, dataStreamProvenance, referencedSchema);
+    return java.util.Objects.hash(creationDate, description, name, metadata, mimeType, path, sha512,
+        url, uuid, originalLength, originalRowCount, provenance, referencedSchema);
   }
 
   @Override
@@ -501,14 +537,17 @@
     }
     DataStream other = (DataStream) obj;
     return java.util.Objects.equals(creationDate, other.creationDate)
-        && java.util.Objects.equals(dataStreamDescription, other.dataStreamDescription)
-        && java.util.Objects.equals(dataStreamName, other.dataStreamName) && java.util.Objects.equals(metadata, other.metadata)
-        && java.util.Objects.equals(mimeType, other.mimeType) && java.util.Objects.equals(path, other.path)
-        && java.util.Objects.equals(sha512, other.sha512) && java.util.Objects.equals(sourceURL, other.sourceURL)
+        && java.util.Objects.equals(description, other.description)
+        && java.util.Objects.equals(name, other.name)
+        && java.util.Objects.equals(metadata, other.metadata)
+        && java.util.Objects.equals(mimeType, other.mimeType)
+        && java.util.Objects.equals(path, other.path)
+        && java.util.Objects.equals(sha512, other.sha512)
+        && java.util.Objects.equals(url, other.url)
         && java.util.Objects.equals(uuid, other.uuid)
         && java.util.Objects.equals(originalLength, other.originalLength)
         && java.util.Objects.equals(originalRowCount, other.originalRowCount)
-        && java.util.Objects.equals(dataStreamProvenance, other.dataStreamProvenance)
+        && java.util.Objects.equals(provenance, other.provenance)
         && java.util.Objects.equals(referencedSchema, other.referencedSchema)
         ;
   }
@@ -550,8 +589,8 @@
             <![CDATA[
             // Typed source url access
   @Override
-  public java.util.Optional<String> getURL() {
-    return java.util.Optional.ofNullable(getSourceURL());
+  public java.util.Optional<String> getUrl() {
+    return java.util.Optional.ofNullable(this.url);
 
   }
   ]]>
@@ -563,7 +602,7 @@
             <![CDATA[
   @Override
   public java.util.Optional<String> getName() {
-    return java.util.Optional.ofNullable(getDataStreamName());
+    return java.util.Optional.ofNullable(name);
   }
 
   ]]>
@@ -575,7 +614,7 @@
             <![CDATA[
   @Override
   public java.util.Optional<org.infrastructurebuilder.data.IBDataProvenance> getProvenance() {
-    return java.util.Optional.ofNullable(getDataStreamProvenance());
+    return java.util.Optional.ofNullable(provenance);
   }
   ]]>
           </code>
@@ -587,7 +626,7 @@
             <![CDATA[
   @Override
   public java.util.Optional<String> getDescription() {
-    return java.util.Optional.ofNullable(getDataStreamDescription());
+    return java.util.Optional.ofNullable(description);
   }
 
   ]]>
@@ -614,6 +653,25 @@
     return safeMapUUID.apply(getReferencedSchema());
   }
           ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  private String temporaryId;  // Never persisted
+  /**
+   * Set a temporary value to the UUID field for processing
+   */
+  public void setTemporaryId(String id) {
+    this.temporaryId = id;
+  }
+
+  public java.util.Optional<String> getTemporaryId() {
+    return java.util.Optional.ofNullable(this.temporaryId);
+  }
+
+              ]]>
           </code>
         </codeSegment>
 
@@ -707,7 +765,14 @@
           <type>int</type>
           <defaultValue>-1</defaultValue>
         </field>
-        <field>
+        <field java.getter="false">
+          <name>name</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Optional but recommended field name</description>
+          <type>String</type>
+        </field>
+        <field java.getter="false">
           <name>metadataType</name>
           <version>1.0.0+</version>
           <required>false</required>
@@ -724,21 +789,21 @@
             <multiplicity>*</multiplicity>
           </association>
         </field>
-        <field>
+        <field java.getter="false">
           <name>max</name>
           <version>1.0.0+</version>
           <required>false</required>
           <description>Describes the "maximum length" or "maximum size" of the data in the field.</description>
           <type>String</type>
         </field>
-        <field>
+        <field java.getter="false">
           <name>min</name>
           <version>1.0.0+</version>
           <required>false</required>
           <description>Describes the "minimum length" or "maximum size" of the data in the field.</description>
           <type>String</type>
         </field>
-        <field>
+        <field java.getter="false">
           <name>nullable</name>
           <version>1.0.0+</version>
           <required>false</required>
@@ -761,11 +826,22 @@
             <![CDATA[
     public StructuredFieldMetadata(org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata o) {
       this.index = o.getIndex();
-      this.metadataType = o.getMetadataType();
+      this.name = o.getName().orElse(null);
+      this.metadataType = o.getType().map(a -> a.name()).orElse(null);
       this.enumerations = new java.util.ArrayList<>(o.getEnumerations().stream().collect(java.util.stream.Collectors.toList()));
-      this.max = o.getMax();
-      this.min = o.getMin();
-      this.nullable = o.getNullable();
+      this.max = o.getMaxAsStringValue();
+      this.min = o.getMinAsStringValue();
+      this.nullable = java.util.Optional.ofNullable(o.isNullable()).map(a -> a.toString()).orElse(null);
+    }
+    ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    public java.util.Optional<String> getName() {
+      return java.util.Optional.ofNullable(this.name);
     }
     ]]>
           </code>
@@ -777,7 +853,29 @@
             <![CDATA[
     public void setType(org.infrastructurebuilder.data.IBDataStructuredDataMetadataType t) {
         this.setMetadataType(java.util.Objects.requireNonNull(t, "IBDataStructuredDataMetadataType is null").name());
-    }            ]]>
+    }
+
+    public java.util.Optional<org.infrastructurebuilder.data.IBDataStructuredDataMetadataType> getType() {
+        return java.util.Optional.ofNullable(this.metadataType).map(org.infrastructurebuilder.data.IBDataStructuredDataMetadataType::valueOf);
+    }
+
+    public String getMaxAsStringValue() {
+        return this.max;
+    }
+
+    public String getMinAsStringValue() {
+        return this.min;
+    }
+
+    public java.util.Optional<Integer> getUniqueValuesCount() {
+      return java.util.Optional.empty();
+    }
+
+    public java.util.Optional<Boolean> isNullable() {
+      return java.util.Optional.ofNullable(this.nullable).map(f -> "true".equalsIgnoreCase(f));
+    }
+    ]]>
+
           </code>
         </codeSegment>
 
@@ -1114,27 +1212,50 @@
         <interface>org.infrastructurebuilder.data.IBSchema</interface>
       </interfaces>
       <fields>
-        <field>
+        <field java.getter="false">
           <name>uuid</name>
           <version>1.0.0+</version>
           <required>true</required>
-          <description>UUID identifier of the DataSchema, which is the UUID from the checksum of the checksums of the other fields in the schema.</description>
+          <description>UUID identifier of the DataSchema, which is the UUID from the sha512 field.</description>
           <type>String</type>
         </field>
         <field>
+          <name>sha512</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>calculated SHA-512 of the other values in the schema.  This value is used to produce the uuid. </description>
+          <type>String</type>
+        </field>
+        <field java.getter="false">
+          <name>url</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Original URL source</description>
+          <type>String</type>
+        </field>
+        <field java.getter="false">
           <name>name</name>
           <version>1.0.0+</version>
           <required>true</required>
           <description>The full name of the DataSchema.</description>
           <type>String</type>
         </field>
-        <field>
+        <field java.getter="false">
           <name>description</name>
           <version>1.0.0+</version>
           <description>A detailed description of the DataSchema</description>
           <required>true</required>
           <type>String</type>
         </field>
+        <field>
+          <name>mimeType</name>
+          <version>1.0.0+</version>
+          <description>Stringified version of a MIME type for the datastream</description>
+          <required>true</required>
+          <defaultValue>application/octet-stream</defaultValue>
+          <type>String</type>
+        </field>
+
         <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSS">
           <name>creationDate</name>
           <version>1.0.0+</version>
@@ -1142,7 +1263,7 @@
           <description>Creation date of this stream, required</description>
           <type>Date</type>
         </field>
-        <field>
+        <field java.getter="false">
           <name>metadata</name>
           <version>1.0.0+</version>
           <required>true</required>
@@ -1199,11 +1320,16 @@
    */
   public DataSchema(DataSchema ds) {
     this.setCreationDate(ds.getCreationDate());
-    this.setDescription(ds.getDescription());
-    this.setName(ds.getName());
+    this.setSha512(ds.getSha512());
+    this.setDescription(ds.getDescription().orElse(null));
+    this.setName(ds.getName().orElse(null));
     this.setMetadata(ds.getMetadata());
+    this.setMimeType(ds.getMimeType());
     this.setFields(ds.getFields().stream().map(SchemaField::new).collect(java.util.stream.Collectors.toList()));
-    this.setUuid(ds.getUuid());
+    this.setUuid(java.util.Optional.ofNullable(ds.getUuid()).map(java.util.UUID::toString).orElse(null));
+    this.setForcedMap(ds.getForcedMap().stream().collect(java.util.stream.Collectors.toList()));
+    this.setUrl(ds.getUrl().orElse(null));
+
     mutatingDataSchemaCloneHook(this);
   }
             ]]>
@@ -1215,10 +1341,20 @@
           <code>
             <![CDATA[
   /**
-    Translate forcedMap to getForcedMapping
-  */
-  public java.util.Map<String,java.util.UUID> getForcedMapping() {
-    return getForcedMap().stream().collect(java.util.stream.Collectors.toMap(ForcedMapping::getType, ForcedMapping::getUUID));
+   * Translate forcedMap list to getForcedMapping map
+   *
+   */
+  public java.util.Map<String, java.util.List<java.util.UUID>> getSchemaResourcesMappedFromName() {
+    java.util.Map<String, java.util.List<java.util.UUID>> m = new java.util.HashMap<>();
+    getForcedMap().forEach(fm -> {
+      m.compute(fm.getType(), (k, v) -> {
+        if (v == null)
+          v = new java.util.ArrayList<>();
+        v.add(fm.getUUID());
+        return v;
+      });
+    });
+    return m;
   }
             ]]>
           </code>
@@ -1272,6 +1408,7 @@
         && java.util.Objects.equals(name, other.name)
         && java.util.Objects.equals(creationDate, other.creationDate)
         && java.util.Objects.equals(description, other.description)
+        && java.util.Objects.equals(mimeType, other.mimeType)
         && java.util.Objects.equals(fields, other.fields)
         && java.util.Objects.equals(metadata, other.metadata)
         ;
@@ -1280,7 +1417,7 @@
   @Override
   public String toString() {
     return "DataSchema [uuid=" + uuid + ", name=" + name + ", description=" + description + ", creationDate="
-        + creationDate + ", metadata=" + metadata + ", fields=" + fields + "]";
+        + creationDate + "mimeType = " + mimeType + ", metadata=" + metadata + ", fields=" + fields + "]";
   }
 
 
@@ -1295,9 +1432,64 @@
    * @return the UUID from this schema uuid string field (or null)
    */
   @Override
-  public java.util.UUID getId() {
-     return safeMapUUID.apply(getUuid()).orElse(null);
+  public java.util.UUID getUuid() {
+     return safeMapUUID.apply(this.uuid).orElse(null);
   }            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  private String temporaryId;  // Never persisted
+  /**
+   * Set a temporary value to the UUID field for processing
+   */
+  public void setTemporaryId(String id) {
+    this.temporaryId = id;
+  }
+
+  public java.util.Optional<String> getTemporaryId() {
+    return java.util.Optional.ofNullable(this.temporaryId);
+  }
+
+              ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  /**
+   * @return the name if available
+   */
+  @Override
+  public java.util.Optional<String> getName() {
+     return java.util.Optional.ofNullable(name);
+  }
+  /**
+   * @return the description if available
+   */
+  @Override
+  public java.util.Optional<String> getDescription() {
+     return java.util.Optional.ofNullable(description);
+  }
+
+  /**
+   * @return the description if available
+   */
+  @Override
+  public java.util.Optional<String> getUrl() {
+     return java.util.Optional.ofNullable(url);
+  }
+
+  @Override
+  public org.codehaus.plexus.util.xml.Xpp3Dom getMetadata() {
+      if (this.metadata == null)
+         this.metadata = new org.codehaus.plexus.util.xml.Xpp3Dom("metadata");
+      return (org.codehaus.plexus.util.xml.Xpp3Dom) this.metadata;
+  }
+              ]]>
           </code>
         </codeSegment>
         <codeSegment>
@@ -1334,7 +1526,7 @@
           <name>type</name>
           <version>1.0.0+</version>
           <required>true</required>
-          <description>The "type" of the schema.  This must conform to some known type provider's component hint.</description>
+          <description>The "type" of the schema.  This is some arbitrary per-implementation identifier.</description>
           <type>String</type>
         </field>
         <field>

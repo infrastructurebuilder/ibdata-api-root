@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.transform.Transformer;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.PathSupplier;
@@ -103,21 +104,18 @@ public class IBDataTransformerTest {
       }
 
       @Override
-      public Optional<String> getURL() {
-        // TODO Auto-generated method stub
-        return null;
+      public Optional<String> getUrl() {
+        return Optional.empty();
       }
 
       @Override
       public Optional<String> getName() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
       }
 
       @Override
       public Optional<String> getDescription() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
       }
 
       @Override
@@ -133,7 +131,7 @@ public class IBDataTransformerTest {
       }
 
       @Override
-      public Object getMetadata() {
+      public Xpp3Dom getMetadata() {
         // TODO Auto-generated method stub
         return null;
       }
@@ -164,32 +162,32 @@ public class IBDataTransformerTest {
 
       @Override
       public Optional<UUID> getReferencedSchemaId() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
       }
 
       @Override
       public Optional<IBDataProvenance> getProvenance() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
       }
 
       @Override
       public Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
       }
 
       @Override
       public IBDataStream relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e) {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public Optional<IBDataStructuredDataMetadata> getIBDataStructuredDataMetadata() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
+      }
+
+      @Override
+      public Optional<String> getTemporaryId() {
+        return Optional.empty();
       }
 
     }));

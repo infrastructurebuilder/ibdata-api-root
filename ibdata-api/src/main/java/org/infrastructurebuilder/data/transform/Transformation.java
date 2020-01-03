@@ -131,8 +131,8 @@ public class Transformation implements DataSetEnabled {
     dsi.setGroupId(this.groupId);
     dsi.setArtifactId(this.artifactId);
     dsi.setVersion(this.version);
-    dsi.setDataSetName(this.name);
-    dsi.setDataSetDescription(this.description);
+    dsi.setName(this.name);
+    dsi.setDescription(this.description);
     dsi.setMetadata(translateToXpp3Dom.apply(metadata));
     return dsi;
   }

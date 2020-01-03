@@ -80,7 +80,8 @@ public class TransformerTest {
     t.setTargetStreamMetadata(p);
     assertEquals(p, t.getTargetStreamMetadata());
 
-    assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><metadata/>", IBMetadataUtils.stringifyDocument.apply(t.getTargetStreamMetadataAsDocument()));
+    assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        "<metadata/>", IBMetadataUtils.stringifyDocument.apply(t.getTargetStreamMetadataAsDocument()));
   }
 
   @Test(expected = NullPointerException.class)

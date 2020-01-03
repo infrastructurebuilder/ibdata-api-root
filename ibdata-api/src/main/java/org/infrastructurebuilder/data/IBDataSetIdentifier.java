@@ -23,18 +23,22 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
+
 /**
  * This is the top-level interface that describes a DataSet.
  *
  * A DataSet is a group of common metadata that holds a set of DataStreams
  *
- * Under nearly every circumstance, one might think of a DataSet as an archive (a jar or zip file),
- * since in version 1.0.0 of the model, an archive has only a single DataSet metadata file
+ * Under nearly every circumstance, one might think of a DataSet as an archive
+ * (a jar or zip file), since in version 1.0.0 of the model, an archive has only
+ * a single DataSet metadata file
+ *
  * @author mykel.alvis
  *
  */
@@ -44,21 +48,22 @@ public interface IBDataSetIdentifier extends ChecksumEnabled {
   // Comparator Work
   //
   public final static Comparator<IBDataSetIdentifier> IBDataSetIdentifierComparator = Comparator
-      //  Check UUID
-      .comparing(IBDataSetIdentifier::getId,nullSafeUUIDComparator)
+      // Check UUID
+      .comparing(IBDataSetIdentifier::getUuid, nullSafeUUIDComparator)
       // Check Date
-      .thenComparing(IBDataSetIdentifier::getCreationDate,nullSafeDateComparator);
-
+      .thenComparing(IBDataSetIdentifier::getCreationDate, nullSafeDateComparator);
 
   String getGroupId();
+
   String getArtifactId();
+
   String getVersion();
 
   default GAV getGAV() {
     return new DefaultGAV(getGroupId(), getArtifactId(), getVersion());
   }
 
-  UUID getId();
+  UUID getUuid();
 
   Optional<String> getName();
 
@@ -66,16 +71,16 @@ public interface IBDataSetIdentifier extends ChecksumEnabled {
 
   Date getCreationDate();
 
-  Object getMetadata();  // The actually working type is either Document or Xpp3Dom, depending on source
+  Xpp3Dom getMetadata();
 
   /**
-   * Possibly null representation of where this dataset currently exists.
-   * This value should be nulled out prior to persisting the model, and must
-   * be set when deserializing it.
+   * Possibly null representation of where this dataset currently exists. This
+   * value should be nulled out prior to persisting the model, and must be set
+   * when deserializing it.
    *
    * @return
    */
-  String getPath();
+  Optional<String> getPath();
 
   default Checksum asChecksum() {
     return ChecksumBuilder.newInstance() //
@@ -88,6 +93,5 @@ public interface IBDataSetIdentifier extends ChecksumEnabled {
         .asChecksum();
 
   }
-
 
 }

@@ -50,8 +50,7 @@ public class Ingestion implements DataSetEnabled {
   }
 
   public ConfigMap getFinalizerConfig() {
-    return new ConfigMap(
-        finalizerConfig.entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue())));
+    return new ConfigMap(finalizerConfig.entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue())));
   }
 
   @Override
@@ -64,7 +63,8 @@ public class Ingestion implements DataSetEnabled {
   }
 
   boolean isExpand(String tempId) {
-    return dataSet.getStreams().stream().filter(ds -> ds.getTemporaryId().equals(tempId)).findFirst().map(ff -> ff.isExpandArchives()).orElse(false);
+    return dataSet.getDataStreams().stream().filter(ds -> ds.getTemporaryId().get().equals(tempId)).findFirst()
+        .map(ff -> ff.isExpandArchives()).orElse(false);
   }
 
 }

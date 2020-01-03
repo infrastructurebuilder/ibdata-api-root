@@ -51,11 +51,11 @@ public class AbstractModelTest {
   public static final String GROUP = "X";
   public static final String DESC = "desc";
   public static final String NAME = "name";
-  public static final String METADATA_CHECKSUM = "fa2ab560f631546a2f5d1aa6f4c1ec9d00d988010bf9b80d1a195f1537b8e15ae3cf94bdb52c1774d969ab0b6452b91f03531b062aac410deec2c75a2d580ac2";
+  public static final String METADATA_CHECKSUM = "4089182ee2abfa7873021088b08abadbe5b2226fde07c0d8497a5f40eeb8a1163caa9d4d3fec32467d4e63d7325a08e60d6f89c77f85d9d07f9ae1ba2a083a93";
   //  protected static final String STREAM_METADATA_CHECKSUM = "d709f80dc9d4d9fda60631dfa8390a746d4816b5076884ae7bb1fdd5d21489773a44eb0cef038f4b7c27b6c20ba2a0e4bf37ccbab265d47c02806aeda1a03777";
   public static final String STREAM_CHECKSUM =TEST_INPUT_0_11_XML_CHECKSUM ;
-  public static final String STREAM_ID="98a51489-93fd-372d-86c2-4b7d0268608a";
-  public static final String STREAM_METADATA_CHECKSUM = "3b2c63ccb53069e8b0472ba50053fcae7d1cc84ef774ff2b01c8a0658637901b7d91e71534243b5d29ee246e925efb985b4dbd7330ab1ab251d1e1b8848b9c49";
+  public static final String STREAM_ID="3a8ce70f-c738-3988-adb6-d2e355710d68";
+  public static final String STREAM_METADATA_CHECKSUM = "36cd3faf7a40522e52b50856303cf5a01f9b5fb4d0ebd57673286262ebec75a8d1f1224678fa26fa13a81e9f7558b6ed3e1b30b935a0fe3ed6a83d2c928771c5";
 
   protected final TestingPathSupplier wps = new TestingPathSupplier();
   protected DataSet finalData;
@@ -129,15 +129,15 @@ public class AbstractModelTest {
     finalData.setVersion(VERSION);
     gav = new DefaultGAV(GROUP, ARTIFACT, VERSION);
     finalData.setModelVersion("1.0");
-    finalData.setDataSetDescription(DESC);
-    finalData.setDataSetName(NAME);
+    finalData.setDescription(DESC);
+    finalData.setName(NAME);
 
 
 
     stream = new DataStream();
     stream.setCreationDate(now);
-    stream.setDataStreamDescription(DESC);
-    stream.setDataStreamName(NAME);
+    stream.setDescription(DESC);
+    stream.setName(NAME);
     Xpp3Dom metadata = new Xpp3Dom("metadata");
     try (InputStream is = getClass().getResourceAsStream(TEST_INPUT_0_11_XML)) {
       metadata = Xpp3DomBuilder.build(is, "utf-8");
@@ -145,7 +145,7 @@ public class AbstractModelTest {
     stream.setMetadata(metadata);
     stream.setMimeType(IBConstants.APPLICATION_OCTET_STREAM);
     stream.setSha512(TEST_INPUT_0_11_XML_CHECKSUM);
-    stream.setSourceURL(SOURCE_URL);
+    stream.setUrl(SOURCE_URL);
     Path tStream = wps.get().resolve(UUID.randomUUID().toString()).toAbsolutePath();
     try (InputStream is = getClass().getResourceAsStream(TEST_INPUT_0_11_XML)) {
       Files.copy(is, tStream);

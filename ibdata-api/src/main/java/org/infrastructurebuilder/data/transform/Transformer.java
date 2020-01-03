@@ -32,7 +32,7 @@ import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
-import org.w3c.dom.Document;
+;
 
 public class Transformer implements Cloneable {
   /**
@@ -132,8 +132,8 @@ public class Transformer implements Cloneable {
     return targetStreamMetadata;
   }
 
-  public Document getTargetStreamMetadataAsDocument() {
-    return IBMetadataUtils.fromXpp3Dom.apply(targetStreamMetadata);
+  public Xpp3Dom getTargetStreamMetadataAsDocument() {
+    return IBMetadataUtils.translateToXpp3Dom.apply(targetStreamMetadata);
   }
 
   private boolean matchesSources(IBDataStream stream) {

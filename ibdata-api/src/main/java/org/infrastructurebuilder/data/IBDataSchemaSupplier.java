@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.ingest;
+package org.infrastructurebuilder.data;
 
-import java.nio.file.Path;
+import java.util.function.Supplier;
 
-import org.infrastructurebuilder.data.IBDataSourceSupplier;
-import org.infrastructurebuilder.data.IBDataStreamIdentifier;
-
-public interface IBDataSourceSupplierMapper {
-
-  boolean respondsTo(IBDataStreamIdentifier v);
-
-  IBDataSourceSupplier getSupplierFor(String temporaryId, IBDataStreamIdentifier v);
-
-  Path getWorkingPath();
+/**
+ * @author mykel.alvis
+ *
+ */
+public interface IBDataSchemaSupplier extends Supplier<IBDataSchema>, Comparable<IBDataSchemaSupplier> {
+  String getId();
 
 }

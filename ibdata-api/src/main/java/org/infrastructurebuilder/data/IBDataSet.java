@@ -69,7 +69,7 @@ public interface IBDataSet extends IBDataSetIdentifier {
 
   default IBChecksumPathType asChecksumType() {
     Checksum c = new Checksum();
-    return DefaultIBChecksumPathType.from(Paths.get(getPath()), c, APPLICATION_IBDATA_ARCHIVE);
+    return DefaultIBChecksumPathType.from(Paths.get(getPath().get()), c, APPLICATION_IBDATA_ARCHIVE);
   }
 
   default List<IBDataStream> asStreamsList() {

@@ -16,18 +16,13 @@
 package org.infrastructurebuilder.data;
 
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.data.IBMetadataUtils.asChecksum;
-import static org.infrastructurebuilder.data.IBMetadataUtils.builderSupplier;
-import static org.infrastructurebuilder.data.IBMetadataUtils.emptyDocumentSupplier;
+import static org.infrastructurebuilder.data.IBMetadataUtils.*;
 import static org.infrastructurebuilder.data.IBMetadataUtils.toDataStream;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,28 +30,26 @@ import java.util.UUID;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.model.DataStream;
+import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 public class IBMetadataUtilsTest {
   public static final String TEST_INPUT_0_11_XML_WO_SLASH = "test-input-0.11.xml";
   public static final String TEST_INPUT_0_11_XML = "/" + TEST_INPUT_0_11_XML_WO_SLASH;
-  public static final String TEST_INPUT_0_11_XML_CHECKSUM = "a0861598d78c33fb6c954cb11c387baa3f161395ee989d39199e4df85e937fd6ba8fc2f843d766027ae8388584a3055ca917e501ac09c2838323feb625969837";
+  public static final String TEST_INPUT_0_11_XML_CHECKSUM = "4089182ee2abfa7873021088b08abadbe5b2226fde07c0d8497a5f40eeb8a1163caa9d4d3fec32467d4e63d7325a08e60d6f89c77f85d9d07f9ae1ba2a083a93";
 
-  private static final String EMPTY_DOCUMENT_CHECKSUM = "e6bd3955a95d3bdcd94c4da7b5f83d7ed9776499b214e84b4d32f112660155f11a4ab976f1a6ea8c0e8a8132b5e4c86a0260a9e1d4a7b3956588e5f5b24238f2";
-  private Document testDocument;
-  private Document testDocument2;
+  private static final String EMPTY_DOCUMENT_CHECKSUM = "62c884b6429dbc1910cc5a29a3024593e3d66a9e5c089766158f73c11c03de4d8f9b280457077f5e61a567d0837ab396178e9099d9c7c088db14c8dee750958b";
+  private Xpp3Dom testDocument;
+  private Xpp3Dom testDocument2;
   private final TestingPathSupplier wps = new TestingPathSupplier();
 
   @Before
   public void setUp() throws Exception {
-    testDocument = emptyDocumentSupplier.get();
-    InputStream is = getClass().getResourceAsStream(TEST_INPUT_0_11_XML);
-    testDocument2 = builderSupplier.get().parse(is);
+    testDocument = emptyXpp3Supplier.get();
+    testDocument2 = translateToXpp3Dom.apply(IBUtils.readFile(wps.getTestClasses().resolve(TEST_INPUT_0_11_XML_WO_SLASH)));
   }
 
   @Test
@@ -79,27 +72,11 @@ public class IBMetadataUtilsTest {
       w.println("Hi!");
     }
     FakeIBDataStream d2 = new FakeIBDataStream(v, empty());
+    assertEquals(128, EMPTY_DOCUMENT_CHECKSUM.length());
     d2.setSha512(EMPTY_DOCUMENT_CHECKSUM);
+    Checksum q = d2.getChecksum();
     DataStream ds = toDataStream.apply(d2);
     assertNotNull(ds);
   }
 
-  @Test
-  public void testToXpp3Dom() throws SAXException, IOException {
-    String a = "<x>y</x>";
-    assertNotNull(translateToXpp3Dom.apply(a));
-    assertNotNull(translateToXpp3Dom
-        .apply(builderSupplier.get().parse(new ByteArrayInputStream("<meta><xyx/></meta>".getBytes()))));
-    assertNotNull(translateToXpp3Dom.apply(emptyDocumentSupplier.get()));
-    assertNotNull(translateToXpp3Dom.apply(new Xpp3Dom("metadata")));
-  }
-
-  @Test
-  public void testW3cEqualser() {
-    String ls = "<metadata/>";
-    String rs = ls;
-    Document l = IBMetadataUtils.fromXpp3Dom.apply(ls);
-    Document r = IBMetadataUtils.fromXpp3Dom.apply(rs);
-    assertTrue(IBMetadataUtils.w3cDocumentEqualser.apply(l, r));
-  }
 }

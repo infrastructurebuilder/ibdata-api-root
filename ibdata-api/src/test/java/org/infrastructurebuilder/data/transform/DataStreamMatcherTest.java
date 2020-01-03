@@ -42,14 +42,14 @@ public class DataStreamMatcherTest {
     dsm = new DataStreamMatcher();
     dsm.setUuid(id);
     dsm.setCreationDate(now);
-    dsm.setDataStreamDescription(A);
-    dsm.setDataStreamName(A);
+    dsm.setDescription(A);
+    dsm.setName(A);
     dsm.setMimeType(A);
     ds = new FakeIBDataStream(wps.getTestClasses().resolve("test-metadata.xml"), Optional.empty());
     ds.setCreationDate(now);
-    ds.setDataStreamDescription(A);
+    ds.setDescription(A);
     ds.setUuid(id);
-    ds.setDataStreamName(A);
+    ds.setName(A);
     ds.setMimeType(A);
 
   }
@@ -60,7 +60,7 @@ public class DataStreamMatcherTest {
     assertTrue(dsm.matches(ds));
     dsm.setCreationDate(null);
     assertTrue(dsm.matches(ds));
-    dsm.setDataStreamDescription("X");
+    dsm.setDescription("X");
     assertFalse(dsm.matches(ds));
   }
 

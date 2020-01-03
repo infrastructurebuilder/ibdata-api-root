@@ -144,8 +144,8 @@ public class DefaultIBDataStreamIdentifierConfigBeanTest {
     ds.setStreams(Collections.emptyList());
     Date d = ds.getCreationDate();
     UUID id = UUID.randomUUID();
-    ds.setId(id);
-    assertEquals(id, ds.getId());
+    ds.setUuid(id.toString());
+    assertEquals(id, ds.getUuid());
     assertEquals(d, ds.getCreationDate());
     assertEquals(0, ds.getStreams().size());
 
@@ -153,8 +153,6 @@ public class DefaultIBDataStreamIdentifierConfigBeanTest {
 
   @Test
   public void testchecksum() {
-    ds3.setSha512(null);
-    assertNull(ds3.getChecksum());
     ds3.setSha512(CHECKSUM);
     assertEquals(CHECKSUM, ds3.getChecksum().toString());
   }
@@ -169,9 +167,9 @@ public class DefaultIBDataStreamIdentifierConfigBeanTest {
   @Test
   public void testGetURL() {
     ds3.setUrl(null);
-    assertFalse(ds3.getURL().isPresent());
+    assertFalse(ds3.getUrl().isPresent());
     ds3.setUrl(HTTPURL);
-    assertEquals(HTTPURL, ds3.getURL().get());
+    assertEquals(HTTPURL, ds3.getUrl().get());
 
   }
 

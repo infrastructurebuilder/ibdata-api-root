@@ -92,7 +92,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     Path w = wps.get();
     DataSet d = new DataSet();
     DataStream ds = new DataStream();
-    ds.setSourceURL("file://a/b/c.zip!/def.doc");
+    ds.setUrl("file://a/b/c.zip!/def.doc");
     d.addStream(ds);
     IBDataModelUtils.writeDataSet(d, w, empty());
   }

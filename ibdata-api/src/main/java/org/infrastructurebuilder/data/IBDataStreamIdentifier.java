@@ -31,11 +31,12 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
-import org.w3c.dom.Document;
+;
 
 /**
  * This is the top-level interface that describes a stream of data (i.e. a
@@ -71,7 +72,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
    *
    * @return Optional URL of the underlying stream
    */
-  Optional<String> getURL();
+  Optional<String> getUrl();
 
   /**
    * @return Optional Name supplied at creation time
@@ -130,7 +131,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
    *
    * @return Xpp3Dom instance describing the metadata supplied at creation time.
    */
-  Object getMetadata();
+  Xpp3Dom getMetadata();
 
   /**
    * Non-nullable mime type of the contents of the stream.
@@ -157,18 +158,24 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
    */
   default Checksum getMetadataChecksum() {
     return ChecksumBuilder.newInstance()
-        // URL
-        .addString(getURL())
-        // Name
-        .addString(getName())
-        // Desc
-        .addString(getDescription())
         // Date
         .addDate(getCreationDate())
+        // Desc
+        .addString(getDescription())
+        // metadata
+        .addChecksum(IBMetadataUtils.asChecksum.apply(getMetadata()))
         // Mime type
         .addString(getMimeType())
-        // metadata
-        .addChecksum(IBMetadataUtils.asChecksum.apply(getMetadataAsDocument()))
+        // Name
+        .addString(getName())
+        // Numrows
+        .addLong(getNumRows())
+        // orig len
+        .addString(getOriginalLength())
+        // orig row count
+        .addString(getOriginalRowCount())
+        // URL
+        .addString(getUrl())
         //
         .asChecksum();
   }
@@ -193,7 +200,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
   default Optional<URL> pathAsURL(IBDataSetIdentifier pDataSet) {
     return nullSafeURLMapper.apply(ofNullable(getPath()).flatMap(path -> {
-      Optional<String> v = ofNullable(pDataSet.getPath())
+      Optional<String> v = pDataSet.getPath()
           .map(pPath -> cet.withReturningTranslation(() -> IBUtils.translateToWorkableArchiveURL(pPath)))
           .map(parent -> {
             String y = Objects.requireNonNull(parent).toExternalForm();
@@ -209,10 +216,6 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
     }).orElse(null));
 
-  }
-
-  default Document getMetadataAsDocument() {
-    return IBMetadataUtils.fromXpp3Dom.apply(getMetadata());
   }
 
   default boolean isExpandArchives() {
@@ -277,5 +280,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   default Optional<IBDataEngine> getEngine() {
     return empty();
   }
+
+  Optional<String> getTemporaryId();
 
 }

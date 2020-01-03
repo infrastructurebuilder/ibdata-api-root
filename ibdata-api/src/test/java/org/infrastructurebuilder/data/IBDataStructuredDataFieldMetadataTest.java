@@ -17,8 +17,6 @@ package org.infrastructurebuilder.data;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static org.infrastructurebuilder.data.IBDataStructuredDataMetadataType.BOOLEAN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -50,28 +48,28 @@ public class IBDataStructuredDataFieldMetadataTest {
       }
 
       @Override
-      public void setType(IBDataStructuredDataMetadataType t) {
-        this.t = t;
-      }
-
-      @Override
-      public String getMin() {
+      public String getMinAsStringValue() {
         return null;
       }
 
       @Override
-      public String getMax() {
+      public String getMaxAsStringValue() {
         return null;
       }
 
       @Override
-      public String getMetadataType() {
-        return Optional.ofNullable(t).map(IBDataStructuredDataMetadataType::name).orElse(null);
+      public Optional<String> getName() {
+        return Optional.empty();
       }
 
       @Override
-      public String getNullable() {
-        return null;
+      public Optional<Boolean> isNullable() {
+        return Optional.empty();
+      }
+
+      @Override
+      public Optional<IBDataStructuredDataMetadataType> getType() {
+        return Optional.empty();
       }
 
     };
@@ -80,7 +78,6 @@ public class IBDataStructuredDataFieldMetadataTest {
   @Test
   public void testDefaults() {
     assertEquals(0, k.getIndex());
-    assertEquals(empty(), k.getFieldName());
     assertEquals(asList("A", "B"), k.getEnumerations());
     assertTrue(k.isEnumeration());
     assertFalse(k.getMaxIntValue().isPresent());
@@ -90,8 +87,6 @@ public class IBDataStructuredDataFieldMetadataTest {
     assertFalse(k.getMaxRealValue().isPresent());
     assertFalse(k.getMinRealValue().isPresent());
     assertEquals(empty(), k.getType());
-    k.setType(BOOLEAN);
-    assertEquals(BOOLEAN.name(), k.getMetadataType());
   }
 
 }

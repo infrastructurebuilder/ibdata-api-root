@@ -16,22 +16,18 @@
 package org.infrastructurebuilder.data.ingest;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.infrastructurebuilder.data.IBDataException;
-import org.infrastructurebuilder.data.IBDataSetIdentifier;
-import org.infrastructurebuilder.data.IBMetadataUtils;
+import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.DataSet;
-import org.w3c.dom.Document;
+import org.infrastructurebuilder.data.model.DataStream;;
 
 /**
  * Configuration Bean for plugin
@@ -42,117 +38,70 @@ import org.w3c.dom.Document;
  * @author mykel.alvis
  *
  */
-public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
+public class DefaultIBDataSetIdentifier extends DataSet {
+  private static final long serialVersionUID = -7357725622978715720L;
+  private List<DefaultIBDataStreamIdentifierConfigBean> dataStreams = new ArrayList<>();
+  private List<DefaultIBDataSchemaIdentifierConfigBean> dataSchemas = new ArrayList<>();
 
-  private String name = null;
-  private String description = null;
-  private String path = null;
-  private UUID id = null;
-  private String groupId = null, artifactId = null, version = null; // Not actually params. Injected by ingestion
-                                                                    // process
 
-  private List<DefaultIBDataStreamIdentifierConfigBean> streams = new ArrayList<>();
-  private Date creationDate;
-
+  @SuppressWarnings("unused") // Used to type the inbound setter
   private XmlPlexusConfiguration metadata;
 
   public DefaultIBDataSetIdentifier() {
-    this.name = "default";
+    super();
+    setName("default");
   }
 
-  public DefaultIBDataSetIdentifier(DefaultIBDataSetIdentifier i) {
-    this.name = i.getName().orElse("default");
-    this.description = i.getDescription().orElse(null);
-    this.path = i.getPath();
-    this.id = i.getId();
-    this.groupId = i.getGroupId();
-    this.artifactId = i.getArtifactId();
-    this.version = i.getVersion();
-    this.metadata = new XmlPlexusConfiguration(translateToXpp3Dom.apply(i.getMetadata()));
-    this.streams = i.getStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList());
+  private DefaultIBDataSetIdentifier(DefaultIBDataSetIdentifier i) {
+    super(i);
+    setName(i.getName().orElse("default"));
+    this.dataStreams = i.getDataStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList());
   }
 
   @Override
-  public UUID getId() {
-    return Optional.ofNullable(this.id).orElse(UUID.randomUUID());
+  public void setStreams(List<DataStream> streams) {
+    setDataStreams(streams.stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList()));
   }
 
   @Override
-  public Optional<String> getName() {
-    return ofNullable(this.name);
+  public void setSchemas(List<DataSchema> schemas) {
+    setDataSchemas(schemas.stream().map(DefaultIBDataSchemaIdentifierConfigBean::new).collect(toList()));
   }
 
   @Override
-  public Optional<String> getDescription() {
-    return ofNullable(this.description);
+  public List<DataStream> getStreams() {
+    return getDataStreams().stream().collect(toList());
   }
 
   @Override
-  public Date getCreationDate() {
-    if (this.creationDate == null)
-      this.creationDate = new Date();
-    return this.creationDate;
+  public List<DataSchema> getSchemas() {
+    return getDataSchemas().stream().collect(toList());
   }
 
-  @Override
-  public Document getMetadata() {
-    return IBMetadataUtils.fromXpp3Dom.apply(metadata);
+  public List<DefaultIBDataStreamIdentifierConfigBean> getDataStreams() {
+    return dataStreams.stream().collect(toList());
   }
 
-  public List<DefaultIBDataStreamIdentifierConfigBean> getStreams() {
-
-    return streams.stream().collect(toList());
+  public List<DefaultIBDataSchemaIdentifierConfigBean> getDataSchemas() {
+    return dataSchemas.stream().collect(toList());
   }
 
   public void setMetadata(XmlPlexusConfiguration metadata) {
-    this.metadata = metadata;
+    super.setMetadata(translateToXpp3Dom.apply(metadata));
   }
 
-  public void setDescription(String description) {
-    this.description = description;
+  public void setDataStreams(List<DefaultIBDataStreamIdentifierConfigBean> streams) {
+    this.dataStreams = requireNonNull(streams);
   }
 
-  public void setStreams(List<DefaultIBDataStreamIdentifierConfigBean> stream2s) {
-    this.streams = stream2s;
-
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  @Override
-  public String getPath() {
-    return this.path;
-  }
-
-  public void setPath(String path) {
-    this.path = path;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
-  }
-
-  @Override
-  public String getGroupId() {
-    return Optional.ofNullable(this.groupId).orElseThrow(() -> new IBDataException("No groupId set"));
-  }
-
-  @Override
-  public String getArtifactId() {
-    return Optional.ofNullable(this.artifactId).orElseThrow(() -> new IBDataException("No artifactId set"));
-  }
-
-  @Override
-  public String getVersion() {
-    return Optional.ofNullable(this.version).orElseThrow(() -> new IBDataException("No version set"));
+  public void setDataSchemas(List<DefaultIBDataSchemaIdentifierConfigBean> dataSchemas) {
+    this.dataSchemas = requireNonNull(dataSchemas);
   }
 
   public final DefaultIBDataSetIdentifier injectGAV(String groupId, String artifactId, String version) {
-    this.groupId = requireNonNull(groupId);
-    this.artifactId = requireNonNull(artifactId);
-    this.version = requireNonNull(version);
+    setGroupId(requireNonNull(groupId));
+    setArtifactId(requireNonNull(artifactId));
+    setVersion(requireNonNull(version));
     return this;
   }
 
@@ -162,14 +111,33 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
     ds.setGroupId(getGroupId());
     ds.setArtifactId(getArtifactId());
     ds.setVersion(getVersion());
-    ds.setDataSetName(getName().orElse(null));
-    ds.setDataSetDescription(getDescription().orElse(null));
-    ds.setMetadata(translateToXpp3Dom.apply(getMetadata()));
-    ds.setPath(getPath());
+    ds.setName(getName().orElse(null));
+    ds.setDescription(getDescription().orElse(null));
+    ds.setMetadata(getMetadata());
+    ds.setPath(getPath().orElse(null));
     ds.setCreationDate(getCreationDate());
-    ds.setStreams(ds.getStreams().stream().collect(toList()));
-    ds.setSchemas(ds.getSchemas().stream().collect(toList()));
+    ds.setStreams(
+        getDataStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList()));
+    ds.setSchemas(
+        getDataSchemas().stream().map(DefaultIBDataSchemaIdentifierConfigBean::new).collect(toList()));
     return ds;
   }
+
+  DefaultIBDataSetIdentifier copy() {
+    return new DefaultIBDataSetIdentifier(this);
+  }
+
+  @Override
+  public String toString() {
+    final int maxLen = 10;
+    StringBuilder builder = new StringBuilder();
+    builder.append("DefaultIBDataSetIdentifier [ ").append("id = " ).append(getUuid()).append(", dataStreams=")
+        .append(dataStreams != null ? dataStreams.subList(0, Math.min(dataStreams.size(), maxLen)) : null)
+        .append(", dataSchemas=")
+        .append(dataSchemas != null ? dataSchemas.subList(0, Math.min(dataSchemas.size(), maxLen)) : null)
+        .append(", metadata=").append(metadata).append("]");
+    return builder.toString();
+  }
+
 
 }

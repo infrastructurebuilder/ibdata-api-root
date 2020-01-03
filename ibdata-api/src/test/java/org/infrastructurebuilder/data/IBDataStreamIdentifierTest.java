@@ -42,7 +42,7 @@ public class IBDataStreamIdentifierTest extends AbstractModelTest {
 
   @Test
   public void testGetMetadataAsDocument() {
-    assertEquals(METADATA_CHECKSUM, IBMetadataUtils.asChecksum.apply(stream.getMetadataAsDocument()).toString());
+    assertEquals(METADATA_CHECKSUM, IBMetadataUtils.asChecksum.apply(stream.getMetadata()).toString());
   }
 
   @Test
@@ -53,7 +53,7 @@ public class IBDataStreamIdentifierTest extends AbstractModelTest {
     assertEquals(DESC, stream.getDescription().get());
     assertEquals(STREAM_CHECKSUM, stream.getChecksum().toString());
     assertEquals(now, stream.getCreationDate());
-    assertEquals(url, stream.getURL().get());
+    assertEquals(url, stream.getUrl().get());
     assertEquals(IBConstants.APPLICATION_OCTET_STREAM, stream.getMimeType());
     assertEquals(Optional.empty(), stream.pathAsURL(finalData));
     assertEquals(STREAM_ID, stream.getId().toString());

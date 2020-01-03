@@ -15,16 +15,17 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Optional.empty;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
@@ -35,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
+;
 
 public class IBDataSourceTest {
   public final static Logger log = LoggerFactory.getLogger(IBDataSourceTest.class);
@@ -65,12 +66,12 @@ public class IBDataSourceTest {
 
       @Override
       public Optional<String> getName() {
-        return Optional.empty();
+        return empty();
       }
 
       @Override
-      public Optional<Document> getMetadata() {
-        return Optional.empty();
+      public Optional<Xpp3Dom> getMetadata() {
+        return empty();
       }
 
       @Override
@@ -80,17 +81,17 @@ public class IBDataSourceTest {
 
       @Override
       public Optional<String> getDescription() {
-        return Optional.empty();
+        return empty();
       }
 
       @Override
       public Optional<BasicCredentials> getCredentials() {
-        return Optional.empty();
+        return empty();
       }
 
       @Override
       public Optional<Checksum> getChecksum() {
-        return Optional.empty();
+        return empty();
       }
 
       @Override

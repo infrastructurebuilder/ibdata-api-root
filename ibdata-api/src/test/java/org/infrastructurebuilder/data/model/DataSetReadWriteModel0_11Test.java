@@ -68,7 +68,7 @@ public class DataSetReadWriteModel0_11Test {
     });
     set = new DataSet();
     set.setCreationDate(new Date());
-    set.setDataSetDescription("setDescription");
+    set.setDescription("setDescription");
     set.setModelEncoding("UTF-8");
     IBDataEngine ibDataEngine = new IBDataEngine() {
 
@@ -107,17 +107,17 @@ public class DataSetReadWriteModel0_11Test {
     set.setModelVersion(ibDataEngine.getEngineAPIVersion().toString());
     set.setUuid(UUID.randomUUID().toString());
     ds = new DataStream();
-    ds.setDataStreamDescription("description 1");
+    ds.setDescription("description 1");
     ds.setCreationDate(new Date());
-    ds.setDataStreamName("one");
+    ds.setName("one");
     ds.setSha512(new Checksum().toString());
-    ds.setSourceURL("https://www.google.com");
+    ds.setUrl("https://www.google.com");
     ds.setUuid(UUID.randomUUID().toString());
     ds.setMetadata(d);
     set.addStream(ds);
     ds.setCreationDate(new Date());
-    ds.setDataStreamName("two");
-    ds.setDataStreamDescription("description two");
+    ds.setName("two");
+    ds.setDescription("description two");
     set.addStream(ds);
 
     StringWriter sw = new StringWriter();
@@ -136,7 +136,7 @@ public class DataSetReadWriteModel0_11Test {
     dsis = new DataSetInputSource();
     try (InputStream in = getClass().getResourceAsStream(TEST_INPUT_0_11_XML)) {
       DataSet read = reader.read(in, true, dsis);
-      assertEquals("310dc0e2-109d-4237-9729-e266176e1c7a", read.getId().toString());
+      assertEquals("310dc0e2-109d-4237-9729-e266176e1c7a", read.getUuid().toString());
     }
   }
 
@@ -145,7 +145,7 @@ public class DataSetReadWriteModel0_11Test {
     IBDataSourceModelXpp3Reader reader = new IBDataSourceModelXpp3Reader();
     try (InputStream in = getClass().getResourceAsStream(TEST_INPUT_0_11_XML)) {
       DataSet read = reader.read(in, true);
-      assertEquals("310dc0e2-109d-4237-9729-e266176e1c7a", read.getId().toString());
+      assertEquals("310dc0e2-109d-4237-9729-e266176e1c7a", read.getUuid().toString());
     }
   }
 

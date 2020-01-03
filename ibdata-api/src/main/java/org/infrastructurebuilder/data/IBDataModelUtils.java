@@ -68,6 +68,7 @@ import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
 
 public class IBDataModelUtils {
+
   public final static IBDataSourceModelXpp3Writer xpp3Writer = new IBDataSourceModelXpp3Writer();
 
   public final static void writeDataSet(DataSet ds, Path target, Optional<String> basedirString) {
@@ -76,13 +77,13 @@ public class IBDataModelUtils {
     try (Writer writer = Files.newBufferedWriter(v, UTF_8, CREATE_NEW)) {
       DataSet d = ds.clone();
       d.getStreams().stream().forEach(s -> {
-        final String k = s.getSourceURL();
+        final String k = s.getUrl().get();
         basedirString.ifPresent(basedir -> {
           if (k.contains(basedir))
-            s.setSourceURL(k.replace(basedir, "${basedir}"));
+            s.setUrl(k.replace(basedir, "${basedir}"));
         });
         if (k.contains("!/") && !(k.startsWith("zip:") || k.startsWith("jar:")))
-          s.setSourceURL("jar:" + s.getSourceURL());
+          s.setUrl("jar:" + s.getUrl());
       });
       xpp3Writer.write(writer, d);
     } catch (Throwable e) { // Catch anything and translate it to an IBDataException
@@ -91,7 +92,7 @@ public class IBDataModelUtils {
   }
 
   public final static String relativizePath(DataSet ds, DataStream s) {
-    return nullSafeURLMapper.apply(ds.getPath()).map(u -> {
+    return nullSafeURLMapper.apply(ds.getPath().orElse(null)).map(u -> {
       String u1 = u.toExternalForm();
       String s2P = s.getPath();
       return ofNullable(s2P).map(s2 -> (s2.startsWith(u1)) ? s2.substring(u1.length()) : s2).orElse(null);
@@ -179,7 +180,7 @@ public class IBDataModelUtils {
     Checksum dsChecksum = fromPathDSAndStream(newWorkingPath, finalData);
     finalData.setUuid(dsChecksum.asUUID().get().toString());
     // We're going to relocate the entire directory to a named UUID-backed directory
-    Path newTarget = workingPath.getParent().resolve(finalData.getUuid());
+    Path newTarget = workingPath.getParent().resolve(finalData.getUuid().toString());
     move(newWorkingPath, newTarget, ATOMIC_MOVE);
     finalData.setPath(newTarget.toAbsolutePath().toUri().toURL().toExternalForm());
     // Create the IBDATA dir so that we can write the metadata xml

@@ -17,14 +17,15 @@ package org.infrastructurebuilder.data.ingest;
 
 import java.nio.file.Path;
 
+import org.infrastructurebuilder.data.IBDataSchemaSupplier;
 import org.infrastructurebuilder.data.IBDataSourceSupplier;
 import org.infrastructurebuilder.data.IBDataStreamIdentifier;
 
-public interface IBDataSourceSupplierMapper {
+public interface IBDataSchemaSupplierMapper {
 
-  boolean respondsTo(IBDataStreamIdentifier v);
+  boolean respondsTo(DefaultIBDataSchemaIdentifierConfigBean v);
 
-  IBDataSourceSupplier getSupplierFor(String temporaryId, IBDataStreamIdentifier v);
+  IBDataSchemaSupplier getSupplierFor(String temporaryId, IBDataStreamIdentifier v);
 
   Path getWorkingPath();
 

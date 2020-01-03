@@ -28,10 +28,11 @@ import java.util.Optional;
  * This type's name is a mouthful.
  *
  * This type describes an optional piece of metadata about a field in a
- * DataStream that contains structured (or somewhat structured) data. These values are meant to be
- * calculated at transformation time, so the transformation should produce them.
- * They could change during the course of a transformation so it's important
- * that we be able to manipulate the list easily.
+ * DataStream that contains structured (or somewhat structured) data. These
+ * values are meant to be calculated at transformation time, so the
+ * transformation should produce them. They could change during the course of a
+ * transformation so it's important that we be able to manipulate the list
+ * easily.
  *
  * @author mykel.alvis
  *
@@ -50,9 +51,7 @@ public interface IBDataStructuredDataFieldMetadata {
    *
    * @return
    */
-  default Optional<String> getFieldName() {
-    return empty();
-  }
+  Optional<String> getName();
 
   /**
    * Returns the string representations of enumeration values (the "name()"s).
@@ -67,16 +66,17 @@ public interface IBDataStructuredDataFieldMetadata {
 
   default Optional<BigInteger> getMaxIntValue() {
     try {
-      return ofNullable(getMax()).map(BigInteger::new);
+      return ofNullable(getMaxAsStringValue()).map(BigInteger::new);
     } catch (NumberFormatException e) {
       return empty();
     }
   }
 
+
   default Optional<BigInteger> getMinIntValue() {
     try {
 
-      return ofNullable(getMin()).map(BigInteger::new);
+      return ofNullable(getMinAsStringValue()).map(BigInteger::new);
     } catch (NumberFormatException e) {
       return empty();
     }
@@ -84,7 +84,7 @@ public interface IBDataStructuredDataFieldMetadata {
 
   default Optional<BigDecimal> getMaxRealValue() {
     try {
-      return ofNullable(getMax()).map(BigDecimal::new);
+      return ofNullable(getMaxAsStringValue()).map(BigDecimal::new);
     } catch (NumberFormatException e) {
       return empty();
     }
@@ -92,11 +92,12 @@ public interface IBDataStructuredDataFieldMetadata {
 
   default Optional<BigDecimal> getMinRealValue() {
     try {
-      return ofNullable(getMin()).map(BigDecimal::new);
+      return ofNullable(getMinAsStringValue()).map(BigDecimal::new);
     } catch (NumberFormatException e) {
       return empty();
     }
   }
+
 
 
   default Optional<Integer> getUniqueValuesCount() {
@@ -108,32 +109,12 @@ public interface IBDataStructuredDataFieldMetadata {
    *
    * @return returns empty if unknown, or Optional<True> if nullable
    */
-  default Optional<Boolean> isNullable() {
-    return Optional.ofNullable(getNullable()).map(f -> "true".equalsIgnoreCase(f));
-  }
+  Optional<Boolean> isNullable();
 
-  default Optional<IBDataStructuredDataMetadataType> getType() {
-    return ofNullable(getMetadataType()).map(IBDataStructuredDataMetadataType::valueOf);
-  }
+  String getMinAsStringValue();
 
-  /**
-   * Allows us to the the string type in the model from the enum
-   *
-   * @param t
-   */
-  void setType(IBDataStructuredDataMetadataType t);
+  String getMaxAsStringValue();
 
-  /*
-   * The following are implemented in the generated model directly. They are
-   * stored as strings because their types are needed within this interface but
-   * cannot be relied on to have good typing.  These may/should return null if not set
-   */
-  String getMin();
-
-  String getMax();
-
-  String getNullable();
-
-  String getMetadataType();
+  Optional<IBDataStructuredDataMetadataType> getType();
 
 }

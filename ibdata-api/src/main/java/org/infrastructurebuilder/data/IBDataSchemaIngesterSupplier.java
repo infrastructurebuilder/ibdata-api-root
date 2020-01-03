@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.ingest;
+package org.infrastructurebuilder.data;
 
-import java.nio.file.Path;
+import org.infrastructurebuilder.util.LoggerEnabled;
+import org.infrastructurebuilder.util.config.CMSConfigurableSupplier;
 
-import org.infrastructurebuilder.data.IBDataSourceSupplier;
-import org.infrastructurebuilder.data.IBDataStreamIdentifier;
-
-public interface IBDataSourceSupplierMapper {
-
-  boolean respondsTo(IBDataStreamIdentifier v);
-
-  IBDataSourceSupplier getSupplierFor(String temporaryId, IBDataStreamIdentifier v);
-
-  Path getWorkingPath();
-
+public interface IBDataSchemaIngesterSupplier extends CMSConfigurableSupplier<IBDataSchemaIngester>, LoggerEnabled {
 }

@@ -19,13 +19,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigurableSupplier;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
-import org.w3c.dom.Document;
+;
 
 /**
  * An IBDataSource understands where a data stream originates and how to acquire
@@ -52,7 +53,7 @@ public interface IBDataSource extends ConfigurableSupplier<List<IBChecksumPathTy
 
   Optional<Checksum> getChecksum();
 
-  Optional<Document> getMetadata();
+  Optional<Xpp3Dom> getMetadata();
 
   Optional<String> getName();
 

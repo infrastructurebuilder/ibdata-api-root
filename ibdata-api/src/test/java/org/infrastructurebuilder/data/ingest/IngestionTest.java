@@ -71,8 +71,8 @@ public class IngestionTest {
     targetDs.setGroupId("A");
     targetDs.setArtifactId("B");
     targetDs.setVersion("1.0.0-SNAPSHOT");
-    targetDs.setDataSetName("name");
-    targetDs.setDataSetDescription("description");
+    targetDs.setName("name");
+    targetDs.setDescription("description");
     targetDs.setPath("/");
     targetDs.setMetadata(new Xpp3Dom("metadata"));
     targetDs.setModelEncoding("UTF-8");
@@ -85,7 +85,7 @@ public class IngestionTest {
     ids.setName("name");
     ids.setDescription("description");
     ids.setPath("/");
-    ds = new DefaultIBDataSetIdentifier(ids);
+    ds = ids.copy();
 
   }
 
@@ -132,7 +132,7 @@ public class IngestionTest {
     s1.setExpandArchives(true);
     s2.setExpandArchives(false);
     List<DefaultIBDataStreamIdentifierConfigBean> stream2s = Arrays.asList(s1, s1, s2);
-    ids.setStreams(stream2s);
+    ids.setDataStreams(stream2s);
     i.setDataSet(ids);
     assertTrue(i.isExpand("s1"));
     assertFalse(i.isExpand("s2"));

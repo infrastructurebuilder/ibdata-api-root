@@ -55,8 +55,8 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
     this.throwMeOnRelocate = throwMeOnRelocate;
     this.setSha512(new Checksum(p).toString());
     this.setCreationDate(new Date());
-    this.setDataStreamDescription("desc");
-    this.setDataStreamName("name");
+    this.setDescription("desc");
+    this.setName("name");
     this.setMetadata(new Xpp3Dom("metadata"));
     this.setPath(".");
     this.setMimeType(IBConstants.APPLICATION_OCTET_STREAM);

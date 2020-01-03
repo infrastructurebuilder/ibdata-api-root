@@ -84,8 +84,8 @@ public class TransformationTest {
     assertEquals("A", s.getGroupId());
     assertEquals("B", s.getArtifactId());
     assertEquals(VERSION, s.getVersion());
-    assertEquals(NAME, s.getDataSetName());
-    assertEquals(DESC, s.getDataSetDescription());
+    assertEquals(NAME, s.getName().get());
+    assertEquals(DESC, s.getDescription().get());
     Object q = s.getMetadata();
     assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
         "<A/>", q.toString());

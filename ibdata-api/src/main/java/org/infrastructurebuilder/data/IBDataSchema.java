@@ -37,6 +37,7 @@ import java.util.List;
  *
  */
 public interface IBDataSchema {
+  String getId();
   /**
    * Returns the "type" of this schema, which is the hint for its component
    *
@@ -45,8 +46,8 @@ public interface IBDataSchema {
    *
    * @return
    */
-  String getId();
 
+  String getType();
   /**
    * Obtain an indicator for the component that provides the underlying technology
    * for this schema type. For instance, "avro", "protobuf"
@@ -62,6 +63,10 @@ public interface IBDataSchema {
    */
   String getTechnology();
 
+  /**
+   * The identifier for the versioned provider of the schema-ingestion technology
+   * @return
+   */
   String getVersionedProviderIdentifier();
 
   /**

@@ -6,8 +6,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>0.11</modelVersion>
   <uuid>310dc0e2-109d-4237-9729-e266176e1c7a</uuid>
-  <dataSetDescription>setdataStreamDescription</dataSetDescription>
-  <dataSetName>theName</dataSetName>
+  <description>setdataStreamDescription</description>
+  <name>theName</name>
   <creationDate>2019-09-21T08:30:10.478</creationDate>
   <groupId>X</groupId>
   <artifactId>Y</artifactId>
@@ -18,11 +18,11 @@
   <streams>
     <stream>
       <uuid>183d3030-6dae-4f33-acde-79eacbaa8c2d</uuid>
-      <dataStreamName>one</dataStreamName>
-      <dataStreamDescription>dataStreamDescription one
-      </dataStreamDescription>
+      <name>one</name>
+      <description>description one
+      </description>
       <creationDate>2019-09-21T08:30:29.769</creationDate>
-      <sourceURL>https://www.google.com</sourceURL>
+      <url>https://www.google.com</url>
       <metadata>
         <hi>Mom</hi>
       </metadata>
@@ -30,11 +30,11 @@
     </stream>
     <stream>
       <uuid>0dfb7bc9-73aa-4f7e-b735-cbccfa052733</uuid>
-      <dataStreamName>two</dataStreamName>
-      <dataStreamDescription>dataStreamDescription two
-      </dataStreamDescription>
+      <name>two</name>
+      <description>description two
+      </description>
       <creationDate>2019-09-21T08:30:29.769</creationDate>
-      <sourceURL>file:/home/mykel.alvis/git/ibdata-reference-root/integration/ibdata-test-transform/target/ibdata/c70e413a-87c1-4866-8129-4bd45ee9641b</sourceURL>
+      <url>file:/home/mykel.alvis/git/ibdata-reference-root/integration/ibdata-test-transform/target/ibdata/c70e413a-87c1-4866-8129-4bd45ee9641b</url>
       <sha512>cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e</sha512>
       <metadata>
         <sst>Racing</sst>
