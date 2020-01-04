@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.util.IBUtils;
@@ -98,7 +97,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
    * getId()). It only contains a checksum for the file, not the metadata. See
    * getMetadataChecksum() to get checksums of all elements
    *
-   * This is expected to be a non-null value unless the underlying code handles an
+   * This is expected to be a non-null value UNLESS the underlying code handles an
    * actual stream. In that case the value needs to be calculated.
    *
    * @return Checksum of the contents of the underlying file or throw

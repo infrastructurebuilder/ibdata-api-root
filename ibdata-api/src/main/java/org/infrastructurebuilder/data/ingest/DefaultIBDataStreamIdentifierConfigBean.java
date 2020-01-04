@@ -16,21 +16,23 @@
 package org.infrastructurebuilder.data.ingest;
 
 import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.IBDataProvenance;
 import org.infrastructurebuilder.data.IBDataStreamIdentifier;
 import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.data.model.DataStream;
-import org.infrastructurebuilder.data.model.DataStreamStructuredMetadata;;
+import org.infrastructurebuilder.data.model.DataStreamStructuredMetadata;
+import org.infrastructurebuilder.util.artifacts.Checksum;;
 
 public class DefaultIBDataStreamIdentifierConfigBean extends DataStream implements IBDataStreamIdentifier {
-
+  private static final long serialVersionUID = -4944685799856848753L;
   private boolean expandArchives;
   private DefaultSchemaQueryBean schemaQuery = new DefaultSchemaQueryBean();
 
@@ -104,10 +106,27 @@ public class DefaultIBDataStreamIdentifierConfigBean extends DataStream implemen
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder().append("TempID" + getTemporaryId()).append("DefaultIBDataStreamIdentifierConfigBean SUPER->").append(super.toString());
+    StringBuilder builder = new StringBuilder().append("TempID" + getTemporaryId())
+        .append("DefaultIBDataStreamIdentifierConfigBean SUPER->").append(super.toString());
     builder.append("DefaultIBDataStreamIdentifierConfigBean [expandArchives=").append(expandArchives)
         .append(", schemaQuery=").append(schemaQuery).append("]");
     return builder.toString();
+  }
+
+  @Override
+  public Checksum getChecksum() {
+    /*
+     * In the case of an ingested value, this needs to be calculated.  Note that this needs to be kept
+     * in sync with super.getChecksum() except it returns null instead of throws IBDataException
+     */
+    return ofNullable(getSha512()).filter(s -> s.length() == 128) // Length of a sha512
+        .map(org.infrastructurebuilder.util.artifacts.Checksum::new)
+        .orElse(null);
+  }
+
+  @Override
+  public Xpp3Dom getMetadata() {
+    return super.getMetadata();
   }
 
 }

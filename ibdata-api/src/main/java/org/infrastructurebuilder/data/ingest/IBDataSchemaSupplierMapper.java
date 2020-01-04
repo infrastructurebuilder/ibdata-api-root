@@ -16,9 +16,9 @@
 package org.infrastructurebuilder.data.ingest;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import org.infrastructurebuilder.data.IBDataSchemaSupplier;
-import org.infrastructurebuilder.data.IBDataSourceSupplier;
 import org.infrastructurebuilder.data.IBDataStreamIdentifier;
 
 public interface IBDataSchemaSupplierMapper {
@@ -28,5 +28,7 @@ public interface IBDataSchemaSupplierMapper {
   IBDataSchemaSupplier getSupplierFor(String temporaryId, IBDataStreamIdentifier v);
 
   Path getWorkingPath();
+
+  List<String> getHeaders();
 
 }

@@ -172,8 +172,11 @@
     this.setVersion(ds.getVersion());
   }
 
+  @Override
   public org.codehaus.plexus.util.xml.Xpp3Dom getMetadata() {
-    return (org.codehaus.plexus.util.xml.Xpp3Dom) this.metadata;
+      if (this.metadata == null)
+         this.metadata = new org.codehaus.plexus.util.xml.Xpp3Dom("metadata");
+      return (org.codehaus.plexus.util.xml.Xpp3Dom) this.metadata;
   }
   ]]>
           </code>
@@ -491,8 +494,11 @@
     this.setReferencedSchema(ds.getReferencedSchema());
   }
 
+  @Override
   public org.codehaus.plexus.util.xml.Xpp3Dom getMetadata() {
-    return (org.codehaus.plexus.util.xml.Xpp3Dom) this.metadata;
+      if (this.metadata == null)
+         this.metadata = new org.codehaus.plexus.util.xml.Xpp3Dom("metadata");
+      return (org.codehaus.plexus.util.xml.Xpp3Dom) this.metadata;
   }
 
             ]]>
