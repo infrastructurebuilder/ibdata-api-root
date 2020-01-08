@@ -17,12 +17,10 @@ package org.infrastructurebuilder.data.ingest;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
+import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.infrastructurebuilder.data.model.DataSchema;
@@ -32,7 +30,7 @@ import org.infrastructurebuilder.data.model.DataStream;;
 /**
  * Configuration Bean for plugin
  *
- * Inbound metadata is XmlPlexusConfiguration transformed to Xpp3Dom (because
+ * Inbound metadata is XmlPlexusConfiguration transformed to Metadata (because
  * it's easy)
  *
  * @author mykel.alvis
@@ -41,7 +39,7 @@ import org.infrastructurebuilder.data.model.DataStream;;
 public class DefaultIBDataSetIdentifier extends DataSet {
   private static final long serialVersionUID = -7357725622978715720L;
   private List<DefaultIBDataStreamIdentifierConfigBean> dataStreams = new ArrayList<>();
-  private List<DefaultIBDataSchemaIdentifierConfigBean> dataSchemas = new ArrayList<>();
+  private List<DefaultIBDataSchemaIngestionConfig> dataSchemas = new ArrayList<>();
 
 
   @SuppressWarnings("unused") // Used to type the inbound setter
@@ -65,7 +63,7 @@ public class DefaultIBDataSetIdentifier extends DataSet {
 
   @Override
   public void setSchemas(List<DataSchema> schemas) {
-    setDataSchemas(schemas.stream().map(DefaultIBDataSchemaIdentifierConfigBean::new).collect(toList()));
+    setDataSchemas(schemas.stream().map(DefaultIBDataSchemaIngestionConfig::new).collect(toList()));
   }
 
   @Override
@@ -73,28 +71,31 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     return getDataStreams().stream().collect(toList());
   }
 
+  /*
+
   @Override
   public List<DataSchema> getSchemas() {
     return getDataSchemas().stream().collect(toList());
   }
+  */
 
   public List<DefaultIBDataStreamIdentifierConfigBean> getDataStreams() {
     return dataStreams.stream().collect(toList());
   }
 
-  public List<DefaultIBDataSchemaIdentifierConfigBean> getDataSchemas() {
+  public List<DefaultIBDataSchemaIngestionConfig> getDataSchemas() {
     return dataSchemas.stream().collect(toList());
   }
 
   public void setMetadata(XmlPlexusConfiguration metadata) {
-    super.setMetadata(translateToXpp3Dom.apply(metadata));
+    super.setMetadata(translateToMetadata.apply(metadata));
   }
 
   public void setDataStreams(List<DefaultIBDataStreamIdentifierConfigBean> streams) {
     this.dataStreams = requireNonNull(streams);
   }
 
-  public void setDataSchemas(List<DefaultIBDataSchemaIdentifierConfigBean> dataSchemas) {
+  public void setDataSchemas(List<DefaultIBDataSchemaIngestionConfig> dataSchemas) {
     this.dataSchemas = requireNonNull(dataSchemas);
   }
 
@@ -119,7 +120,7 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     ds.setStreams(
         getDataStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList()));
     ds.setSchemas(
-        getDataSchemas().stream().map(DefaultIBDataSchemaIdentifierConfigBean::new).collect(toList()));
+        getDataSchemas().stream().map(DefaultIBDataSchemaIngestionConfig::new).collect(toList()));
     return ds;
   }
 

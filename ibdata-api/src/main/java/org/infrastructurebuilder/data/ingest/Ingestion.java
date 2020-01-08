@@ -28,6 +28,7 @@ import org.infrastructurebuilder.util.config.ConfigMap;
 public class Ingestion implements DataSetEnabled {
 
   private String id = "default";
+  private String schemaIngester = "default";
   private String ingester = "default";
   private DefaultIBDataSetIdentifier dataSet = new DefaultIBDataSetIdentifier();
   private String finalizer = null;
@@ -43,6 +44,10 @@ public class Ingestion implements DataSetEnabled {
 
   public String getIngester() {
     return ofNullable(this.ingester).orElse(getId());
+  }
+
+  public String getSchemaIngester() {
+    return ofNullable(this.schemaIngester).orElse(getId());
   }
 
   public String getFinalizer() {

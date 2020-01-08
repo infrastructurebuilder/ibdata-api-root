@@ -16,19 +16,9 @@
 package org.infrastructurebuilder.data.ingest;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.infrastructurebuilder.data.IBDataException;
+import org.infrastructurebuilder.data.Metadata;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,10 +28,7 @@ import org.junit.Test;;
 public class DefaultIBDataSchemaIdentifierConfigBeanTest {
 
   private static final String NAME = "A name";
-  private static final String MIME_TYPE = "text/avro-avsc";
   private static final String DESCRIPTION = "description";
-  private static final String URL = "avro:zip:file:/file.zip!/avro.avsc";
-  public final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");;
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -51,27 +38,16 @@ public class DefaultIBDataSchemaIdentifierConfigBeanTest {
   public static void tearDownAfterClass() throws Exception {
   }
 
-  private DefaultIBDataSchemaIdentifierConfigBean b;
-  private Date cd;
+  private DefaultIBDataSchemaIngestionConfig b;
 
   @Before
   public void setUp() throws Exception {
-    b = new DefaultIBDataSchemaIdentifierConfigBean();
-    cd = sdf.parse("2011-12-03T10:15:30Z");
-    b.setCreationDate(cd);
-    b.setId("A");
+    b = new DefaultIBDataSchemaIngestionConfig();
+    b.setTemporaryId("A");
     b.setDescription(DESCRIPTION);
     b.getMetadata();
-    b.getCreationDate();
     b.setMetadata(new XmlPlexusConfiguration("metadata"));
-    b.setMimeType(MIME_TYPE);
     b.setName(NAME);
-    b.setUrl(URL);
-    b.setForcedMap(new ArrayList<>());
-    b.setSha512(b.asChecksum().toString());
-    b.setUuid(b.getUuid().toString());
-    UUID uuid = b.getUuid();
-    assertEquals("d7de88e5-0a88-391c-97e8-686e15731a16", b.getUuid().toString());
   }
 
   @After
@@ -80,36 +56,12 @@ public class DefaultIBDataSchemaIdentifierConfigBeanTest {
 
   @Test
   public void testHashCode() {
-    assertEquals(-1947039881, b.hashCode());
-  }
-
-  @Test
-  public void testCopy() {
-    DefaultIBDataSchemaIdentifierConfigBean c = b.copy();
-    assertEquals(b, c);
-    assertFalse(b == c);
-    c = new DefaultIBDataSchemaIdentifierConfigBean(b);
-    assertEquals(b, c);
-    assertFalse(b == c);
-
-  }
-
-  @Test
-  public void testGetId() {
-    assertNotNull(b.getUuid());
+    assertEquals(635231887, b.hashCode());
   }
 
   @Test
   public void testSetId() {
-    assertEquals("A", b.getTemporaryId().get());
-    b.setId("B");
-    assertEquals("B", b.getTemporaryId().get());
-    assertNotEquals("B", b.getUuid().toString());
-  }
-
-  @Test
-  public void testGetURL() {
-    assertEquals(URL, b.getUrl().get());
+    assertEquals("A", b.getTemporaryId());
   }
 
   @Test
@@ -124,37 +76,13 @@ public class DefaultIBDataSchemaIdentifierConfigBeanTest {
 
   @Test
   public void testGetMetadata() {
-    Xpp3Dom k = b.getMetadata();
-    assertEquals(new Xpp3Dom("metadata"), k);
-  }
-
-  @Test
-  public void testGetMimeType() {
-    assertEquals(MIME_TYPE, b.getMimeType());
-  }
-
-  @Test
-  public void testGetCreationDate() {
-    assertEquals(cd, b.getCreationDate());
+    Metadata k = b.getMetadata();
+    assertEquals(new Metadata(), k);
   }
 
   @Test
   public void testSetSchemaQuery() {
-    b.setSchemaQuery(new DefaultSchemaQueryBean());
-  }
-
-  @Test
-  public void testGetSchemaResourcesMappedFromName() {
-    assertEquals(0, b.getSchemaResourcesMappedFromName().size());
-  }
-
-  @Test
-  public void testSetNullSha512() {
-    b.setSha512(null); // This is OK?
-  }
-  @Test(expected = IBDataException.class)
-  public void testSetShortSha512() {
-    b.setSha512("abcd");
+    b.setSchemaQuery(new SchemaQueryBean());
   }
 
 }

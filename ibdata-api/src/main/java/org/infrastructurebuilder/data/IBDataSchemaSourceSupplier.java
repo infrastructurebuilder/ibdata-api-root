@@ -15,8 +15,13 @@
  */
 package org.infrastructurebuilder.data;
 
-public interface IBDataSchemaType {
-  String getTypeName();
+import java.util.function.Supplier;
 
-  String getTechnology();
+/**
+ * @author mykel.alvis
+ *
+ */
+public interface IBDataSchemaSourceSupplier extends Supplier<IBDataSchemaSource>, Comparable<IBDataSchemaSourceSupplier> {
+  String getId();
+
 }

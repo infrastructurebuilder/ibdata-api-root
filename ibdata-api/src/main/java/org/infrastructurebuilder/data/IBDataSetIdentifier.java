@@ -71,7 +71,7 @@ public interface IBDataSetIdentifier extends ChecksumEnabled {
 
   Date getCreationDate();
 
-  Xpp3Dom getMetadata();
+  Metadata getMetadata();
 
   /**
    * Possibly null representation of where this dataset currently exists. This

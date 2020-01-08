@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.infrastructurebuilder.data.Metadata;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public class IngestionTest {
     targetDs.setName("name");
     targetDs.setDescription("description");
     targetDs.setPath("/");
-    targetDs.setMetadata(new Xpp3Dom("metadata"));
+    targetDs.setMetadata(new Metadata());
     targetDs.setModelEncoding("UTF-8");
     targetDs.setModelVersion("1.0.0");
     i = new Ingestion();

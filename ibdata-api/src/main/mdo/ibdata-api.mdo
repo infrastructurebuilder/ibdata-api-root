@@ -23,320 +23,7 @@
   </versionDefinition>
   <classes>
     <!-- MODEL -->
-    <class xml.tagName="dataSet" rootElement="true"
-      java.clone.hook="mutatingDataSetCloneHook" java.clone="deep">
-      <name>DataSet</name>
-      <description>
-        <![CDATA[
-        The <code>&lt;dataSet&gt;</code> element is the root of the configuration.
-        ]]>
-      </description>
-      <version>1.0.0+</version>
-      <interfaces>
-        <interface>
-          <![CDATA[org.infrastructurebuilder.data.IBDataSetIdentifier]]>
-        </interface>
-        <interface>
-          <![CDATA[java.lang.Comparable<org.infrastructurebuilder.data.IBDataSetIdentifier>]]>
-        </interface>
-      </interfaces>
-      <fields>
 
-        <!-- ====================================================================== -->
-        <!-- DataSet Version -->
-        <!-- ====================================================================== -->
-        <field>
-          <name>modelVersion</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>Declares to which version of project descriptor this configuration conforms.  This value is the api version (major.minor) of ibdata-api and conforms to semantic versioning</description>
-          <type>String</type>
-        </field>
-
-
-        <field>
-          <name>groupId</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>Namespace of the dataset.  This defaults to the project.groupId of the building project</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>artifactId</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>Artifact Identifier of the dataset.  This defaults to the project.artifactId of the building project</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>version</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>Version of the dataset.  This defaults to the project.version of the building project</description>
-          <type>String</type>
-        </field>
-        <field java.getter="false">
-          <name>uuid</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>UUID identifier of the dataset.  This is the UUID from the Checksums of all the DataStream elements</description>
-          <type>String</type>
-        </field>
-        <field java.getter="false">
-          <name>name</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>The full name of the dataset.  This defaults to the project.name of the building project</description>
-          <type>String</type>
-        </field>
-        <field java.getter="false">
-          <name>description</name>
-          <version>1.0.0+</version>
-          <description>A detailed description of the dataset.  This defaults to the project.description of the building project</description>
-          <type>String</type>
-        </field>
-        <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSS"
-          java.getter="false">
-          <name>creationDate</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>A Date that is very close to the moment when this DataSet was persisted.  It has essentially no relationship to when the streams were read, except that it must be later.</description>
-          <type>Date</type>
-        </field>
-        <field>
-          <name>streams</name>
-          <version>1.0.0+</version>
-          <required>false</required>
-          <description>Instances of DataStreams</description>
-          <association>
-            <type>DataStream</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field>
-          <name>schemas</name>
-          <version>1.0.0+</version>
-          <required>false</required>
-          <description>Instances of DataSchema</description>
-          <association>
-            <type>DataSchema</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field java.getter="false">
-          <name>path</name>
-          <version>1.0.0+</version>
-          <required>false</required>
-          <description>Describes a path to the dataset</description>
-          <type>String</type>
-        </field>
-        <field java.getter="false">
-          <name>metadata</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>Additional metadata</description>
-          <type>DOM</type>
-        </field>
-      </fields>
-      <codeSegments>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  // Default constructor (Must do this if you supply a constructor)
-  public DataSet() {
-    setCreationDate(new java.util.Date());
-//    setStreams(new java.util.ArrayList<>());
-  }
-  ]]>
-          </code>
-        </codeSegment>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  // Copy constructor
-  public DataSet(DataSet ds) {
-    this.setArtifactId(ds.getArtifactId());
-    this.setCreationDate(ds.getCreationDate());
-    this.setDescription(ds.getDescription().orElse(null));
-    this.setName(ds.getName().orElse(null));
-    this.setGroupId(ds.getGroupId());
-    this.setMetadata(ds.getMetadata());
-    this.setModelVersion(ds.getModelVersion());
-    this.setPath(ds.getPath().orElse(null));
-    this.setStreams(ds.getStreams().stream().map(DataStream::new).collect(java.util.stream.Collectors.toList()));
-    this.setUuid(java.util.Optional.ofNullable(ds.getUuid()).map(java.util.UUID::toString).orElse(null));
-    this.setVersion(ds.getVersion());
-  }
-
-  @Override
-  public org.codehaus.plexus.util.xml.Xpp3Dom getMetadata() {
-      if (this.metadata == null)
-         this.metadata = new org.codehaus.plexus.util.xml.Xpp3Dom("metadata");
-      return (org.codehaus.plexus.util.xml.Xpp3Dom) this.metadata;
-  }
-  ]]>
-          </code>
-        </codeSegment>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-            // Clone hooks
-
-  private void mutatingDataSetCloneHook(DataSet ds) {
-    if (streams != null)
-      ds.getStreams().forEach(s -> s.setPath(org.infrastructurebuilder.data.IBDataModelUtils.relativizePath(ds, s)));
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  private java.nio.file.Path underlyingPath = null;
-
-  protected DataSet setUnderlyingPath(java.nio.file.Path p) {
-    this.underlyingPath = p;
-    return this;
-  }
-
-  protected java.util.Optional<java.nio.file.Path> underLyingPath() {
-    return java.util.Optional.ofNullable(underlyingPath);
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  // Hashcode and equals
-  @Override
-  public int hashCode() {
-    return java.util.Objects.hash(artifactId, creationDate, description, name, groupId, metadata, modelEncoding,
-        modelVersion, path, streams, uuid, version);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    DataSet other = (DataSet) obj;
-    return java.util.Objects.equals(artifactId, other.artifactId)
-        && java.util.Objects.equals(creationDate, other.creationDate)
-        && java.util.Objects.equals(description, other.description)
-        && java.util.Objects.equals(name, other.name)
-        && java.util.Objects.equals(groupId, other.groupId)
-        && java.util.Objects.equals(metadata, other.metadata)
-        && java.util.Objects.equals(modelEncoding, other.modelEncoding)
-        && java.util.Objects.equals(modelVersion, other.modelVersion)
-        && java.util.Objects.equals(path, other.path)
-        && java.util.Objects.equals(uuid, other.uuid)
-        && java.util.Objects.equals(version, other.version)
-        && java.util.Objects.equals(getStreams(), other.getStreams())
-        ;
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  @Override
-  public java.util.Optional<String> getName() {
-    return java.util.Optional.ofNullable(name);
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  @Override
-  public java.util.Optional<String> getDescription() {
-    return java.util.Optional.ofNullable(description);
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  @Override
-  public java.util.Optional<String> getPath() {
-    return java.util.Optional.ofNullable(path);
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  @Override
-  public java.util.Date getCreationDate() {
-    if (this.creationDate == null)
-      this.creationDate = new java.util.Date();
-    return this.creationDate;
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-
-
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  @Override
-  public int compareTo(org.infrastructurebuilder.data.IBDataSetIdentifier that) {
-    return IBDataSetIdentifierComparator.compare(this, that);
-  }
-            ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-            //
-            // ID mapper Work
-            //
-  @Override
-  public java.util.UUID getUuid() {
-     return nullableSafeMapUUID.apply(uuid);
-  }            ]]>
-          </code>
-        </codeSegment>
-      </codeSegments>
-
-    </class>
     <class xml.tagName="dataStream"
       java.clone.hook="mutatingDataStreamCloneHook" java.clone="deep">
       <name>DataStream</name>
@@ -495,10 +182,12 @@
   }
 
   @Override
-  public org.codehaus.plexus.util.xml.Xpp3Dom getMetadata() {
+  public org.infrastructurebuilder.data.Metadata getMetadata() {
       if (this.metadata == null)
-         this.metadata = new org.codehaus.plexus.util.xml.Xpp3Dom("metadata");
-      return (org.codehaus.plexus.util.xml.Xpp3Dom) this.metadata;
+         this.metadata = new org.infrastructurebuilder.data.Metadata();
+      if (!(this.metadata instanceof org.infrastructurebuilder.data.Metadata))
+        this.metadata = new org.infrastructurebuilder.data.Metadata(this.metadata);
+      return (org.infrastructurebuilder.data.Metadata) this.metadata;
   }
 
             ]]>
@@ -680,16 +369,321 @@
               ]]>
           </code>
         </codeSegment>
-
-        <!-- <codeSegment> <version>1.0.0+</version> <code> <![CDATA[ private
-          java.util.Optional<String> getValidatedSha512() { if (this.sha512 != null
-          && this.sha512.length() != 128) throw new org.infrastructurebuilder.data.IBDataException("sha512
-          length must be 128 "); return java.util.Optional.ofNullable(getSha512());
-          } // Checksum @Override public org.infrastructurebuilder.util.artifacts.Checksum
-          getChecksum() { return getValidatedSha512() .map(org.infrastructurebuilder.util.artifacts.Checksum::new)
-          .orElseThrow(() -> new org.infrastructurebuilder.data.IBDataException("No
-          sha512 available")); } ]]> </code> </codeSegment> -->
       </codeSegments>
+    </class>
+    <class xml.tagName="dataSet" rootElement="true"
+      java.clone.hook="mutatingDataSetCloneHook" java.clone="deep">
+      <name>DataSet</name>
+      <description>
+        <![CDATA[
+        The <code>&lt;dataSet&gt;</code> element is the root of the configuration.
+        ]]>
+      </description>
+      <version>1.0.0+</version>
+      <interfaces>
+        <interface>
+          <![CDATA[org.infrastructurebuilder.data.IBDataSetIdentifier]]>
+        </interface>
+        <interface>
+          <![CDATA[java.lang.Comparable<org.infrastructurebuilder.data.IBDataSetIdentifier>]]>
+        </interface>
+      </interfaces>
+      <fields>
+
+        <!-- ====================================================================== -->
+        <!-- DataSet Version -->
+        <!-- ====================================================================== -->
+        <field>
+          <name>modelVersion</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Declares to which version of project descriptor this configuration conforms.  This value is the api version (major.minor) of ibdata-api and conforms to semantic versioning</description>
+          <type>String</type>
+        </field>
+
+
+        <field>
+          <name>groupId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Namespace of the dataset.  This defaults to the project.groupId of the building project</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>artifactId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Artifact Identifier of the dataset.  This defaults to the project.artifactId of the building project</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>version</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Version of the dataset.  This defaults to the project.version of the building project</description>
+          <type>String</type>
+        </field>
+        <field java.getter="false">
+          <name>uuid</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>UUID identifier of the dataset.  This is the UUID from the Checksums of all the DataStream elements</description>
+          <type>String</type>
+        </field>
+        <field java.getter="false">
+          <name>name</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>The full name of the dataset.  This defaults to the project.name of the building project</description>
+          <type>String</type>
+        </field>
+        <field java.getter="false">
+          <name>description</name>
+          <version>1.0.0+</version>
+          <description>A detailed description of the dataset.  This defaults to the project.description of the building project</description>
+          <type>String</type>
+        </field>
+        <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSS"
+          java.getter="false">
+          <name>creationDate</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>A Date that is very close to the moment when this DataSet was persisted.  It has essentially no relationship to when the streams were read, except that it must be later.</description>
+          <type>Date</type>
+        </field>
+        <field>
+          <name>streams</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Instances of DataStreams</description>
+          <association>
+            <type>DataStream</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>schemas</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Instances of DataSchema</description>
+          <association>
+            <type>DataSchema</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field java.getter="false">
+          <name>path</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes a path to the dataset</description>
+          <type>String</type>
+        </field>
+        <field java.getter="false">
+          <name>metadata</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Additional metadata</description>
+          <type>DOM</type>
+        </field>
+      </fields>
+      <codeSegments>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  // Default constructor (Must do this if you supply a constructor)
+  public DataSet() {
+    setCreationDate(new java.util.Date());
+//    setStreams(new java.util.ArrayList<>());
+  }
+  ]]>
+          </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  // Copy constructor
+  public DataSet(DataSet ds) {
+    this.setArtifactId(ds.getArtifactId());
+    this.setCreationDate(ds.getCreationDate());
+    this.setDescription(ds.getDescription().orElse(null));
+    this.setName(ds.getName().orElse(null));
+    this.setGroupId(ds.getGroupId());
+    this.setMetadata(ds.getMetadata());
+    this.setModelVersion(ds.getModelVersion());
+    this.setPath(ds.getPath().orElse(null));
+    this.setStreams(ds.getStreams().stream().map(DataStream::new).collect(java.util.stream.Collectors.toList()));
+    this.setUuid(java.util.Optional.ofNullable(ds.getUuid()).map(java.util.UUID::toString).orElse(null));
+    this.setVersion(ds.getVersion());
+  }
+
+  @Override
+  public org.infrastructurebuilder.data.Metadata getMetadata() {
+      if (this.metadata == null)
+         this.metadata = new org.infrastructurebuilder.data.Metadata();
+      if (!(this.metadata instanceof org.infrastructurebuilder.data.Metadata))
+        this.metadata = new org.infrastructurebuilder.data.Metadata(this.metadata);
+      return (org.infrastructurebuilder.data.Metadata) this.metadata;
+  }
+  ]]>
+          </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  private void mutatingDataSetCloneHook(DataSet ds) {
+    if (streams != null)
+      ds.getStreams().forEach(s -> s.setPath(org.infrastructurebuilder.data.IBDataModelUtils.relativizePath(ds, s)));
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  private java.nio.file.Path underlyingPath = null;
+
+  protected DataSet setUnderlyingPath(java.nio.file.Path p) {
+    this.underlyingPath = p;
+    return this;
+  }
+
+  protected java.util.Optional<java.nio.file.Path> underLyingPath() {
+    return java.util.Optional.ofNullable(underlyingPath);
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  // Hashcode and equals
+  @Override
+  public int hashCode() {
+    return java.util.Objects.hash(artifactId, creationDate, description, name, groupId, metadata, modelEncoding,
+        modelVersion, path, streams, uuid, version);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    DataSet other = (DataSet) obj;
+    return java.util.Objects.equals(artifactId, other.artifactId)
+        && java.util.Objects.equals(creationDate, other.creationDate)
+        && java.util.Objects.equals(description, other.description)
+        && java.util.Objects.equals(name, other.name)
+        && java.util.Objects.equals(groupId, other.groupId)
+        && java.util.Objects.equals(metadata, other.metadata)
+        && java.util.Objects.equals(modelEncoding, other.modelEncoding)
+        && java.util.Objects.equals(modelVersion, other.modelVersion)
+        && java.util.Objects.equals(path, other.path)
+        && java.util.Objects.equals(uuid, other.uuid)
+        && java.util.Objects.equals(version, other.version)
+        && java.util.Objects.equals(getStreams(), other.getStreams())
+        ;
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public java.util.Optional<String> getName() {
+    return java.util.Optional.ofNullable(name);
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public java.util.Optional<String> getDescription() {
+    return java.util.Optional.ofNullable(description);
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public java.util.Optional<String> getPath() {
+    return java.util.Optional.ofNullable(path);
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public java.util.Date getCreationDate() {
+    if (this.creationDate == null)
+      this.creationDate = new java.util.Date();
+    return this.creationDate;
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+
+
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public int compareTo(org.infrastructurebuilder.data.IBDataSetIdentifier that) {
+    return IBDataSetIdentifierComparator.compare(this, that);
+  }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            //
+            // ID mapper Work
+            //
+  @Override
+  public java.util.UUID getUuid() {
+     return nullableSafeMapUUID.apply(uuid);
+  }            ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+
     </class>
     <class locationTracker="locations" java.clone="shallow">
       <name>DataSetInputLocation</name>
@@ -1173,7 +1167,7 @@
 
   @Override
     public int hashCode() {
-      return java.util.Objects.hash(artifactId, classifier, extension, groupId, version);
+      return java.util.Objects.hash(groupId, artifactId, classifier, extension, version);
     }
 
     @Override
@@ -1185,8 +1179,11 @@
       if (getClass() != obj.getClass())
         return false;
       Dependency other = (Dependency) obj;
-      return java.util.Objects.equals(artifactId, other.artifactId) && java.util.Objects.equals(classifier, other.classifier)
-          && java.util.Objects.equals(extension, other.extension) && java.util.Objects.equals(groupId, other.groupId)
+      return
+             java.util.Objects.equals(groupId, other.groupId)
+          && java.util.Objects.equals(artifactId, other.artifactId)
+          && java.util.Objects.equals(classifier, other.classifier)
+          && java.util.Objects.equals(extension, other.extension)
           && java.util.Objects.equals(version, other.version);
     }
 
@@ -1205,6 +1202,8 @@
 
       </codeSegments>
     </class>
+
+
     <class xml.tagName="schema"
       java.clone.hook="mutatingDataSchemaCloneHook" java.clone="deep">
       <name>DataSchema</name>
@@ -1215,53 +1214,40 @@
         ]]>
       </description>
       <interfaces>
-        <interface>org.infrastructurebuilder.data.IBSchema</interface>
+        <interface>org.infrastructurebuilder.data.IBDataSchemaIdentifier</interface>
       </interfaces>
       <fields>
         <field java.getter="false">
           <name>uuid</name>
           <version>1.0.0+</version>
+          <description>Identifier.  During ingestion, this is NOT a uuid.</description>
           <required>true</required>
-          <description>UUID identifier of the DataSchema, which is the UUID from the sha512 field.</description>
           <type>String</type>
         </field>
         <field>
-          <name>sha512</name>
+          <name>schemaType</name>
+          <association>
+            <type>SchemaType</type>
+            <multiplicity>1</multiplicity>
+          </association>
           <version>1.0.0+</version>
           <required>true</required>
-          <description>calculated SHA-512 of the other values in the schema.  This value is used to produce the uuid. </description>
-          <type>String</type>
+          <description>Type of schema.  This is the component hint used to lookup the provider.</description>
         </field>
-        <field java.getter="false">
-          <name>url</name>
-          <version>1.0.0+</version>
-          <required>false</required>
-          <description>Original URL source</description>
-          <type>String</type>
-        </field>
-        <field java.getter="false">
+        <field>
           <name>name</name>
           <version>1.0.0+</version>
           <required>true</required>
           <description>The full name of the DataSchema.</description>
           <type>String</type>
         </field>
-        <field java.getter="false">
+        <field>
           <name>description</name>
           <version>1.0.0+</version>
           <description>A detailed description of the DataSchema</description>
           <required>true</required>
           <type>String</type>
         </field>
-        <field>
-          <name>mimeType</name>
-          <version>1.0.0+</version>
-          <description>Stringified version of a MIME type for the datastream</description>
-          <required>true</required>
-          <defaultValue>application/octet-stream</defaultValue>
-          <type>String</type>
-        </field>
-
         <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSS">
           <name>creationDate</name>
           <version>1.0.0+</version>
@@ -1269,6 +1255,14 @@
           <description>Creation date of this stream, required</description>
           <type>Date</type>
         </field>
+        <field>
+          <name>sha512</name>
+          <version>1.0.0+</version>
+          <description>Persisted value of computed checksum</description>
+          <required>true</required>
+          <type>String</type>
+        </field>
+
         <field java.getter="false">
           <name>metadata</name>
           <version>1.0.0+</version>
@@ -1276,30 +1270,14 @@
           <description>Additional metadata</description>
           <type>DOM</type>
         </field>
-        <field>
-          <name>fields</name>
+        <field java.getter="false">
+          <name>schemaAssets</name>
           <version>1.0.0+</version>
-          <required>true</required>
-          <description>Fields of this structure</description>
           <association>
-            <type>SchemaField</type>
+            <type>SchemaAsset</type>
             <multiplicity>*</multiplicity>
           </association>
         </field>
-        <field>
-          <name>forcedMap</name>
-          <version>1.0.0+</version>
-          <description>A uuid that indicates a DataStream element that holds a specific impl of a schema for this schema.
-            This allows one to override the generated schema (which we strongly recommend against) in favor of a type-specific
-            schema to be supplied to the underlying type
-            </description>
-          <required>false</required>
-          <association>
-            <multiplicity>*</multiplicity>
-            <type>ForcedMapping</type>
-          </association>
-        </field>
-
       </fields>
       <codeSegments>
         <codeSegment>
@@ -1311,7 +1289,6 @@
   */
   public DataSchema() {
     this.setCreationDate(new java.util.Date());
-    this.setFields(new java.util.ArrayList<>());
   }
             ]]>
           </code>
@@ -1324,49 +1301,19 @@
   /**
    "Copy constructor"
    */
-  public DataSchema(DataSchema ds) {
+  public DataSchema(org.infrastructurebuilder.data.IBDataSchemaIdentifier  ds) {
+    // this.setUuid(ds.getUuid()); // Handled (AND ERASED) by clone hook
     this.setCreationDate(ds.getCreationDate());
-    this.setSha512(ds.getSha512());
-    this.setDescription(ds.getDescription().orElse(null));
-    this.setName(ds.getName().orElse(null));
+    this.setDescription(ds.getDescription());
+    this.setName(ds.getName());
     this.setMetadata(ds.getMetadata());
-    this.setMimeType(ds.getMimeType());
-    this.setFields(ds.getFields().stream().map(SchemaField::new).collect(java.util.stream.Collectors.toList()));
-    this.setUuid(java.util.Optional.ofNullable(ds.getUuid()).map(java.util.UUID::toString).orElse(null));
-    this.setForcedMap(ds.getForcedMap().stream().collect(java.util.stream.Collectors.toList()));
-    this.setUrl(ds.getUrl().orElse(null));
+    // this.setSha512(ds.getSha512());  // Handled by clone hook
 
     mutatingDataSchemaCloneHook(this);
   }
             ]]>
           </code>
         </codeSegment>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  /**
-   * Translate forcedMap list to getForcedMapping map
-   *
-   */
-  public java.util.Map<String, java.util.List<java.util.UUID>> getSchemaResourcesMappedFromName() {
-    java.util.Map<String, java.util.List<java.util.UUID>> m = new java.util.HashMap<>();
-    getForcedMap().forEach(fm -> {
-      m.compute(fm.getType(), (k, v) -> {
-        if (v == null)
-          v = new java.util.ArrayList<>();
-        v.add(fm.getUUID());
-        return v;
-      });
-    });
-    return m;
-  }
-            ]]>
-          </code>
-        </codeSegment>
-
-
         <codeSegment>
           <version>1.0.0+</version>
           <code>
@@ -1374,17 +1321,12 @@
 
   /**
     * Clone hook. The contract is that you must write a <code>.clone()</code> of the
-    * DataSchemaSet
+    * DataSchema
     */
   private void mutatingDataSchemaCloneHook(DataSchema s) {
-    if ( this.fields != null )
-    {
-        for ( int i = 0; i < s.fields.size(); ++i )
-        {
-          s.fields.get(i).setIndex(i);
-        }
-    }
-    s.setUuid(s.asChecksum().get().get().toString());
+    org.infrastructurebuilder.util.artifacts.Checksum c = asChecksum();
+    this.setSha512(c.toString());
+    this.setUuid(c.asUUID().get().toString());
   }
 
   ]]>
@@ -1395,52 +1337,54 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
+  /**
+   * Get the UUID as a string for matching purposes
+   */
+  public String getId() {
+    return this.uuid;
+  }
   @Override
   public int hashCode() {
-    return java.util.Objects.hash(uuid, name, creationDate, description, fields, metadata);
+    return java.util.Objects.hash(creationDate, description, uuid, metadata,  name, schemaType, sha512);
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (!(obj instanceof DataSchema)) {
       return false;
-    if (getClass() != obj.getClass())
-      return false;
+    }
     DataSchema other = (DataSchema) obj;
-    return
-           java.util.Objects.equals(uuid, other.uuid)
-        && java.util.Objects.equals(name, other.name)
-        && java.util.Objects.equals(creationDate, other.creationDate)
+    return java.util.Objects.equals(creationDate, other.creationDate)
         && java.util.Objects.equals(description, other.description)
-        && java.util.Objects.equals(mimeType, other.mimeType)
-        && java.util.Objects.equals(fields, other.fields)
+        && java.util.Objects.equals(uuid, other.uuid)
         && java.util.Objects.equals(metadata, other.metadata)
+        && java.util.Objects.equals(name, other.name)
+        && java.util.Objects.equals(schemaType, other.schemaType)
+        && java.util.Objects.equals(sha512, other.sha512)
         ;
   }
 
+
   @Override
   public String toString() {
-    return "DataSchema [uuid=" + uuid + ", name=" + name + ", description=" + description + ", creationDate="
-        + creationDate + "mimeType = " + mimeType + ", metadata=" + metadata + ", fields=" + fields + "]";
+    StringBuilder builder = new StringBuilder();
+    builder.append("DataSchema [uuid=").append(uuid).append(", schemaType=").append(schemaType)
+        .append(", name=").append(name).append(", description=").append(description)
+        .append(", creationDate=").append(creationDate).append(", metadata=").append(metadata)
+        .append(", sha512=").append(sha512)
+        .append("]");
+    return builder.toString();
   }
 
+  @Override
+  public  java.util.List<org.infrastructurebuilder.data.IBDataSchemaAsset> getSchemaAssets() {
+    return this.schemaAssets.stream().collect(java.util.stream.Collectors.toList());
+  }
 
             ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  /**
-   * @return the UUID from this schema uuid string field (or null)
-   */
-  @Override
-  public java.util.UUID getUuid() {
-     return safeMapUUID.apply(this.uuid).orElse(null);
-  }            ]]>
           </code>
         </codeSegment>
         <codeSegment>
@@ -1466,35 +1410,22 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-  /**
-   * @return the name if available
-   */
-  @Override
-  public java.util.Optional<String> getName() {
-     return java.util.Optional.ofNullable(name);
-  }
-  /**
-   * @return the description if available
-   */
-  @Override
-  public java.util.Optional<String> getDescription() {
-     return java.util.Optional.ofNullable(description);
-  }
 
-  /**
-   * @return the description if available
-   */
   @Override
-  public java.util.Optional<String> getUrl() {
-     return java.util.Optional.ofNullable(url);
+  public java.util.UUID getUuid() {
+    return java.util.Optional.ofNullable(getSha512()).map(java.util.UUID::fromString).orElse(null);
   }
 
   @Override
-  public org.codehaus.plexus.util.xml.Xpp3Dom getMetadata() {
+  public org.infrastructurebuilder.data.Metadata getMetadata() {
       if (this.metadata == null)
-         this.metadata = new org.codehaus.plexus.util.xml.Xpp3Dom("metadata");
-      return (org.codehaus.plexus.util.xml.Xpp3Dom) this.metadata;
+         this.metadata = new org.infrastructurebuilder.data.Metadata();
+      if (!(this.metadata instanceof org.infrastructurebuilder.data.Metadata))
+        this.metadata = new org.infrastructurebuilder.data.Metadata(this.metadata);
+      return (org.infrastructurebuilder.data.Metadata) this.metadata;
   }
+
+
               ]]>
           </code>
         </codeSegment>
@@ -1505,10 +1436,10 @@
   /**
    * Return a sorted set of the schema fields
    */
-  @Override
-  public java.util.SortedSet<org.infrastructurebuilder.data.IBField> getSchemaFields() {
-    return getFields().stream().sorted().collect(java.util.stream.Collectors.toCollection(java.util.TreeSet::new));
-  }
+//  @Override
+//  public java.util.SortedSet<org.infrastructurebuilder.data.IBField> getSchemaFields() {
+//    return getFields().stream().sorted().collect(java.util.stream.Collectors.toCollection(java.util.TreeSet::new));
+//  }
               ]]>
           </code>
         </codeSegment>
@@ -1523,245 +1454,101 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class xml.tagName="forcedMapping" java.clone="deep">
-      <name>ForcedMapping</name>
+
+    <class xml.tagName="asset" java.clone="deep">
+      <name>SchemaAsset</name>
       <version>1.0.0+</version>
-      <description>Force a mapping between a schema and a datastream AS A TYPE-SPECIFIC-SCHEMA</description>
-      <fields>
-        <field>
-          <name>type</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>The "type" of the schema.  This is some arbitrary per-implementation identifier.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>schemaUUID</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>UUID of an existing DataStream that holds the schema for that provider for this Schema instance</description>
-          <type>String</type>
-        </field>
-      </fields>
-      <codeSegments>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  public java.util.UUID getUUID() {
-    return org.infrastructurebuilder.util.artifacts.ChecksumEnabled.nullableSafeMapUUID.apply(getSchemaUUID());
-  }
-            ]]>
-          </code>
-        </codeSegment>
-      </codeSegments>
-    </class>
-    <class xml.tagName="field"
-      java.clone.hook="mutatingSchemaFieldCloneHook" java.clone="deep">
-      <name>SchemaField</name>
-      <version>1.0.0+</version>
-      <description>
-        <![CDATA[
-        The <code>&lt;schema&gt;</code> element contains information about a single schema.
-        ]]>
-      </description>
       <interfaces>
-        <interface>org.infrastructurebuilder.data.IBField</interface>
+        <interface>org.infrastructurebuilder.data.IBDataSchemaAsset</interface>
       </interfaces>
       <fields>
         <field>
-          <name>index</name>
+          <name>id</name>
           <version>1.0.0+</version>
           <required>true</required>
-          <description>Describes the IBfield from a base of 0.  Default value set to -1 to ensure setting proper index.  Indices are
-            forced reset prior to persistence.</description>
-          <type>int</type>
-          <defaultValue>-1</defaultValue>
+          <description>Schema technology identifier (component hint)</description>
+          <type>String</type>
         </field>
         <field>
-          <name>name</name>
+          <name>sha512</name>
           <version>1.0.0+</version>
           <required>true</required>
-          <description>The full name of the SchemaField.  This name may be munged during translation.</description>
+          <description>Technology underlying the schema management</description>
           <type>String</type>
-        </field>
-        <field>
-          <name>description</name>
-          <version>1.0.0+</version>
-          <description>A detailed description of the SchemaField</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>type</name>
-          <description>Value must match the typing enumeration in IBData (currently found in IBDataStructuredDataMetadataType).
-
-          The default value (STREAM) indicates that this schema denotes a single file that is a stream of bytes, and that that
-          is the most structure that can be inferred.  Due to the nature of STREAM, it is very important to correctly
-          set the SchemaField type.</description>
-          <type>String</type>
-          <required>true</required>
-          <defaultValue>STREAM</defaultValue>
-        </field>
-        <field>
-          <name>nullable</name>
-          <description>If true, then this field is allowed to be null.</description>
-          <type>boolean</type>
-          <required>true</required>
-          <defaultValue>false</defaultValue>
-        </field>
-        <field>
-          <name>enumerations</name>
-          <description>List of named enumerations for this field.</description>
-          <association>
-            <type>String</type>
-            <multiplicity>*</multiplicity>
-          </association>
-          <required>false</required>
-        </field>
-        <field>
-          <name>versionAppeared</name>
-          <description>version where this SchemaField became valid.  Versions should be truncated to api version.
-              This field is required when updating a schema to a new version.</description>
-          <type>String</type>
-          <required>false</required>
-        </field>
-        <field>
-          <name>deprecated</name>
-          <description>If set to true, this SchemaField is deprecated.
-
-          Schema deprecation is different than language deprecation.
-
-          A deprecated field is not represented in outbound
-          schema, but might be accepted as inbound schema.  Deprecation definitely means different things to different
-          underlying providers, but it may (likely) not be possible to back out a deprecation.
-
-          For some providers, the only means of moving forward is to re-add
-          the field as a new field with a later "versionAppeared".</description>
-          <type>boolean</type>
-          <required>false</required>
-        </field>
-        <field>
-          <name>versionDeprecated</name>
-          <description>version where this SchemaField became invalid.  Versions should be truncated to api version.
-              This field is required when producing a deprecation (note that a non-null value here does not indicate a
-              deprecation.  The flag must still be set in order to deprecate).</description>
-          <type>String</type>
-          <required>false</required>
-        </field>
-        <field>
-          <name>metadata</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>Additional metadata</description>
-          <type>DOM</type>
         </field>
       </fields>
       <codeSegments>
         <codeSegment>
           <version>1.0.0+</version>
           <code>
-            <![CDATA[
-  /**
-    * Default constructore
-    */
-  public SchemaField() {
-    this.setMetadata(new org.codehaus.plexus.util.xml.Xpp3Dom("metadata"));
-  }
-            ]]>
-          </code>
-        </codeSegment>
+              <![CDATA[
 
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  /**
-    * Copy constructor (should match clone)
-    */
-  public SchemaField(SchemaField ds) {
-    this.setIndex(ds.getIndex());
-    this.setName(ds.getName());
-    this.setDescription(ds.getDescription());
-    this.setType(ds.getType());
-    this.setNullable(ds.isNullable());
-    this.setEnumerations(java.util.Optional.ofNullable(getEnumerations()).map(e -> e.stream().collect(java.util.stream.Collectors.toList())).orElse(null));
-    this.setVersionAppeared(ds.getVersionAppeared());
-    this.setDeprecated(ds.isDeprecated());
-    this.setVersionDeprecated(ds.getVersionDeprecated());
-    this.setMetadata(ds.getMetadata());
+  public SchemaAsset() {
   }
-            ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-            // Clone hooks
-
-  private void mutatingSchemaFieldCloneHook(SchemaField s) {
+  public SchemaAsset(org.infrastructurebuilder.data.IBDataSchemaAsset g) {
+    this.id = g.getId();
+    this.sha512 = g.getSha512();
   }
 
-  ]]>
-          </code>
-        </codeSegment>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  @Override
-  public int hashCode() {
-    return java.util.Objects.hash(index,name, description, type, nullable, enumerations, versionAppeared, deprecated, versionDeprecated, metadata);
-  }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    SchemaField other = (SchemaField) obj;
-    return
-           java.util.Objects.equals(index, other.index)
-        && java.util.Objects.equals(name, other.name)
-        && java.util.Objects.equals(description, other.description)
-        && java.util.Objects.equals(type, other.type)
-        && java.util.Objects.equals(nullable, other.nullable)
-        && java.util.Objects.equals(enumerations, other.enumerations)
-        && java.util.Objects.equals(versionAppeared, other.versionAppeared)
-        && java.util.Objects.equals(deprecated, other.deprecated)
-        && java.util.Objects.equals(versionDeprecated, other.versionDeprecated)
-        && java.util.Objects.equals(metadata, other.metadata)
-        ;
-  }
+    public int hashCode() {
+      return java.util.Objects.hash(id, sha512);
+    }
 
-  @Override
-  public String toString() {
-    StringBuilder builder = new StringBuilder();
-    builder
-      .append("SchemaField [")
-      .append("index=").append(index)
-      .append(", name=").append(name)
-      .append(", description=").append(description)
-      .append(", type=").append(type)
-      .append(", nullable=").append(nullable)
-      .append(", enumerations=").append(enumerations)
-      .append(", versionAppeared=").append(versionAppeared)
-      .append(", deprecated=").append(deprecated)
-      .append(", versionDeprecated=").append(versionDeprecated)
-      .append(", metadata=").append(metadata)
-      .append("]");
-    return builder.toString();
-  }
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      SchemaAsset other = (SchemaAsset) obj;
+      return
+             java.util.Objects.equals(id, other.id)
+          && java.util.Objects.equals(sha512, other.sha512)
+          ;
+    }
 
 
-            ]]>
+    ]]>
           </code>
         </codeSegment>
+
       </codeSegments>
+    </class>
+
+    <class xml.tagName="schemaType" java.clone="deep">
+      <name>SchemaType</name>
+      <version>1.0.0+</version>
+      <interfaces>
+        <interface>org.infrastructurebuilder.data.IBSchemaType</interface>
+      </interfaces>
+      <fields>
+        <field>
+          <name>type</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Schema technology identifier (component hint)</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>technology</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Technology underlying the schema management</description>
+          <type>String</type>
+        </field>
+        <field java.getter="false">
+          <name>versionedProvider</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Identifier for the underlying provider's artifact</description>
+          <type>String</type>
+        </field>
+      </fields>
+      <!-- Code Segments generated in ibdata-schema.mdo -->
     </class>
 
   </classes>

@@ -40,7 +40,7 @@ public interface IBDataSet extends IBDataSetIdentifier {
 
   List<Supplier<IBDataStream>> getStreamSuppliers();
 
-  List<IBSchema> getSchemaSuppliers();
+  List<Supplier<IBDataSchemaIdentifier>> getSchemaSuppliers();
 
   /**
    * Get the aggregated checksum of all the checksums of all the data streams.

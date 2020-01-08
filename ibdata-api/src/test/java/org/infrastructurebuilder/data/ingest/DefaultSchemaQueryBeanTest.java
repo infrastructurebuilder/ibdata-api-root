@@ -15,7 +15,8 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -33,11 +34,11 @@ public class DefaultSchemaQueryBeanTest {
   public static void tearDownAfterClass() throws Exception {
   }
 
-  private DefaultSchemaQueryBean d;
+  private SchemaQueryBean d;
 
   @Before
   public void setUp() throws Exception {
-    d = new DefaultSchemaQueryBean();
+    d = new SchemaQueryBean();
   }
 
   @After
@@ -47,13 +48,13 @@ public class DefaultSchemaQueryBeanTest {
   @Test
   public void testSetByLookup() {
     d.setByLookup("ABC");
-    assertFalse(d.get().isPresent());
+    assertEquals(0, d.get().size());
   }
 
   @Test
   public void testSetByUUID() {
     d.setByUUID("52ea2fe6-5467-34ec-bea9-c61454946c96");
-    assertEquals("52ea2fe6-5467-34ec-bea9-c61454946c96", d.get().get().toString());
+    assertEquals(1, d.get().size());
   }
 
 }

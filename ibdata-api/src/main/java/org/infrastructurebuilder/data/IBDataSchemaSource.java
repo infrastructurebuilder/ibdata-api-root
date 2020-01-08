@@ -43,10 +43,15 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
  * @author mykel.alvis
  *
  */
-public interface IBDataSource extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap> , IBLoggerEnabled {
-//  public static final String TARGET_PATH = "Source-Target-Path";
+public interface IBDataSchemaSource extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap> , IBLoggerEnabled {
+  /**
+   * This is really a descriptive value, although it needs to be unique as well
+   *
+   * @return
+   */
+  String getId();
 
-  String getSourceURL();
+//  String getSourceURL();
 
   Optional<BasicCredentials> getCredentials();
 
@@ -58,21 +63,8 @@ public interface IBDataSource extends ConfigurableSupplier<List<IBChecksumPathTy
 
   Optional<String> getDescription();
 
-//  Optional<ConfigMap> getAdditionalConfig();
+//  Optional<String> getMimeType();
 
-  default boolean isExpandArchives() {
-    return false;
-  }
-
-  /**
-   * This is really a descriptive value, although it needs to be unique as well
-   *
-   * @return
-   */
-  String getId();
-
-  Optional<String> getMimeType();
-
-  IBDataSource configure(ConfigMap config);
+  IBDataSchemaSource configure(ConfigMap config);
 
 }

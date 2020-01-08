@@ -15,20 +15,9 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import java.nio.file.Path;
-import java.util.List;
-
 import org.infrastructurebuilder.data.IBDataSchemaIdentifier;
-import org.infrastructurebuilder.data.IBDataSchemaSupplier;
+import org.infrastructurebuilder.util.config.CMSConfigurableSupplier;
 
-public interface IBDataSchemaSupplierMapper {
-
-  boolean respondsTo(IBDataSchemaIdentifier v);
-
-  IBDataSchemaSupplier getSupplierFor(String temporaryId, IBDataSchemaIdentifier v);
-
-  Path getWorkingPath();
-
-//  List<String> getHeaders();
+public interface IBDataSchemaHarvester extends CMSConfigurableSupplier<IBDataSchemaIdentifier> {
 
 }

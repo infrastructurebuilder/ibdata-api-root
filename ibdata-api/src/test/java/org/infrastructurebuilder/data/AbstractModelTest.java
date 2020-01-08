@@ -99,7 +99,7 @@ public class AbstractModelTest {
   public final static class FakeIBDataSet extends DataSet implements IBDataSet {
 
     private final List<FakeIBDataStreamSupplier> suppliers = new ArrayList<>();
-    private final List<IBSchema> schemas = new ArrayList<>();
+    private final List<Supplier<IBDataSchemaIdentifier>> schemas = new ArrayList<>();
 
     public FakeIBDataSet(DataSet set, List<Path> paths) {
       super(set);
@@ -114,8 +114,7 @@ public class AbstractModelTest {
     }
 
     @Override
-    public List<IBSchema> getSchemaSuppliers() {
-      // TODO Auto-generated method stub
+    public List<Supplier<IBDataSchemaIdentifier>> getSchemaSuppliers() {
       return schemas;
     }
   }
@@ -138,7 +137,7 @@ public class AbstractModelTest {
     stream.setCreationDate(now);
     stream.setDescription(DESC);
     stream.setName(NAME);
-    Xpp3Dom metadata = new Xpp3Dom("metadata");
+    Xpp3Dom metadata = new Metadata();
     try (InputStream is = getClass().getResourceAsStream(TEST_INPUT_0_11_XML)) {
       metadata = Xpp3DomBuilder.build(is, "utf-8");
     }

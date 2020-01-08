@@ -44,7 +44,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +58,6 @@ import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class IBDataModelUtilsTest extends AbstractModelTest {
@@ -135,7 +133,8 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     IBUtils.deletePath(tPath); // Fails if exists
     List<Supplier<IBDataStream>> ibdssList = new ArrayList<>();
     TypeToExtensionMapper t2e = new FakeTypeToExtensionMapper();
-    IBChecksumPathType v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, t2e, empty());
+    List<Supplier<IBSchema>> ibdssSchemaList = new ArrayList<>();
+    IBChecksumPathType v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, ibdssSchemaList , t2e, empty());
     assertEquals(tPath, v.getPath());
     assertNotNull(v.get());
   }

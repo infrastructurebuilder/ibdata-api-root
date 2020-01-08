@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.data.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.infrastructurebuilder.data.IBDataException;
 import org.junit.After;

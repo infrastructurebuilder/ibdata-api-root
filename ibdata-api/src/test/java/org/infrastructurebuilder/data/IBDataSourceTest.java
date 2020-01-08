@@ -70,7 +70,7 @@ public class IBDataSourceTest {
       }
 
       @Override
-      public Optional<Xpp3Dom> getMetadata() {
+      public Optional<Metadata> getMetadata() {
         return empty();
       }
 

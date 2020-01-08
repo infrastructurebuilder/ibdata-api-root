@@ -130,7 +130,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
    *
    * @return Xpp3Dom instance describing the metadata supplied at creation time.
    */
-  Xpp3Dom getMetadata();
+  Metadata getMetadata();
 
   /**
    * Non-nullable mime type of the contents of the stream.

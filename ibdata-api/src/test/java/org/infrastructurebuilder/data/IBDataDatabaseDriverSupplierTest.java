@@ -18,7 +18,6 @@ package org.infrastructurebuilder.data;
 import static java.util.Optional.empty;
 import static org.junit.Assert.assertEquals;
 
-import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

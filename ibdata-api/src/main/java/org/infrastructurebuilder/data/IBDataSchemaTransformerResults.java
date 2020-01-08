@@ -15,8 +15,6 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.util.Map;
-
 public interface IBDataSchemaTransformerResults {
 
   /**
@@ -24,6 +22,6 @@ public interface IBDataSchemaTransformerResults {
    *
    * @return
    */
-  IBDataSchema getTransformedSchema();
+  IBDataSchemaIdentifier getTransformedSchema();
 
 }

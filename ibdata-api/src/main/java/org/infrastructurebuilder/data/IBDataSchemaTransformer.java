@@ -36,5 +36,5 @@ public interface IBDataSchemaTransformer {
    * Transform the inbound schema into a schema of the type specified in outbound
    * type
    */
-  IBDataSchemaTransformerResults getResultFrom(IBDataSchema in, String out);
+  IBDataSchemaTransformerResults getResultFrom(IBDataSchemaIdentifier in, String out);
 }

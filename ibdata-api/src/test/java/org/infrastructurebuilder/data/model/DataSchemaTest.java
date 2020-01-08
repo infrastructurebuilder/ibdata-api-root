@@ -15,10 +15,13 @@
  */
 package org.infrastructurebuilder.data.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.infrastructurebuilder.data.IBSchema;
+import java.util.List;
+import java.util.Optional;
+
+import org.infrastructurebuilder.data.IBDataSchemaAsset;
+import org.infrastructurebuilder.data.Metadata;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -41,18 +44,19 @@ public class DataSchemaTest {
 
   private DataSchema d,e;
   private SchemaField f;
+  private SchemaType st;
 
   @Before
   public void setUp() throws Exception {
     d = new DataSchema();
-    d.setMetadata(new Xpp3Dom("metadata"));
-    f  = new SchemaField();
+    st = new SchemaType("A","B", Optional.of("C"));
+    d.setSchemaType(st);
+    d.setMetadata(new Metadata());
+    List<IBDataSchemaAsset> l = d.getSchemaAssets();
 
-    d.addField(f);
     Thread.currentThread().sleep(10L);
     e = new DataSchema();
-    e.addField(f);
-    e.setMetadata(new Xpp3Dom("metadata"));
+    e.setMetadata(new Metadata());
   }
 
   @After

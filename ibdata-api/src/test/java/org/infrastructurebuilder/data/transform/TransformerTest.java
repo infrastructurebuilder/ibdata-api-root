@@ -29,6 +29,7 @@ import java.util.List;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.IBMetadataUtils;
+import org.infrastructurebuilder.data.Metadata;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,7 +77,7 @@ public class TransformerTest {
     t.setSources(sources);
     assertEquals(sources, t.getSources());
 
-    Xpp3Dom p = new Xpp3Dom("metadata");
+    Metadata p = new Metadata();
     t.setTargetStreamMetadata(p);
     assertEquals(p, t.getTargetStreamMetadata());
 

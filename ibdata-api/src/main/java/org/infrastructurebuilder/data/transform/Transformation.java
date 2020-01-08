@@ -17,7 +17,7 @@ package org.infrastructurebuilder.data.transform;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
-import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
+import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.DataSetEnabled;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.util.config.ConfigMap;
@@ -133,7 +132,7 @@ public class Transformation implements DataSetEnabled {
     dsi.setVersion(this.version);
     dsi.setName(this.name);
     dsi.setDescription(this.description);
-    dsi.setMetadata(translateToXpp3Dom.apply(metadata));
+    dsi.setMetadata(translateToMetadata.apply(metadata));
     return dsi;
   }
 

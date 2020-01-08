@@ -55,9 +55,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.model.DataSet;
-import org.infrastructurebuilder.data.model.DataSetInputSource;
 import org.infrastructurebuilder.data.model.DataStream;
-import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
+import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -129,13 +128,11 @@ public class IBDataModelUtils {
   }
 
   public final static Function<? super InputStream, ? extends DataSet> mapInputStreamToDataSet = (in) -> {
-    IBDataSourceModelXpp3ReaderEx reader;
-    DataSetInputSource dsis;
+    IBDataSourceModelXpp3Reader reader;
 
-    reader = new IBDataSourceModelXpp3ReaderEx();
-    dsis = new DataSetInputSource();
+    reader = new IBDataSourceModelXpp3Reader();
     try {
-      return cet.withReturningTranslation(() -> reader.read(in, true, dsis));
+      return cet.withReturningTranslation(() -> reader.read(in, true));
     } finally {
       cet.withTranslation(() -> in.close());
     }
@@ -154,7 +151,7 @@ public class IBDataModelUtils {
    * @throws IOException
    */
   public final static IBChecksumPathType forceToFinalizedPath(Date creationDate, Path workingPath, DataSet finalData,
-      List<Supplier<IBDataStream>> ibdssList, TypeToExtensionMapper t2e, Optional<String> basedir) throws IOException {
+      List<Supplier<IBDataStream>> ibdssList, List<Supplier<IBSchema>> schemaSuppliers, TypeToExtensionMapper t2e, Optional<String> basedir) throws IOException {
 
     // This archive is about to be created
     finalData.setCreationDate(requireNonNull(creationDate)); // That is now
@@ -163,6 +160,7 @@ public class IBDataModelUtils {
         .setPath(cet.withReturningTranslation(() -> newWorkingPath.toAbsolutePath().toUri().toURL().toExternalForm()));
     // We're moving everything to a new path
     Files.createDirectories(newWorkingPath);
+    // TODO Set the schemas here!
     finalData.setStreams(
         // The list of streams
         ibdssList.stream()

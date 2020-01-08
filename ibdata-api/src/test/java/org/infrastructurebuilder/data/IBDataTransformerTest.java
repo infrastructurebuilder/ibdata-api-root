@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -30,7 +29,6 @@ import java.util.UUID;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.transform.Transformer;
-import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.PathSupplier;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 import org.junit.Before;
@@ -131,9 +129,8 @@ public class IBDataTransformerTest {
       }
 
       @Override
-      public Xpp3Dom getMetadata() {
-        // TODO Auto-generated method stub
-        return null;
+      public Metadata getMetadata() {
+        return new Metadata();
       }
 
       @Override

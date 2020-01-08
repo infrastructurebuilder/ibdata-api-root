@@ -15,8 +15,8 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.util.List;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.LoggerEnabled;
@@ -41,5 +41,5 @@ public interface IBDataSchemaIngester extends LoggerEnabled {
    * @param dss
    * @return
    */
-  List<Supplier<IBDataStream>> ingest(SortedMap<String,IBDataSchemaSupplier> dss);
+  SortedSet<Supplier<IBSchema>> ingest(SortedMap<String,IBDataSchemaSupplier> dss);
 }

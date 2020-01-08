@@ -54,6 +54,6 @@ public class ModelloReflectionReaderTest {
       ds = dsr.readFromModel(reader);
     }
     assertNotNull(ds);
-    assertEquals("description", ds.getDescription().get());
+    assertEquals("description", ds.getDescription());
   }
 }

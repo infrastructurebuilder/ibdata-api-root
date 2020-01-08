@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -57,7 +56,7 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
     this.setCreationDate(new Date());
     this.setDescription("desc");
     this.setName("name");
-    this.setMetadata(new Xpp3Dom("metadata"));
+    this.setMetadata(new Metadata());
     this.setPath(".");
     this.setMimeType(IBConstants.APPLICATION_OCTET_STREAM);
     this.smd = null;

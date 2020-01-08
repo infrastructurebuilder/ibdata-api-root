@@ -16,7 +16,11 @@
 package org.infrastructurebuilder.data;
 
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.function.Supplier;
+
+import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
 
 /**
  * Defines an asset held by a schema. All assets are assumed to be source
@@ -24,7 +28,7 @@ import java.util.function.Supplier;
  *
  * The Supplier function:
  *
- * get() produces a direct representation of the schema asset.
+ * get() produces a direct Path representation of the schema asset.
  *
  * The contract for this method is as follows: If the asset currently exists as
  * a path (i.e. getURL() represents a real Path on the filesystem, then this
@@ -38,7 +42,7 @@ import java.util.function.Supplier;
  * The value produced by get() is not guaranteed to be consistent
  *
  */
-public interface IBDataSchemaAsset extends Supplier<Path> {
+public interface IBDataSchemaAsset extends Supplier<Path>, ChecksumEnabled {
   /**
    * Unique identifier for a schema asset per-IBDataSchema instance. This
    * identifier should be consistent across istances of the schema type.
@@ -47,6 +51,15 @@ public interface IBDataSchemaAsset extends Supplier<Path> {
    *         The use of this identifier is specific only on a per-type basis
    */
   String getId();
+
+  /**
+   * Data Stream ID for the actual asset's value
+   *
+   * @return
+   */
+  default UUID getAssetUUID() {
+    return asChecksum().asUUID().orElseThrow(() -> new IBDataException("No SHA-512 for this asset " + getId()));
+  }
 
   /**
    * SHA-512 value of the stored representation of this schema. Note that this is
@@ -59,13 +72,17 @@ public interface IBDataSchemaAsset extends Supplier<Path> {
    * @return string representation of a sha-512 checksum of the bytes of the
    *         stored asset
    */
-  String getChecksum();
 
-  /**
-   * String representation of the URL for that asset
-   *
-   * @return
-   */
-  String getURL();
+  String getSha512();
+
+  @Override
+  default Checksum asChecksum() {
+    return new Checksum(getSha512());
+  }
+
+  @Override
+  default Path get() {
+    throw new IBDataException("Defaults implementations do not supply a viable path.");
+  }
 
 }

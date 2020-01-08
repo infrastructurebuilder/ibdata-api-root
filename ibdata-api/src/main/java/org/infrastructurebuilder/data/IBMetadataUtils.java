@@ -50,7 +50,7 @@ public class IBMetadataUtils {
 //  public final static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //  public final static Supplier<DocumentBuilder> builderSupplier = () -> cet
 //      .withReturningTranslation(() -> factory.newDocumentBuilder());
-  public final static Supplier<Xpp3Dom> emptyXpp3Supplier = () -> new Xpp3Dom("metadata");
+  public final static Supplier<Metadata> emptyXpp3Supplier = () -> new Metadata();
 
   private final static TransformerFactory tf = TransformerFactory.newInstance();
   private final static Supplier<Transformer> tfSupplier = () -> {
@@ -64,7 +64,7 @@ public class IBMetadataUtils {
 //      // This might be null
 //      cet.withReturningTranslation(() ->
 //      // This might just fail
-//      (ofNullable(document).orElseGet(() -> new Xpp3Dom("metadata")) instanceof Xpp3Dom)
+//      (ofNullable(document).orElseGet(() -> new Metadata()) instanceof Xpp3Dom)
 //          // IS it a document
 //          ? (Xpp3Dom) document
 //          :
@@ -87,17 +87,17 @@ public class IBMetadataUtils {
     return writer.toString();
   });
 
-  public final static Function<Object, Xpp3Dom> translateToXpp3Dom = (document) -> cet.withReturningTranslation(() -> {
-    if (document instanceof Xpp3Dom || document == null)
-      return (Xpp3Dom) document;
+  public final static Function<Object, Metadata> translateToMetadata = (document) -> cet.withReturningTranslation(() -> {
+    if (document instanceof Metadata || document == null)
+      return (Metadata) document;
     else if (document instanceof Document) {
       Document d = (Document) document;
       if (d.hasAttributes() || d.hasChildNodes())
-        return Xpp3DomBuilder.build(new StringReader(stringifyDocument.apply(d)));
+        return new Metadata(Xpp3DomBuilder.build(new StringReader(stringifyDocument.apply(d))));
       else
-        return new Xpp3Dom("metadata");
+        return new Metadata();
     } else
-      return Xpp3DomBuilder.build(new StringReader(document.toString()), true);
+      return new Metadata(Xpp3DomBuilder.build(new StringReader(document.toString()), true));
   });
 
   public final static Function<Xpp3Dom, Checksum> asChecksum = (dom) -> {

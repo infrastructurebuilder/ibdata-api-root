@@ -30,14 +30,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.infrastructurebuilder.data.IBDataEngine;
 import org.infrastructurebuilder.data.IBDataSet;
 import org.infrastructurebuilder.data.IBDataStream;
 import org.infrastructurebuilder.data.IBSchema;
+import org.infrastructurebuilder.data.Metadata;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
-import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.junit.Before;
@@ -47,7 +46,7 @@ public class DataSetReadWriteModel0_11Test {
 
   private DataStream ds;
   private DataSet set;
-  private Xpp3Dom d;
+  private Metadata d;
 
   @Before
   public void setUp() throws Exception {
@@ -57,9 +56,9 @@ public class DataSetReadWriteModel0_11Test {
     //    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     //    DocumentBuilder builder = factory.newDocumentBuilder();
     //    d = builder.newDocument();
-    d = new Xpp3Dom("metadata");
+    d = new Metadata();
     meta.entrySet().forEach(entry -> {
-      Xpp3Dom d2 = new Xpp3Dom(entry.getKey());
+      Metadata d2 = new Metadata(entry.getKey());
       d2.setValue(entry.getValue());
       d.addChild(d2);
       //      Element e = d.createElement(entry.getKey());
@@ -129,13 +128,11 @@ public class DataSetReadWriteModel0_11Test {
 
   @Test
   public void testReaderEx() throws IOException, XmlPullParserException {
-    IBDataSourceModelXpp3ReaderEx reader;
-    DataSetInputSource dsis;
+    IBDataSourceModelXpp3Reader reader;
 
-    reader = new IBDataSourceModelXpp3ReaderEx();
-    dsis = new DataSetInputSource();
+    reader = new IBDataSourceModelXpp3Reader();
     try (InputStream in = getClass().getResourceAsStream(TEST_INPUT_0_11_XML)) {
-      DataSet read = reader.read(in, true, dsis);
+      DataSet read = reader.read(in, true);
       assertEquals("310dc0e2-109d-4237-9729-e266176e1c7a", read.getUuid().toString());
     }
   }

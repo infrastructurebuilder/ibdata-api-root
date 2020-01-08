@@ -15,31 +15,15 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Supplier;
+import java.nio.file.Path;
+import java.util.SortedMap;
 
-public class DefaultSchemaQueryBean implements Supplier<Optional<UUID>> {
+import org.infrastructurebuilder.data.IBDataSchemaSupplier;
 
-  private String byUUID = null;
-  private String byLookup = null;
+public interface IBDataSchemaSupplierFactory {
 
-  public void setByLookup(String byLookup) {
-    this.byLookup = byLookup;
-  }
+  SortedMap<String, IBDataSchemaSupplier> mapIngestionToSuppliers(Ingestion i);
 
-  public void setByUUID(String byUUID) {
-    this.byUUID = byUUID;
-  }
-
-  @Override
-  public Optional<UUID> get() {
-    return Optional.ofNullable(getUUID()).map(UUID::fromString);
-  }
-
-  private String getUUID() {
-    // FIXME Fix the query lookup. This is definitely not OK
-    return this.byUUID;
-  }
+  Path getTargetPath();
 
 }

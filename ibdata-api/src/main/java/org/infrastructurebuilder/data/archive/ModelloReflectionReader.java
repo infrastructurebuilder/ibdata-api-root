@@ -16,8 +16,10 @@
 package org.infrastructurebuilder.data.archive;
 
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.Objects;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.infrastructurebuilder.data.IBDataException;
@@ -30,6 +32,10 @@ public class ModelloReflectionReader<T> {
 
   public ModelloReflectionReader(Class<T> clazz) {
     this.clazz = Objects.requireNonNull(clazz);
+  }
+
+  public T readFromXpp3Dom(Xpp3Dom d) {
+    return readFromModel(new StringReader(d.toString()));
   }
 
   @SuppressWarnings("unchecked")

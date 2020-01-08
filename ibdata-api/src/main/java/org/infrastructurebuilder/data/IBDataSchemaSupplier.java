@@ -15,13 +15,22 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.util.IBUtils.nullSafeStringComparator;
+
+import java.util.SortedSet;
 import java.util.function.Supplier;
 
 /**
  * @author mykel.alvis
  *
  */
-public interface IBDataSchemaSupplier extends Supplier<IBDataSchema>, Comparable<IBDataSchemaSupplier> {
+public interface IBDataSchemaSupplier
+    extends Supplier<SortedSet<IBDataSchemaSource>>, Comparable<IBDataSchemaSupplier> {
   String getId();
 
+  @Override
+  default int compareTo(IBDataSchemaSupplier o) {
+    return nullSafeStringComparator.compare(getId(), ofNullable(o).map(IBDataSchemaSupplier::getId).orElse(null));
+  }
 }
