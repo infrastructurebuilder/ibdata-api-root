@@ -19,7 +19,6 @@ import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata
 
 import java.util.function.Supplier;
 
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;

@@ -19,6 +19,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.data.model.PersistedIBSchema;
 import org.infrastructurebuilder.util.LoggerEnabled;
 import org.infrastructurebuilder.util.config.ConfigMap;
 
@@ -41,5 +42,5 @@ public interface IBDataSchemaIngester extends LoggerEnabled {
    * @param dss
    * @return
    */
-  SortedSet<Supplier<IBSchema>> ingest(SortedMap<String,IBDataSchemaSupplier> dss);
+  SortedSet<Supplier<PersistedIBSchema>> ingest(SortedMap<String,IBDataSchemaSupplier> dss);
 }

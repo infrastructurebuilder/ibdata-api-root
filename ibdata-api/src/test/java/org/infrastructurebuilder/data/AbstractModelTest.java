@@ -15,7 +15,9 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toList;
+import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML_CHECKSUM;
@@ -27,12 +29,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
-import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.util.artifacts.GAV;
@@ -71,11 +74,16 @@ public class AbstractModelTest {
     public String getExtensionForType(String type) {
       return "bin";
     }
+
+    @Override
+    public SortedSet<String> reverseMapFromExtension(String extension) {
+      return new TreeSet<>(singleton(APPLICATION_OCTET_STREAM));
+    }
   }
 
 
 
-  public final static class FakeIBDataStreamSupplier extends DataStream implements Supplier<IBDataStream> {
+  public final static class FakeIBDataStreamSupplier extends DataStream implements IBDataStreamSupplier {
 
     private IBDataStream stream;
 
@@ -109,7 +117,7 @@ public class AbstractModelTest {
     }
 
     @Override
-    public List<Supplier<IBDataStream>> getStreamSuppliers() {
+    public List<IBDataStreamSupplier> getStreamSuppliers() {
       return suppliers.stream().collect(toList());
     }
 
@@ -142,7 +150,7 @@ public class AbstractModelTest {
       metadata = Xpp3DomBuilder.build(is, "utf-8");
     }
     stream.setMetadata(metadata);
-    stream.setMimeType(IBConstants.APPLICATION_OCTET_STREAM);
+    stream.setMimeType(APPLICATION_OCTET_STREAM);
     stream.setSha512(TEST_INPUT_0_11_XML_CHECKSUM);
     stream.setUrl(SOURCE_URL);
     Path tStream = wps.get().resolve(UUID.randomUUID().toString()).toAbsolutePath();

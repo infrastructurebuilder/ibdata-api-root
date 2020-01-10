@@ -28,8 +28,8 @@ import org.infrastructurebuilder.util.config.ConfigMap;
 public class Ingestion implements DataSetEnabled {
 
   private String id = "default";
-  private String schemaIngester = "default";
-  private String ingester = "default";
+  private String schemaIngester = null; // "default";
+  private String ingester = null; // "default";
   private DefaultIBDataSetIdentifier dataSet = new DefaultIBDataSetIdentifier();
   private String finalizer = null;
   private Map<String, String> finalizerConfig = new HashMap<>();
@@ -70,6 +70,11 @@ public class Ingestion implements DataSetEnabled {
   boolean isExpand(String tempId) {
     return dataSet.getDataStreams().stream().filter(ds -> ds.getTemporaryId().get().equals(tempId)).findFirst()
         .map(ff -> ff.isExpandArchives()).orElse(false);
+  }
+
+  @Override
+  public Map<String, IBDataSchemaIngestionConfig> asSchemaIngestion() {
+    return getDataSet().asSchemaIngestion();
   }
 
 }

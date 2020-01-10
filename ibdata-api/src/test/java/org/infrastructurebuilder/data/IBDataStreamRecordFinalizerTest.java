@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +66,7 @@ public class IBDataStreamRecordFinalizerTest {
       }
 
       @Override
-      public Supplier<IBDataStream> finalizeRecord(IBDataStreamIdentifier ds) {
+      public IBDataStreamSupplier finalizeRecord(IBDataStreamIdentifier ds) {
         return () -> null;
       }
 

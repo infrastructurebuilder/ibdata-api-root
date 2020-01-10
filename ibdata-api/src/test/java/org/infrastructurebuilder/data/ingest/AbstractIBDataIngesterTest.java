@@ -15,16 +15,15 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
-import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.IBDataSourceSupplier;
-import org.infrastructurebuilder.data.IBDataStream;
+import org.infrastructurebuilder.data.IBDataStreamSupplier;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
@@ -43,8 +42,8 @@ public class AbstractIBDataIngesterTest {
     p = wps.get();
     i = new AbstractIBDataIngester(p, log, new ConfigMap()) {
       @Override
-      public List<Supplier<IBDataStream>> ingest(SortedMap<String, IBDataSourceSupplier> dss) {
-        return Collections.emptyList();
+      public List<IBDataStreamSupplier> ingest(SortedMap<String, IBDataSourceSupplier> dss) {
+        return emptyList();
       }
     };
   }

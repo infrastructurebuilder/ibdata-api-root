@@ -52,6 +52,7 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
+import org.infrastructurebuilder.data.model.PersistedIBSchema;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
@@ -131,9 +132,9 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     Path workingPath = wps.get();
     Path tPath = workingPath.getParent().resolve("75b331e0-faaa-3464-9219-2ca72f0ad31e");
     IBUtils.deletePath(tPath); // Fails if exists
-    List<Supplier<IBDataStream>> ibdssList = new ArrayList<>();
+    List<IBDataStreamSupplier> ibdssList = new ArrayList<>();
     TypeToExtensionMapper t2e = new FakeTypeToExtensionMapper();
-    List<Supplier<IBSchema>> ibdssSchemaList = new ArrayList<>();
+    List<Supplier<PersistedIBSchema>> ibdssSchemaList = new ArrayList<>();
     IBChecksumPathType v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, ibdssSchemaList , t2e, empty());
     assertEquals(tPath, v.getPath());
     assertNotNull(v.get());

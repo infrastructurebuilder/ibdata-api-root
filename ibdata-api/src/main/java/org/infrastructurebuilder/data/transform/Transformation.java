@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.infrastructurebuilder.data.DataSetEnabled;
+import org.infrastructurebuilder.data.IBDataException;
+import org.infrastructurebuilder.data.ingest.IBDataSchemaIngestionConfig;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.util.config.ConfigMap;
 
@@ -134,6 +136,11 @@ public class Transformation implements DataSetEnabled {
     dsi.setDescription(this.description);
     dsi.setMetadata(translateToMetadata.apply(metadata));
     return dsi;
+  }
+
+  @Override
+  public Map<String, IBDataSchemaIngestionConfig> asSchemaIngestion() {
+    throw new IBDataException("Cannot currently define shemas in transformation");
   }
 
 }

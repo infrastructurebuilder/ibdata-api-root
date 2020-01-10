@@ -25,7 +25,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
@@ -41,6 +40,12 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
    */
   UUID getUuid();
 
+  /**
+   * Fetch the temporaryId that this scheme referenced at ingestion.
+   * This is only available during ingestion, as it is not persisted.
+   * @return
+   */
+  Optional<String> getTemporaryId();
   /**
    * Get creation date of this stream, required.
    *
@@ -67,7 +72,7 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
    *
    * @return Object
    */
-  Xpp3Dom getMetadata(); // -- Object getMetadata()
+  Metadata getMetadata(); // -- Object getMetadata()
 
   /**
    * Get the full name of the IBDataSchema.

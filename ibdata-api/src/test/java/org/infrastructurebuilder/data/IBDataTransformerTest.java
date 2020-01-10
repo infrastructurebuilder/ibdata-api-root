@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.transform.Transformer;
 import org.infrastructurebuilder.util.config.PathSupplier;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;

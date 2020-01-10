@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.data.Metadata;

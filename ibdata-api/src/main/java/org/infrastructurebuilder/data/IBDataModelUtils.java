@@ -56,6 +56,7 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
+import org.infrastructurebuilder.data.model.PersistedIBSchema;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
 import org.infrastructurebuilder.util.IBUtils;
@@ -151,7 +152,8 @@ public class IBDataModelUtils {
    * @throws IOException
    */
   public final static IBChecksumPathType forceToFinalizedPath(Date creationDate, Path workingPath, DataSet finalData,
-      List<Supplier<IBDataStream>> ibdssList, List<Supplier<IBSchema>> schemaSuppliers, TypeToExtensionMapper t2e, Optional<String> basedir) throws IOException {
+      List<IBDataStreamSupplier> ibdssList, List<Supplier<PersistedIBSchema>> schemaSuppliers, TypeToExtensionMapper t2e,
+      Optional<String> basedir) throws IOException {
 
     // This archive is about to be created
     finalData.setCreationDate(requireNonNull(creationDate)); // That is now
@@ -161,7 +163,14 @@ public class IBDataModelUtils {
     // We're moving everything to a new path
     Files.createDirectories(newWorkingPath);
     // TODO Set the schemas here!
-    finalData.setStreams(
+    // Hint:  When you wrote the schema the first time, the UUID for that stream was computable.  Now that the stream has been
+    // moved, you're still OK
+    List<IBSchema> finalizedDataSchema =
+        // List all the schema
+        schemaSuppliers.stream()
+        .map(Supplier::get)
+        .collect(toList());
+    List<DataStream> finalizedDataStreams =
         // The list of streams
         ibdssList.stream()
             // Fetch the IBDS
@@ -171,7 +180,8 @@ public class IBDataModelUtils {
             // Map the IBDataStream to a DataStream object
             .map(toDataStream)
             // to list
-            .collect(toList()));
+            .collect(toList());
+    finalData.setStreams(finalizedDataStreams);
     // finalData.getStreams().stream().forEach(dss ->
     // dss.setPath(IBDataModelUtils.relativizePath(finalData, dss)));
     // The id of the archive is based on the checksum of the data within it

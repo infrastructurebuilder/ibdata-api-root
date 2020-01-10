@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;

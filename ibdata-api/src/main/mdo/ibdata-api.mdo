@@ -1302,15 +1302,43 @@
    "Copy constructor"
    */
   public DataSchema(org.infrastructurebuilder.data.IBDataSchemaIdentifier  ds) {
-    // this.setUuid(ds.getUuid()); // Handled (AND ERASED) by clone hook
-    this.setCreationDate(ds.getCreationDate());
-    this.setDescription(ds.getDescription());
-    this.setName(ds.getName());
-    this.setMetadata(ds.getMetadata());
-    // this.setSha512(ds.getSha512());  // Handled by clone hook
+    this(
+      new SchemaType(
+      java.util.Objects.requireNonNull(ds).getSchemaType())
+      , ds.getName()
+      , ds.getDescription()
+      , ds.getCreationDate()
+      , new org.infrastructurebuilder.data.Metadata(ds.getMetadata())
+      , ds.getSchemaAssets().stream().map(SchemaAsset::new).collect(java.util.stream.Collectors.toList()));
+  }
 
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  /**
+   "(Most) Data constructor"
+   */
+  public DataSchema(
+    SchemaType type
+    ,String name
+    ,String description
+    ,java.util.Date creationDate
+    ,org.infrastructurebuilder.data.Metadata metadata
+    ,java.util.List<SchemaAsset> schemaAssets
+    ) {
+    // this.setUuid(null); // Handled (AND ERASED) by clone hook, as well as sha512
+    this.setSchemaType(type);
+    this.setCreationDate(creationDate);
+    this.setDescription(description);
+    this.setName(name);
+    this.setMetadata(metadata);
     mutatingDataSchemaCloneHook(this);
   }
+
             ]]>
           </code>
         </codeSegment>
@@ -1486,8 +1514,13 @@
   public SchemaAsset() {
   }
   public SchemaAsset(org.infrastructurebuilder.data.IBDataSchemaAsset g) {
-    this.id = g.getId();
-    this.sha512 = g.getSha512();
+    this(g.getId(), g.getSha512());
+  }
+  public SchemaAsset(String id, String sha512) {
+    this();
+    this.id = java.util.Objects.requireNonNull(id);
+    this.sha512 = java.util.Objects.requireNonNull(sha512);
+
   }
 
 

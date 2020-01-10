@@ -18,7 +18,6 @@ package org.infrastructurebuilder.data;
 import java.util.List;
 import java.util.Optional;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.artifacts.Checksum;

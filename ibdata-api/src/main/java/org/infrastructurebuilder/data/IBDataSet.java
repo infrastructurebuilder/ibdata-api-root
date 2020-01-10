@@ -38,7 +38,7 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
  */
 public interface IBDataSet extends IBDataSetIdentifier {
 
-  List<Supplier<IBDataStream>> getStreamSuppliers();
+  List<IBDataStreamSupplier> getStreamSuppliers();
 
   List<Supplier<IBDataSchemaIdentifier>> getSchemaSuppliers();
 

@@ -17,6 +17,7 @@ package org.infrastructurebuilder.data.ingest;
 
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.SortedSet;
@@ -28,11 +29,9 @@ import javax.inject.Named;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.IBDataException;
-import org.infrastructurebuilder.data.IBDataSchemaIdentifier;
 import org.infrastructurebuilder.data.IBDataSchemaSource;
 import org.infrastructurebuilder.data.IBDataSchemaSupplier;
-import org.infrastructurebuilder.data.archive.ModelloReflectionReader;
-import org.infrastructurebuilder.data.model.DataSchema;
+import org.infrastructurebuilder.data.model.PersistedIBSchema;
 import org.infrastructurebuilder.data.model.io.xpp3.PersistedIBSchemaXpp3Reader;
 import org.infrastructurebuilder.util.LoggerSupplier;
 import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
@@ -80,12 +79,16 @@ public class DefaultIBDataSchemaHarvester extends AbstractIBDataSchemaHarvester 
       }
       PersistedIBSchemaXpp3Reader dr = new PersistedIBSchemaXpp3Reader();
 
-      return children.stream().map(Xpp3Dom::toString).map(StringReader::new).map(input -> {
+      SortedSet<PersistedIBSchema> a = children.stream().map(Xpp3Dom::toString).map(StringReader::new).map(input -> {
         return IBDataException.cet.withReturningTranslation(() -> dr.read(input));
       })
+//
+////          .map(DefaultIBDataSchema::new).map(DefaultIBDataSchemaSource::new)
 
-//          .map(DefaultIBDataSchema::new).map(DefaultIBDataSchemaSource::new)
           .collect(Collectors.toCollection(TreeSet::new));
+
+      // TODO Write each PersistedIBSchema to disk individually
+      return Collections.emptySortedSet(); // FIXME!!!!  Placeholder for unwritten schema
     }
 
   }

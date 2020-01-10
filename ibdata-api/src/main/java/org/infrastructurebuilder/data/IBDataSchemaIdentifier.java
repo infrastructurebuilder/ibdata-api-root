@@ -22,7 +22,6 @@ import static org.infrastructurebuilder.util.IBUtils.nullSafeStringComparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
@@ -48,6 +47,7 @@ import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
  *
  */
 public interface IBDataSchemaIdentifier extends ChecksumEnabled, Comparable<IBDataSchemaIdentifier> {
+  public static final String PRIMARY = "ibdata-primary-schema";
   /**
    * Returns persisted UUID from asChecksum
    * @return
@@ -94,7 +94,7 @@ public interface IBDataSchemaIdentifier extends ChecksumEnabled, Comparable<IBDa
   default int compareTo(IBDataSchemaIdentifier o) {
     return nullSafeStringComparator.compare(getId(), ofNullable(o).map(IBDataSchemaIdentifier::getId).orElse(null));
   }
-  default List<Supplier<IBDataStream>> getSuppliedDataStreams() {
+  default List<IBDataStreamSupplier> getSuppliedDataStreams() {
     throw new IBDataException("getSuppliedDataStreams not implemented in the model or by default.  It must be overriden to supply");
   }
 

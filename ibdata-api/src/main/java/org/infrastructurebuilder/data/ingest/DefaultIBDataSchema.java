@@ -15,67 +15,51 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Objects.requireNonNull;
+import static org.infrastructurebuilder.data.IBDataException.cet;
+
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.PersistedIBSchema;
 import org.infrastructurebuilder.data.model.SchemaAsset;
 import org.infrastructurebuilder.data.model.io.xpp3.PersistedIBSchemaXpp3Writer;
+import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
 
 public class DefaultIBDataSchema extends DataSchema {
 
   private static final long serialVersionUID = -6073070167044366925L;
-  private final Path workingPath;
 
-  public DefaultIBDataSchema(Path workingPath, List<PersistedIBSchema> dsList) {
+  public DefaultIBDataSchema(Path workingPath, PersistedIBSchema primary, Optional<Map<String, Path>> moreAssets) {
     super();
-    this.workingPath = Objects.requireNonNull(workingPath);
+    final PersistedIBSchemaXpp3Writer writer = new PersistedIBSchemaXpp3Writer();
 
-    setSchemaAssets(dsList
-        // Stream
-        .stream()
-        //
-        .map(this::writeSchema)
-        //
-        .collect(Collectors.toList()));
+    Map<String, Path> finalized = new HashMap<>();
+    finalized.putAll(requireNonNull(moreAssets).orElse(emptyMap()));
+    // Unapologetically wipe out any hope of joy for inserting a PRIMARY asset
+    finalized.put(PRIMARY, cet.withReturningTranslation(() -> {
+      final Path p = workingPath.resolve(UUID.randomUUID().toString());
+      try (Writer w = Files.newBufferedWriter(p)) {
+        writer.write(w, requireNonNull(primary, "Primary schema"));
+        return p;
+      }
+    }));
+    setSchemaAssets(finalized.entrySet().stream().map(e -> {
+      return new SchemaAsset(e.getKey(), cet.withReturningTranslation(
+          // Getting the correct SHA-512 can be expensive
+          () -> DefaultIBChecksumPathType.fromPath(e.getValue()) // Expensive part
+              .moveTo(requireNonNull(workingPath, "working path")))
+          .getChecksum().toString());
+    }).collect(Collectors.toList()));
     setUuid(asChecksum().asUUID().get().toString());
   }
 
-  private final SchemaAsset writeSchema(PersistedIBSchema schema) {
-    PersistedIBSchemaXpp3Writer writer = new PersistedIBSchemaXpp3Writer();
-    return IBDataException.cet.withReturningTranslation(() -> {
-      final Path p = workingPath.resolve(UUID.randomUUID().toString());
-      try (Writer w = Files.newBufferedWriter(p)) {
-        writer.write(w, schema);
-        return new LocalAsset(p, schema);
-      }
-    });
-
-  }
-
-  private static class LocalAsset extends SchemaAsset {
-    private static final long serialVersionUID = -2537255005247301571L;
-    private final Path written;
-    private final PersistedIBSchema schema;
-
-    LocalAsset(Path written, PersistedIBSchema schema) {
-      this.written = Objects.requireNonNull(written);
-      this.schema = Objects.requireNonNull(schema);
-    }
-
-    public PersistedIBSchema getSchema() {
-      return schema;
-    }
-
-    public Path getWritten() {
-      return written;
-    }
-  }
 }

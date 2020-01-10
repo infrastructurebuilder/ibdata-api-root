@@ -21,8 +21,12 @@ import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;;
@@ -40,7 +44,6 @@ public class DefaultIBDataSetIdentifier extends DataSet {
   private static final long serialVersionUID = -7357725622978715720L;
   private List<DefaultIBDataStreamIdentifierConfigBean> dataStreams = new ArrayList<>();
   private List<DefaultIBDataSchemaIngestionConfig> dataSchemas = new ArrayList<>();
-
 
   @SuppressWarnings("unused") // Used to type the inbound setter
   private XmlPlexusConfiguration metadata;
@@ -63,7 +66,8 @@ public class DefaultIBDataSetIdentifier extends DataSet {
 
   @Override
   public void setSchemas(List<DataSchema> schemas) {
-    setDataSchemas(schemas.stream().map(DefaultIBDataSchemaIngestionConfig::new).collect(toList()));
+    throw new IBDataException("Illegal to set a schema here");
+//    setDataSchemas(schemas.stream().map(DefaultIBDataSchemaIngestionConfig::new).collect(toList()));
   }
 
   @Override
@@ -72,12 +76,10 @@ public class DefaultIBDataSetIdentifier extends DataSet {
   }
 
   /*
-
-  @Override
-  public List<DataSchema> getSchemas() {
-    return getDataSchemas().stream().collect(toList());
-  }
-  */
+   *
+   * @Override public List<DataSchema> getSchemas() { return
+   * getDataSchemas().stream().collect(toList()); }
+   */
 
   public List<DefaultIBDataStreamIdentifierConfigBean> getDataStreams() {
     return dataStreams.stream().collect(toList());
@@ -117,10 +119,10 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     ds.setMetadata(getMetadata());
     ds.setPath(getPath().orElse(null));
     ds.setCreationDate(getCreationDate());
-    ds.setStreams(
-        getDataStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList()));
-    ds.setSchemas(
-        getDataSchemas().stream().map(DefaultIBDataSchemaIngestionConfig::new).collect(toList()));
+    ds.setStreams(getDataStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList()));
+    ds.setSchemas(null)
+//        ds.setSchemas(getDataSchemas().stream().map(DefaultIBDataSchemaIngestionConfig::new).collect(toList()))
+    ;
     return ds;
   }
 
@@ -132,7 +134,7 @@ public class DefaultIBDataSetIdentifier extends DataSet {
   public String toString() {
     final int maxLen = 10;
     StringBuilder builder = new StringBuilder();
-    builder.append("DefaultIBDataSetIdentifier [ ").append("id = " ).append(getUuid()).append(", dataStreams=")
+    builder.append("DefaultIBDataSetIdentifier [ ").append("id = ").append(getUuid()).append(", dataStreams=")
         .append(dataStreams != null ? dataStreams.subList(0, Math.min(dataStreams.size(), maxLen)) : null)
         .append(", dataSchemas=")
         .append(dataSchemas != null ? dataSchemas.subList(0, Math.min(dataSchemas.size(), maxLen)) : null)
@@ -140,5 +142,8 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     return builder.toString();
   }
 
+  public Map<String, IBDataSchemaIngestionConfig> asSchemaIngestion() {
+    return dataSchemas.stream().collect(Collectors.toMap(k -> k.getTemporaryId(), Function.identity()));
+  }
 
 }
