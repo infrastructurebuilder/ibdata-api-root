@@ -15,13 +15,14 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Collections.emptyList;
+import static java.util.Optional.empty;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +56,7 @@ public class IBDataTransformerTest {
         return new IBDataTransformationResult() {
           @Override
           public Optional<IBDataSet> get() {
-            return Optional.empty();
+            return empty();
           }
 
           @Override
@@ -65,7 +66,7 @@ public class IBDataTransformerTest {
 
           @Override
           public List<IBDataTransformationError> getErrors() {
-            return Collections.emptyList();
+            return emptyList();
           }
         };
       }
@@ -102,17 +103,17 @@ public class IBDataTransformerTest {
 
       @Override
       public Optional<String> getUrl() {
-        return Optional.empty();
+        return empty();
       }
 
       @Override
       public Optional<String> getName() {
-        return Optional.empty();
+        return empty();
       }
 
       @Override
       public Optional<String> getDescription() {
-        return Optional.empty();
+        return empty();
       }
 
       @Override
@@ -158,32 +159,17 @@ public class IBDataTransformerTest {
 
       @Override
       public Optional<UUID> getReferencedSchemaId() {
-        return Optional.empty();
-      }
-
-      @Override
-      public Optional<IBDataProvenance> getProvenance() {
-        return Optional.empty();
+        return empty();
       }
 
       @Override
       public Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata() {
-        return Optional.empty();
+        return empty();
       }
 
       @Override
       public IBDataStream relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e) {
         return null;
-      }
-
-      @Override
-      public Optional<IBDataStructuredDataMetadata> getIBDataStructuredDataMetadata() {
-        return Optional.empty();
-      }
-
-      @Override
-      public Optional<String> getTemporaryId() {
-        return Optional.empty();
       }
 
     }));

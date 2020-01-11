@@ -37,13 +37,13 @@ public class TransformerTest {
 
   private Transformer t, t1;
   private Transformer t2;
-  private Transformation transformation;
+  private IBTransformation transformation;
   private DataStreamMatcher dsm;
   private List<DataStreamMatcher> sources;
 
   @Before
   public void setUp() throws Exception {
-    transformation = new Transformation();
+    transformation = new FakeIBTransformation();
     t = new Transformer();
     t2 = new Transformer(t, transformation);
     dsm = new DataStreamMatcher();

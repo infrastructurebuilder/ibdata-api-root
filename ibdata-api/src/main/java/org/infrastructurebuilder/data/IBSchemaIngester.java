@@ -17,9 +17,8 @@ package org.infrastructurebuilder.data;
 
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.function.Supplier;
 
-import org.infrastructurebuilder.data.model.PersistedIBSchema;
+import org.infrastructurebuilder.data.ingest.IBDataSchemaIngestionConfig;
 import org.infrastructurebuilder.util.LoggerEnabled;
 import org.infrastructurebuilder.util.config.ConfigMap;
 
@@ -29,9 +28,9 @@ import org.infrastructurebuilder.util.config.ConfigMap;
  * @author mykel.alvis
  *
  */
-public interface IBDataSchemaIngester extends LoggerEnabled {
+public interface IBSchemaIngester extends LoggerEnabled {
 
-  IBDataSchemaIngester configure(ConfigMap map);
+  IBSchemaIngester configure(ConfigMap map);
   /**
    *
    * Reads a source and returns a calculated set of attributes.  Since the result of any write action is
@@ -42,5 +41,5 @@ public interface IBDataSchemaIngester extends LoggerEnabled {
    * @param dss
    * @return
    */
-  SortedSet<Supplier<PersistedIBSchema>> ingest(SortedMap<String,IBDataSchemaSupplier> dss);
+  SortedSet<IBSchemaSupplier> ingest(SortedMap<String, IBDataSchemaIngestionConfig> dss);
 }

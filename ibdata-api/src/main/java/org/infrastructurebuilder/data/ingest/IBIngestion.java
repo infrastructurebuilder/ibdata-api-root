@@ -15,15 +15,23 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import java.nio.file.Path;
-import java.util.SortedMap;
+import org.infrastructurebuilder.data.DataSetEnabled;
+import org.infrastructurebuilder.util.config.ConfigMap;
 
-import org.infrastructurebuilder.data.IBDataSchemaSupplier;
+public interface IBIngestion extends DataSetEnabled {
 
-public interface IBDataSchemaSupplierFactory {
+  String getId();
 
-  SortedMap<String, IBDataSchemaSupplier> mapIngestionToSuppliers(Ingestion i);
+  DefaultIBDataSetIdentifier getDataSet();
 
-  Path getTargetPath();
+  String getIngester();
+
+  String getSchemaIngester();
+
+  String getFinalizer();
+
+  ConfigMap getFinalizerConfig();
+
+  boolean isExpand(String tempId);
 
 }

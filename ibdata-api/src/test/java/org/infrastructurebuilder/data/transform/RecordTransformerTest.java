@@ -91,7 +91,7 @@ public class RecordTransformerTest {
   public void testCopyTransformation() {
     r.setRecords(records);
     assertNull(r.getTransformation());
-    Transformation t = new Transformation();
+    IBTransformation t = new FakeIBTransformation();
     RecordTransformer q = r.copy(t);
     assertEquals(t, q.getTransformation());
   }

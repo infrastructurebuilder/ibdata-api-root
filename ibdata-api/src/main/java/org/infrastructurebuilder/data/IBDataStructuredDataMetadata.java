@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toMap;
 import static org.infrastructurebuilder.util.artifacts.ChecksumEnabled.safeMapUUID;
 
@@ -36,5 +37,25 @@ public interface IBDataStructuredDataMetadata {
   default Map<Integer, ? extends IBDataStructuredDataFieldMetadata> getFieldMap() {
     return getFields().stream().collect(toMap(k -> k.getIndex(), Function.identity()));
   }
+
+  /**
+   * Get the {@link IBDataStream} that this metadata belongs to
+   * <p>
+   * Override in implementations
+   *
+   * @return
+   */
+  default Optional<IBDataStream> getParent() {
+    return empty();
+  }
+
+  /**
+   * Set the datastream that is the parent.
+   * <p>
+   * Don't judge me.  This was the easiest way to get the values here.
+   *
+   * @param parent
+   */
+  void setParent(IBDataStream parent);
 
 }

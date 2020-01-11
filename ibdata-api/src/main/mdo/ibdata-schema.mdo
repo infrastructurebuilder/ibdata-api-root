@@ -520,22 +520,28 @@
           <code>
 <![CDATA[
 
+ /**
+   * Hash code depends solely on index
+   */
  @Override
   public int hashCode() {
     return java.util.Objects.hash(
           index
-        , name
-        , description
-        , type
-        , nullable
-        , enumerations
-        , versionAppeared
-        , deprecated
-        , versionDeprecated
-        , metadata
+//        , name
+//        , description
+//        , type
+//        , nullable
+//        , enumerations
+//        , versionAppeared
+//        , deprecated
+//        , versionDeprecated
+//        , metadata
         );
   }
 
+ /**
+   * equals depends solely on index
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
@@ -545,15 +551,15 @@
     SchemaField other = (SchemaField) obj;
     return
           index == other.index
-       && java.util.Objects.equals(name, other.name)
-       && java.util.Objects.equals(description, other.description)
-       && java.util.Objects.equals(type, other.type)
-       && nullable == other.nullable
-       && java.util.Objects.equals(enumerations, other.enumerations)
-       && java.util.Objects.equals(versionAppeared, other.versionAppeared)
-       && deprecated == other.deprecated
-       && java.util.Objects.equals(versionDeprecated, other.versionDeprecated)
-       && java.util.Objects.equals(metadata, other.metadata)
+//       && java.util.Objects.equals(name, other.name)
+//       && java.util.Objects.equals(description, other.description)
+//       && java.util.Objects.equals(type, other.type)
+//       && nullable == other.nullable
+//       && java.util.Objects.equals(enumerations, other.enumerations)
+//       && java.util.Objects.equals(versionAppeared, other.versionAppeared)
+//       && deprecated == other.deprecated
+//       && java.util.Objects.equals(versionDeprecated, other.versionDeprecated)
+//       && java.util.Objects.equals(metadata, other.metadata)
         ;
   }
 ]]>
@@ -706,6 +712,7 @@
           <version>1.0.0+</version>
           <required>true</required>
           <description>Schema technology identifier (component hint)</description>
+          <defaultValue>default</defaultValue>
           <type>String</type>
         </field>
         <field>
@@ -713,6 +720,7 @@
           <version>1.0.0+</version>
           <required>true</required>
           <description>Technology underlying the schema management</description>
+          <defaultValue>ibdata</defaultValue>
           <type>String</type>
         </field>
         <field java.getter="false">
@@ -720,6 +728,7 @@
           <version>1.0.0+</version>
           <required>false</required>
           <description>Identifier for the underlying provider's artifact</description>
+          <defaultValue>:::</defaultValue>
           <type>String</type>
         </field>
       </fields>

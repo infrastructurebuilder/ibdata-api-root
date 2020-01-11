@@ -16,11 +16,11 @@
 package org.infrastructurebuilder.data.transform;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBDataConstants.MAP_SPLITTER;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.config.ConfigMap;
@@ -46,7 +46,7 @@ public class Record {
   }
 
   public String getHint() {
-    return Optional.ofNullable(hint).orElse(id);
+    return ofNullable(hint).orElse(id);
   }
 
   public ConfigMap getConfig() {

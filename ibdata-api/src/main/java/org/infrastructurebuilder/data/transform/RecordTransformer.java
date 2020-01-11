@@ -37,7 +37,7 @@ public class RecordTransformer extends Transformer {
     this(null, null);
   }
 
-  protected RecordTransformer(RecordTransformer recordTransformer, Transformation t) {
+  protected RecordTransformer(RecordTransformer recordTransformer, IBTransformation t) {
     super(recordTransformer, t);
     if (recordTransformer != null) {
       this.recordFinalizer = recordTransformer.recordFinalizer;
@@ -83,7 +83,7 @@ public class RecordTransformer extends Transformer {
   }
 
   @Override
-  public RecordTransformer copy(Transformation t) {
+  public RecordTransformer copy(IBTransformation t) {
     return new RecordTransformer(this, t);
   }
 

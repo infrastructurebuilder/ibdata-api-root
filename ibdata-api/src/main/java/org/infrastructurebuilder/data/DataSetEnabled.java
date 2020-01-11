@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.infrastructurebuilder.data.ingest.IBDataSchemaIngestionConfig;
 import org.infrastructurebuilder.data.model.DataSet;
@@ -24,6 +24,6 @@ public interface DataSetEnabled {
 
   DataSet asDataSet();
 
-  Map<String, IBDataSchemaIngestionConfig> asSchemaIngestion();
+  SortedMap<String, IBDataSchemaIngestionConfig> asSchemaIngestion();
 
 }

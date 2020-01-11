@@ -17,28 +17,34 @@ package org.infrastructurebuilder.data;
 
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 
 /**
- * Supplies a new instance of an InputStream every time get() is called
+ * Contract is Provide a new instance of an InputStream every time get() is
+ * called.
+ * <p>
+ * IBDataStream as an interface is overloaded with mechanisms for persistence.
+ * Ultimately, it takes on the task of producing an auto-closeable
+ * {@link InputStream}, but it also provides all the metadata that is specified
+ * in {@IBDataStreamIdentifier}
+ *
  * @author mykel.alvis
  *
  */
 public interface IBDataStream extends Supplier<InputStream>, AutoCloseable, IBDataStreamIdentifier {
 
   /**
-   * Relocate the local stream to some new parent location according to data checksum.  How this happens
-   * depends mostly on how the stream is stored in the given instance of the DSS.
+   * Relocate the local stream to some new parent location according to data
+   * checksum.
+   * <p>
+   * How this happens depends on how the stream is/was stored in the given
+   * instance of the {@link IBDataStreamSupplier}.
+   *
    * @param newWorkingPath
    * @return a new or updated IBDataStreamSupplier
    */
   IBDataStream relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e);
-
-  Optional<IBDataStructuredDataMetadata> getIBDataStructuredDataMetadata();
-
-
 
 }

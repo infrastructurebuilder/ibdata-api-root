@@ -117,7 +117,7 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
 
   @Override
   public int hashCode() {
-    return Objects.hash(description, files, inline, metadata, name, schemaQuery, temporaryId);
+    return Objects.hash(description, files, inline, getMetadata(), name, schemaQuery, temporaryId);
   }
 
   @Override
@@ -135,12 +135,14 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder();
-    builder.append("DefaultIBDataSchemaIngestionConfig [temporaryId=").append(temporaryId).append(", name=")
-        .append(name).append(", description=").append(description).append(", metadata=").append(metadata)
-        .append(", inline=").append(inline).append(", files=").append(files).append(", schemaQuery=")
-        .append(schemaQuery).append("]");
-    return builder.toString();
+    StringBuilder builder = toStringSupplier(this.getClass()).get();
+    return builder
+        // Add files?  Maybe?
+        .append(", files=").append(files)
+        // final closer
+        .append("]")
+        //
+        .toString();
   }
 
 

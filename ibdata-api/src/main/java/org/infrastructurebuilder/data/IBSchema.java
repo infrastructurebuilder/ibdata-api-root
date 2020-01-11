@@ -41,11 +41,13 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
   UUID getUuid();
 
   /**
-   * Fetch the temporaryId that this scheme referenced at ingestion.
-   * This is only available during ingestion, as it is not persisted.
+   * Fetch the temporaryId that this scheme referenced at ingestion. This is only
+   * available during ingestion, as it is not persisted.
+   *
    * @return
    */
   Optional<String> getTemporaryId();
+
   /**
    * Get creation date of this stream, required.
    *
@@ -61,7 +63,7 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
   Optional<String> getDescription(); // -- String getDescription()
 
   /**
-   * get schema fields.
+   * get schema fields. The sorting must be via {@code IBField#getIndex()}
    *
    * @return List
    */
@@ -89,6 +91,10 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
    */
   String getMimeType();
 
+  default Optional<IBField> getFieldForIndex(int index) {
+    return getSchemaFields().parallelStream().filter(a -> a.getIndex() == index).findFirst();
+  }
+
   @Override
   default int compareTo(IBSchema o) {
     return asChecksum().compareTo(o.asChecksum());
@@ -96,9 +102,8 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
 
   @Override
   default Checksum asChecksum() {
-    Map<String, String> map = getSchemaResourcesMappedFromName().entrySet().stream()
-        .collect(Collectors.toMap(k -> k.getKey(),
-            v -> v.getValue().stream().map(UUID::toString).sorted().collect(joining("|"))));
+    Map<String, String> map = getSchemaResourcesMappedFromName().entrySet().stream().collect(Collectors
+        .toMap(k -> k.getKey(), v -> v.getValue().stream().map(UUID::toString).sorted().collect(joining("|"))));
     return ChecksumBuilder.newInstance() //
         .addString(getName()) // name
         .addString(getDescription()) // desc

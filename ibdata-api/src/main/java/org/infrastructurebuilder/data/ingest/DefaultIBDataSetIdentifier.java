@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
@@ -22,6 +23,8 @@ import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,15 +62,16 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     this.dataStreams = i.getDataStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList());
   }
 
+  /**
+   * Inbound DataStreams may set the "referencedSchema" to be the temporaryId of
+   * an inbound schema. This will all be cleared up during the ingestion
+   * finalization. As that value is not a UUID, it must be obtained using
+   * {@link DataStream#getReferencedSchema()} and not
+   * {@link DataStream#getReferencedSchemaId()}
+   */
   @Override
   public void setStreams(List<DataStream> streams) {
     setDataStreams(streams.stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList()));
-  }
-
-  @Override
-  public void setSchemas(List<DataSchema> schemas) {
-    throw new IBDataException("Illegal to set a schema here");
-//    setDataSchemas(schemas.stream().map(DefaultIBDataSchemaIngestionConfig::new).collect(toList()));
   }
 
   @Override
@@ -75,14 +79,16 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     return getDataStreams().stream().collect(toList());
   }
 
-  /*
-   *
-   * @Override public List<DataSchema> getSchemas() { return
-   * getDataSchemas().stream().collect(toList()); }
+  /**
+   * Not viable during ingestion at present time
    */
+  @Override
+  public List<DataSchema> getSchemas() {
+    return emptyList();
+  }
 
   public List<DefaultIBDataStreamIdentifierConfigBean> getDataStreams() {
-    return dataStreams.stream().collect(toList());
+    return dataStreams.stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList());
   }
 
   public List<DefaultIBDataSchemaIngestionConfig> getDataSchemas() {
@@ -119,8 +125,8 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     ds.setMetadata(getMetadata());
     ds.setPath(getPath().orElse(null));
     ds.setCreationDate(getCreationDate());
-    ds.setStreams(getDataStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList()));
-    ds.setSchemas(null)
+    ds.setStreams(getStreams());
+    ds.setSchemas(getSchemas());
 //        ds.setSchemas(getDataSchemas().stream().map(DefaultIBDataSchemaIngestionConfig::new).collect(toList()))
     ;
     return ds;
@@ -142,8 +148,11 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     return builder.toString();
   }
 
-  public Map<String, IBDataSchemaIngestionConfig> asSchemaIngestion() {
-    return dataSchemas.stream().collect(Collectors.toMap(k -> k.getTemporaryId(), Function.identity()));
+  public SortedMap<String, IBDataSchemaIngestionConfig> asSchemaIngestion() {
+    return dataSchemas.stream()
+        .collect(Collectors.toMap(k -> k.getTemporaryId(), Function.identity(), (left, right) -> {
+          throw new RuntimeException(String.format("Duplicate key for %s and %s", left, right));
+        }, TreeMap::new));
   }
 
 }

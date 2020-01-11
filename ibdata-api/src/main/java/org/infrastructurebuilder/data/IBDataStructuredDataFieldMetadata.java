@@ -40,43 +40,46 @@ import java.util.Optional;
 public interface IBDataStructuredDataFieldMetadata {
 
   /**
-   * Required. 0-based index of this field
+   * Required. 0-based index of this field mapped to SchemaField
    *
    * @return
    */
   int getIndex();
 
-  /**
-   * If we have a name, return it
-   *
-   * @return
-   */
-  Optional<String> getName();
-
-  /**
-   * Returns the string representations of enumeration values (the "name()"s).
-   *
-   * @return
-   */
-  List<String> getEnumerations();
-
-  default boolean isEnumeration() {
-    return ofNullable(getEnumerations()).orElse(emptyList()).size() > 0;
+  default Optional<IBField> getSchemaField() {
+    return getSchema().flatMap(s -> s.getFieldForIndex(getIndex()));
   }
+
+  default Optional<IBSchema> getSchema() {
+    return getParent().flatMap(IBDataStructuredDataMetadata::getParent).flatMap(IBDataStream::getSchema);
+  }
+
+  /**
+   * Get the {@link IBDataStructuredDataMetadata} that holds this field, if
+   * available
+   * <p>
+   * Override in implementations
+   *
+   * @return
+   */
+  default Optional<IBDataStructuredDataMetadata> getParent() {
+    return empty();
+  }
+
+  void setParent(IBDataStructuredDataMetadata parent);
 
   default Optional<BigInteger> getMaxIntValue() {
     try {
-      return ofNullable(getMaxAsStringValue()).map(BigInteger::new);
+      return getMax().map(BigInteger::new);
     } catch (NumberFormatException e) {
       return empty();
     }
   }
 
-
   default Optional<BigInteger> getMinIntValue() {
     try {
 
-      return ofNullable(getMinAsStringValue()).map(BigInteger::new);
+      return getMin().map(BigInteger::new);
     } catch (NumberFormatException e) {
       return empty();
     }
@@ -84,7 +87,7 @@ public interface IBDataStructuredDataFieldMetadata {
 
   default Optional<BigDecimal> getMaxRealValue() {
     try {
-      return ofNullable(getMaxAsStringValue()).map(BigDecimal::new);
+      return getMax().map(BigDecimal::new);
     } catch (NumberFormatException e) {
       return empty();
     }
@@ -92,29 +95,24 @@ public interface IBDataStructuredDataFieldMetadata {
 
   default Optional<BigDecimal> getMinRealValue() {
     try {
-      return ofNullable(getMinAsStringValue()).map(BigDecimal::new);
+      return getMin().map(BigDecimal::new);
     } catch (NumberFormatException e) {
       return empty();
     }
   }
 
-
-
-  default Optional<Integer> getUniqueValuesCount() {
-    return empty();
-  }
-
   /**
-   * Is this field nullable
+   * Is this field nulled, different from the schema field
+   * {@code IBField#isNullable()}
    *
-   * @return returns empty if unknown, or Optional<True> if nullable
+   * @return returns empty if unknown, or Optional<True> if this field contains a
+   *         null
    */
-  Optional<Boolean> isNullable();
+  Optional<Boolean> isNulled();
 
-  String getMinAsStringValue();
+  Optional<String> getMin();
 
-  String getMaxAsStringValue();
+  Optional<String> getMax();
 
-  Optional<IBDataStructuredDataMetadataType> getType();
-
+  Optional<Integer> getUniqueValuesCount();
 }

@@ -49,6 +49,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -56,7 +57,6 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
-import org.infrastructurebuilder.data.model.PersistedIBSchema;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
 import org.infrastructurebuilder.util.IBUtils;
@@ -152,7 +152,7 @@ public class IBDataModelUtils {
    * @throws IOException
    */
   public final static IBChecksumPathType forceToFinalizedPath(Date creationDate, Path workingPath, DataSet finalData,
-      List<IBDataStreamSupplier> ibdssList, List<Supplier<PersistedIBSchema>> schemaSuppliers, TypeToExtensionMapper t2e,
+      List<IBDataStreamSupplier> ibdssList, List<IBSchemaSupplier> schemaSuppliers, TypeToExtensionMapper t2e,
       Optional<String> basedir) throws IOException {
 
     // This archive is about to be created
@@ -162,14 +162,25 @@ public class IBDataModelUtils {
         .setPath(cet.withReturningTranslation(() -> newWorkingPath.toAbsolutePath().toUri().toURL().toExternalForm()));
     // We're moving everything to a new path
     Files.createDirectories(newWorkingPath);
-    // TODO Set the schemas here!
-    // Hint:  When you wrote the schema the first time, the UUID for that stream was computable.  Now that the stream has been
+    // Set the schemas here!
+    // Hint: When you wrote the schema the first time, the UUID for that stream was
+    // computable. Now that the stream has been
     // moved, you're still OK
-    List<IBSchema> finalizedDataSchema =
+    List<IBSchemaDAO> finalizedDataSchemaList =
         // List all the schema
         schemaSuppliers.stream()
-        .map(Supplier::get)
-        .collect(toList());
+            // Get the schema, if you need it for some reason
+            .map(IBSchemaSupplier::get)
+            // to a (unique) list
+            .collect(toList());
+    List<Map<String, IBDataStreamSupplier>> finalizedSchemaDataStreams = //
+        // All finalized schema
+        finalizedDataSchemaList.stream()
+            //
+            .map(IBSchemaDAO::get)
+            //
+            .collect(toList());
+
     List<DataStream> finalizedDataStreams =
         // The list of streams
         ibdssList.stream()

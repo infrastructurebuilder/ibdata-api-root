@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.ingest;
+package org.infrastructurebuilder.data;
 
-import java.nio.file.Path;
+import static java.util.Optional.empty;
+import static org.infrastructurebuilder.IBConstants.DEFAULT;
 
-import org.infrastructurebuilder.data.IBDataSchemaSupplier;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 
-public interface IBDataSchemaSupplierMapper {
+public interface IBSchemaDAO extends Supplier<Map<String, IBDataStreamSupplier>> {
 
-  boolean respondsTo(IBDataSchemaIngestionConfig v);
+  IBSchema getSchema();
 
-  IBDataSchemaSupplier getSupplierFor(String temporaryId, IBDataSchemaIngestionConfig v);
+  default public String getPrimaryAssetName() {
+    return DEFAULT;
+  }
 
-  Path getWorkingPath();
-
-//  List<String> getHeaders();
+  default public Optional<String> getOriginalAssetName() {
+    return empty();
+  }
 
 }

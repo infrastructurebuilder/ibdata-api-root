@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.infrastructurebuilder.data.model.DataStreamStructuredMetadata;
+import org.infrastructurebuilder.data.model.StructuredFieldMetadata;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,34 +39,22 @@ public class IBDataStructuredDataMetadataTest {
   public static void tearDownAfterClass() throws Exception {
   }
 
-  private IBDataStructuredDataMetadata l;
-  private List<IBDataStructuredDataFieldMetadata> fields = new ArrayList<IBDataStructuredDataFieldMetadata>();
+  private DataStreamStructuredMetadata l;
+  private List<StructuredFieldMetadata> fields = new ArrayList<StructuredFieldMetadata>();
   private String i;
   private String k = UUID.randomUUID().toString();
 
   @Before
   public void setUp() throws Exception {
     i = null;
-    l = new IBDataStructuredDataMetadata() {
-      @Override
-      public String getUuid() {
-        return i;
-      }
-
-      @Override
-      public List<? extends IBDataStructuredDataFieldMetadata> getFields() {
-        return fields;
-      }
-
-    };
+    l = new DataStreamStructuredMetadata();
+    l.setFields(fields);
   }
 
   @Test
   public void test() {
     assertEquals(Optional.empty(), l.getId());
     i = k;
-    assertEquals(k, l.getId().get().toString());
-    assertEquals(0, l.getFieldMap().size());
   }
 
 }

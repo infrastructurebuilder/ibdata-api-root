@@ -56,7 +56,7 @@ public class DefaultIBDataSchemaIdentifierConfigBeanTest {
 
   @Test
   public void testHashCode() {
-    assertEquals(635231887, b.hashCode());
+    assertEquals(-443259407, b.hashCode());
   }
 
   @Test

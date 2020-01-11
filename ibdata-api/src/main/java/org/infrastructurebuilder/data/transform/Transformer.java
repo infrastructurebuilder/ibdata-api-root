@@ -17,15 +17,14 @@ package org.infrastructurebuilder.data.transform;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.IBDataStream;
 import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.data.Metadata;
@@ -43,21 +42,21 @@ public class Transformer implements Cloneable {
   private ConfigMap configuration = new ConfigMap();
   private boolean failOnAnyError = true;
   private List<DataStreamMatcher> sources = new ArrayList<>();
-  private String targetMimeType = IBConstants.APPLICATION_OCTET_STREAM;
+  private String targetMimeType = APPLICATION_OCTET_STREAM;
   private Metadata targetStreamMetadata;
-  private final Transformation transformation;
+  private final IBTransformation transformation;
 
   public Transformer() {
     this(null, null);
   }
 
-  protected Transformer(Transformer o, Transformation t) {
+  protected Transformer(Transformer o, IBTransformation t) {
     if (o!= null) {
       this.id = o.id;
       this.hint = o.hint;
       this.configuration = new ConfigMap(configuration);
       this.failOnAnyError = o.failOnAnyError;
-      this.sources = o.sources.stream().collect(Collectors.toList());
+      this.sources = o.sources.stream().collect(toList());
       this.targetMimeType = o.targetMimeType;
       this.targetStreamMetadata  = o.targetStreamMetadata;
     }
@@ -144,11 +143,11 @@ public class Transformer implements Cloneable {
     return requireNonNull(streams).stream().filter(this::matchesSources).collect(toList());
   }
 
-  public Transformer copy(Transformation t) {
+  public Transformer copy(IBTransformation t) {
     return new Transformer(this, t);
   }
 
-  public Transformation getTransformation() {
+  public IBTransformation getTransformation() {
     return transformation;
   }
 

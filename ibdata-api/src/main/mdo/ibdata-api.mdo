@@ -748,7 +748,8 @@
       </codeSegments>
     </class>
 
-    <class xml.tagName="structuredFieldMetadata" java.clone="deep">
+    <class xml.tagName="structuredFieldMetadata"
+      java.clone.hook="mutatingCloneHook" java.clone="deep">
       <name>StructuredFieldMetadata</name>
       <version>1.0.0+</version>
       <interfaces>
@@ -766,30 +767,6 @@
           <defaultValue>-1</defaultValue>
         </field>
         <field java.getter="false">
-          <name>name</name>
-          <version>1.0.0+</version>
-          <required>false</required>
-          <description>Optional but recommended field name</description>
-          <type>String</type>
-        </field>
-        <field java.getter="false">
-          <name>metadataType</name>
-          <version>1.0.0+</version>
-          <required>false</required>
-          <description>"name()" of an enumerated type from IBDataStructuredDataMetadataType. Not required, but strongly encouraged.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>enumerations</name>
-          <version>1.0.0+</version>
-          <required>false</required>
-          <description>Shows the list of (ordinal) enums that this field posseses.  If not present, this is not assumed to not be an enum</description>
-          <association>
-            <type>String</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field java.getter="false">
           <name>max</name>
           <version>1.0.0+</version>
           <required>false</required>
@@ -804,10 +781,17 @@
           <type>String</type>
         </field>
         <field java.getter="false">
-          <name>nullable</name>
+          <name>nulled</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>Describes if the field has a null value in it.  The only "true" answer is the string 'true'</description>
+          <description>Describes if the field contains a null value.</description>
+          <type>String</type>
+        </field>
+        <field java.getter="false">
+          <name>uniqueValuesCount</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes the number of unique value in the stream data</description>
           <type>String</type>
         </field>
       </fields>
@@ -825,13 +809,13 @@
           <code>
             <![CDATA[
     public StructuredFieldMetadata(org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata o) {
+      this();
       this.index = o.getIndex();
-      this.name = o.getName().orElse(null);
-      this.metadataType = o.getType().map(a -> a.name()).orElse(null);
-      this.enumerations = new java.util.ArrayList<>(o.getEnumerations().stream().collect(java.util.stream.Collectors.toList()));
-      this.max = o.getMaxAsStringValue();
-      this.min = o.getMinAsStringValue();
-      this.nullable = java.util.Optional.ofNullable(o.isNullable()).map(a -> a.toString()).orElse(null);
+      this.max = o.getMax().orElse(null);
+      this.min = o.getMin().orElse(null);
+      this.nulled = java.util.Optional.ofNullable(o.isNulled()).map(a -> a.toString()).orElse(null);
+      this.uniqueValuesCount = o.getUniqueValuesCount().map(i -> i.toString()).orElse(null);
+      this.parent = o.getParent().orElse(null);
     }
     ]]>
           </code>
@@ -840,48 +824,61 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-    public java.util.Optional<String> getName() {
-      return java.util.Optional.ofNullable(this.name);
+    public void mutatingCloneHook(org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata o) {
+      if (o instanceof org.infrastructurebuilder.data.model.StructuredFieldMetadata)
+      {
+        org.infrastructurebuilder.data.model.StructuredFieldMetadata t = (org.infrastructurebuilder.data.model.StructuredFieldMetadata)o;
+        t.index = this.getIndex();
+        t.max = this.getMax().orElse(null);
+        t.min = this.getMin().orElse(null);
+        t.nulled = java.util.Optional.ofNullable(this.isNulled()).map(a -> a.toString()).orElse(null);
+        t.uniqueValuesCount = this.getUniqueValuesCount().map(i -> i.toString()).orElse(null);
+        t.parent = this.getParent().orElse(null);
+      }
     }
     ]]>
           </code>
         </codeSegment>
-
         <codeSegment>
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-    public void setType(org.infrastructurebuilder.data.IBDataStructuredDataMetadataType t) {
-        this.setMetadataType(java.util.Objects.requireNonNull(t, "IBDataStructuredDataMetadataType is null").name());
+    private org.infrastructurebuilder.data.IBDataStructuredDataMetadata parent = null;
+    @Override
+    public java.util.Optional<org.infrastructurebuilder.data.IBDataStructuredDataMetadata> getParent() {
+      return java.util.Optional.ofNullable(this.parent);
+    }
+    @Override
+    public void setParent(org.infrastructurebuilder.data.IBDataStructuredDataMetadata parent) {
+      this.parent = parent;
+    }
+    ]]>
+
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    public java.util.Optional<String> getMax() {
+        return java.util.Optional.ofNullable(this.max);
     }
 
-    public java.util.Optional<org.infrastructurebuilder.data.IBDataStructuredDataMetadataType> getType() {
-        return java.util.Optional.ofNullable(this.metadataType).map(org.infrastructurebuilder.data.IBDataStructuredDataMetadataType::valueOf);
-    }
-
-    public String getMaxAsStringValue() {
-        return this.max;
-    }
-
-    public String getMinAsStringValue() {
-        return this.min;
+    public java.util.Optional<String> getMin() {
+        return java.util.Optional.ofNullable(this.min);
     }
 
     public java.util.Optional<Integer> getUniqueValuesCount() {
-      return java.util.Optional.empty();
+      return java.util.Optional.ofNullable(this.uniqueValuesCount).map(Integer::parseInt);
     }
 
-    public java.util.Optional<Boolean> isNullable() {
-      return java.util.Optional.ofNullable(this.nullable).map(f -> "true".equalsIgnoreCase(f));
+    public java.util.Optional<Boolean> isNulled() {
+      return java.util.Optional.ofNullable(this.nulled).map(f -> "true".equalsIgnoreCase(f));
     }
     ]]>
 
           </code>
         </codeSegment>
-
-        <!-- <codeSegment> <version>1.0.0+</version> <code> <![CDATA[ //
-          Clone hooks private void mutatingDataStreamStructuredMetadataCloneHook(DataStreamStructuredMetadata
-          s) { } ]]> </code> </codeSegment> -->
       </codeSegments>
     </class>
 
@@ -933,7 +930,7 @@
             // Copy constructor
   public DataStreamStructuredMetadata(org.infrastructurebuilder.data.IBDataStructuredDataMetadata o) {
     this.uuid = o.getUuid();
-    this.fields = o.getFields().stream().map(StructuredFieldMetadata::new).collect(java.util.stream.Collectors.toList());
+    this.mutatingDataStreamStructuredMetadataCloneHook(o);
   }
             ]]>
           </code>
@@ -944,7 +941,9 @@
             <![CDATA[
             // Clone hooks
 
-  public void mutatingDataStreamStructuredMetadataCloneHook(DataStreamStructuredMetadata s) {
+  public void mutatingDataStreamStructuredMetadataCloneHook(org.infrastructurebuilder.data.IBDataStructuredDataMetadata s) {
+    this.fields = s.getFields().stream().map(StructuredFieldMetadata::new).collect(java.util.stream.Collectors.toList());
+    this.parent = s.getParent().orElse(null);
   }
 
   ]]>
@@ -954,9 +953,24 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
+    private org.infrastructurebuilder.data.IBDataStream parent = null;
+    @Override
+    public java.util.Optional<org.infrastructurebuilder.data.IBDataStream> getParent() {
+      return java.util.Optional.ofNullable(this.parent);
+    }
+    public void setParent(org.infrastructurebuilder.data.IBDataStream parent) {
+      this.parent = parent;
+    }
+    ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
     @Override
     public int hashCode() {
-      return java.util.Objects.hash(fields, uuid);
+      return java.util.Objects.hash(fields, uuid, parent);
     }
 
     @Override
@@ -968,7 +982,10 @@
       if (getClass() != obj.getClass())
         return false;
       DataStreamStructuredMetadata other = (DataStreamStructuredMetadata) obj;
-      return java.util.Objects.equals(fields, other.fields) && java.util.Objects.equals(uuid, other.uuid);
+      return java.util.Objects.equals(fields, other.fields)
+        && java.util.Objects.equals(uuid, other.uuid)
+        && java.util.Objects.equals(parent, other.parent)
+        ;
     }
 
     ]]>
@@ -1289,6 +1306,7 @@
   */
   public DataSchema() {
     this.setCreationDate(new java.util.Date());
+    this.setSchemaType(new SchemaType());
   }
             ]]>
           </code>
@@ -1352,9 +1370,9 @@
     * DataSchema
     */
   private void mutatingDataSchemaCloneHook(DataSchema s) {
-    org.infrastructurebuilder.util.artifacts.Checksum c = asChecksum();
-    this.setSha512(c.toString());
-    this.setUuid(c.asUUID().get().toString());
+    org.infrastructurebuilder.util.artifacts.Checksum c = s.asChecksum();
+    s.setSha512(c.toString());
+    s.setUuid(c.asUUID().get().toString());
   }
 
   ]]>
@@ -1409,6 +1427,8 @@
 
   @Override
   public  java.util.List<org.infrastructurebuilder.data.IBDataSchemaAsset> getSchemaAssets() {
+    if (this.schemaAssets == null)
+      this.schemaAssets = new java.util.ArrayList<>();
     return this.schemaAssets.stream().collect(java.util.stream.Collectors.toList());
   }
 

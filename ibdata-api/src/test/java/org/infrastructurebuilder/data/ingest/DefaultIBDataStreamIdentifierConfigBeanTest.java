@@ -46,7 +46,6 @@ public class DefaultIBDataStreamIdentifierConfigBeanTest {
   private TestingPathSupplier wps;
   private Properties properties;
   private Path target;
-  private Ingestion config;
   private Map<String, IBDataSourceSupplier> dataSourceSuppliers;
   private DefaultIBDataSetIdentifier ds, dsMulti;
   private ArrayList<DefaultIBDataStreamIdentifierConfigBean> streams;
@@ -124,7 +123,6 @@ public class DefaultIBDataStreamIdentifierConfigBeanTest {
     ds4.setName("somename");
     ds4.setMimeType("application/pdf");
     ds4.setUrl("https://file-examples.com/wp-content/uploads/2017/02/file_example_XLSX_5000.xlsx");
-    config = new Ingestion();
   }
 
   @After

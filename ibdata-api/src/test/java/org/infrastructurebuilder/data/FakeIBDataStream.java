@@ -15,7 +15,11 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 
 import java.io.IOException;
@@ -23,7 +27,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,22 +82,22 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
 
   @Override
   public InputStream get() {
-    InputStream ins = IBDataException.cet
-        .withReturningTranslation(() -> Files.newInputStream(getLocalPath(), StandardOpenOption.READ));
+    InputStream ins = cet.withReturningTranslation(() -> newInputStream(getLocalPath(), READ));
     opened.add(ins);
     return ins;
   }
 
   @Override
   public void close() throws Exception {
-    this.opened.forEach(s -> {
+    this.opened.parallelStream().forEach(s -> {
       try {
         s.close();
+        opened.remove(s);
       } catch (IOException e) {
-        throw new IBDataException("Throw in FakeIBDataStream close().  This should never happen",e);
+        throw new IBDataException("Throw in FakeIBDataStream close().  This should never happen", e);
       }
     });
-    this.opened.clear();
+    opened.clear();
     if (throwMeOnClose.isPresent())
       throw throwMeOnClose.get();
   }
@@ -110,12 +113,12 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
   }
 
   @Override
-  public Optional<IBDataStructuredDataMetadata> getIBDataStructuredDataMetadata() {
-    return Optional.ofNullable(this.smd);
+  public Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata() {
+    return ofNullable(this.smd);
   }
 
   @Override
   public Optional<Path> getPathIfAvailable() {
-    return Optional.of(this.localPath);
+    return of(this.localPath);
   }
 }

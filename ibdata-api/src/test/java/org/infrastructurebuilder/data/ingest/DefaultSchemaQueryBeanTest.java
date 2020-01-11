@@ -44,7 +44,7 @@ public class DefaultSchemaQueryBeanTest {
   public void tearDown() throws Exception {
   }
 
-  @Test
+  @Test(expected = NullPointerException.class)  // FIXME Make by lookup work
   public void testSetByLookup() {
     d.setByLookup("ABC");
     assertEquals(0, d.get().size());

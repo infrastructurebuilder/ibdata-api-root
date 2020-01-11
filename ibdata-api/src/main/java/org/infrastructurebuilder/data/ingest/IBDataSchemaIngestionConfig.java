@@ -18,6 +18,7 @@ package org.infrastructurebuilder.data.ingest;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.Metadata;
 
@@ -37,4 +38,22 @@ public interface IBDataSchemaIngestionConfig {
 
   Optional<List<Path>> getFiles();
 
+  default Supplier<StringBuilder> toStringSupplier(Class<?> thisClazz) {
+    StringBuilder builder = new StringBuilder();
+    builder
+        // Class name
+        .append(thisClazz.getName())
+        // The rest
+        .append(" [") // started
+        .append("temporaryId=").append(getTemporaryId()) // temp
+        .append(", name=").append(getName()) // Name
+        .append(", description=").append(getDescription()) // desc
+        .append(", metadata=").append(getMetadata()) // meta
+        .append(", inline=").append(getInline()) // inline
+        .append(", schemaQuery=").append(getSchemaQuery()) // query
+    ;
+//        .append("]");  // Apply this in the toString method
+    return () -> builder;
+
+  }
 }

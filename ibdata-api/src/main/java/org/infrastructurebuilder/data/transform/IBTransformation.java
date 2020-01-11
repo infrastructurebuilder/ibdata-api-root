@@ -13,24 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.data.transform;
 
-import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.IBUtils.nullSafeStringComparator;
+import java.util.List;
 
-import java.util.SortedSet;
-import java.util.function.Supplier;
+import org.infrastructurebuilder.data.DataSetEnabled;
+import org.infrastructurebuilder.util.config.ConfigMap;
 
-/**
- * @author mykel.alvis
- *
- */
-public interface IBDataSchemaSupplier
-    extends Supplier<SortedSet<IBDataSchemaSource>>, Comparable<IBDataSchemaSupplier> {
+public interface IBTransformation extends DataSetEnabled {
+
+  String DEFAULT = "default";
+  String DEFAULT_TRANSFORM = "default-transform";
+
+  String getName();
+
+  String getDescription();
+
   String getId();
 
-  @Override
-  default int compareTo(IBDataSchemaSupplier o) {
-    return nullSafeStringComparator.compare(getId(), ofNullable(o).map(IBDataSchemaSupplier::getId).orElse(null));
-  }
+  List<Transformer> getTransformers();
+
+  String getFinalizer();
+
+  ConfigMap getFinalizerConfig();
+
+  void forceDefaults(String groupId, String artifactId, String version);
+
 }

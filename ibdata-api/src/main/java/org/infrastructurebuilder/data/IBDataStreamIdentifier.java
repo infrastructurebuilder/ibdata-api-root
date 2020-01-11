@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBDataException.cet;
@@ -26,19 +27,23 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
-import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
-;
+import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;;
 
 /**
- * This is the top-level interface that describes a stream of data (i.e. a
- * single InputStream/File/what have you)
+ * This is the top-level interface that describes an arbitrary stream of data
+ *
+ * An IBDataStreamIdentifier describes a specific set of persisted, or at least
+ * persistable, bytes.
+ *
+ * Numerous generally-optional metadata values are supplied
+ *
+ * @see IBDataStream
  *
  * @author mykel.alvis
  *
@@ -64,40 +69,45 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
   /**
    * The source of this stream. Optional, but HIGHLY important
+   * <p>
+   * This is really a URI string
+   * <p>
+   * Note that this might be a JDBC URL, or some other target string, so it can't
+   * be an ACTUAL java.net.URL (yet)
    *
-   * Note that this might be a JDBC URL as well, so it can't be an ACTUAL
-   * java.net.URL (yet)
-   *
-   * @return Optional URL of the underlying stream
+   * @return Optional source of the underlying stream.
    */
   Optional<String> getUrl();
 
   /**
-   * @return Optional Name supplied at creation time
+   * @return name supplied at creation time
    */
   Optional<String> getName();
 
   /**
    *
-   * @return Optional description supplied at creation time
+   * @return description supplied at creation time
    */
   Optional<String> getDescription();
 
   /**
-   * Mapper for field in the model. This allows us to extract some logic from the
-   * modello model. Users should not rely on this.
+   * Stored value of {@code asChecksum().toString()}
    *
-   * @return
+   * @return 128 hex characters
+   * @see Checksum
    */
   String getSha512();
 
   /**
-   * This is a checksum of the underlying file (used to calculate the UUID in
-   * getId()). It only contains a checksum for the file, not the metadata. See
-   * getMetadataChecksum() to get checksums of all elements
+   * checksum of the <b><i><u>underlying file</u></i></b> (used to calculate the
+   * UUID in getId()).
+   *
+   * This contains a checksum for the bytes of the referenced stream, not the
+   * metadata. See getMetadataChecksum() to get checksums of all elements
    *
    * This is expected to be a non-null value UNLESS the underlying code handles an
-   * actual stream. In that case the value needs to be calculated.
+   * actual stream. In that case the value needs to be calculated, and could be
+   * null prior to final procesing
    *
    * @return Checksum of the contents of the underlying file or throw
    *         NullPointerException
@@ -109,40 +119,43 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   }
 
   /**
-   * The "creation date", which is VERY CLOSE to when this file was downloaded.
+   * The "creation date", which is VERY CLOSE to when the bytes for this stream
+   * were acquired.
    *
-   * @return Date accepted moment when this stream was read from the source and
-   *         optionally subsequently verified
+   * @return {@link Date} accepted moment when this stream was read from the
+   *         source and optionally subsequently verified
    */
   Date getCreationDate();
 
   /**
-   * Xpp3Dom instance containing the metadata supplied for THIS stream.
-   *
+   * XML field containing the metadata supplied for this stream.
+   * <p>
    * No extra metadata is supplied by the default ingester, although subtypes
    * could easily introduce or require additional metadata.
-   *
+   * <p>
    * The DataSet has the capability of aggregating metadata. You should probably
    * use that.
+   * <p>
    *
-   * Use getMetadataAsDocument for W3c Document
-   *
-   * @return Xpp3Dom instance describing the metadata supplied at creation time.
+   * @return Metadata instance describing the metadata supplied at stream creation
+   *         time.
    */
   Metadata getMetadata();
 
   /**
-   * Non-nullable mime type of the contents of the stream.
+   * Required mime type of the contents of the stream.
    *
    * @return Mime type of the contents of the stream, defaulting to
    *         application/octect-stream
+   *
+   * @see TypeToExtensionMapper
    */
   String getMimeType();
 
   /**
-   * REQUIRED Path to the URL of the stream (wherever it is) relative to the
-   * parent dataset's path. See pathAsURL for a reasonable representation of how
-   * to calculate the URL based on this path.
+   * Required String path to the URL of the stream (wherever it is) relative to
+   * the parent dataset's path. See pathAsURL for a reasonable representation of
+   * how to calculate the URL based on this path.
    *
    * @return Path relative to the path supplied in the enclosing DataSet.
    *
@@ -201,14 +214,17 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
       Optional<String> v = pDataSet.getPath()
           .map(pPath -> cet.withReturningTranslation(() -> IBUtils.translateToWorkableArchiveURL(pPath)))
           .map(parent -> {
-            String y = Objects.requireNonNull(parent).toExternalForm();
+            String y = requireNonNull(parent).toExternalForm();
             boolean isArchive = (y.endsWith(".jar") || y.endsWith(".zip"));
-            StringBuilder x = new StringBuilder();
-            x.append(isArchive ? "zip:" : "");
-            x.append(y);
-            // URLS are paths into jar/zip files (at present)
-            x.append(isArchive ? "!" : "");
-            return x.append(path).toString();
+            return new StringBuilder()
+                // archive identifier
+                .append(isArchive ? "jar:" : "")
+                // actual path
+                .append(y)
+                // URLS are paths into jar/zip files (at present)
+                .append(isArchive ? "!" : "")
+                // underlying (this) path
+                .append(path).toString();
           });
       return v;
 
@@ -216,58 +232,88 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
   }
 
+  /**
+   * Should archives be expanded. This is not part of a persisted dataset metadata
+   *
+   * @return
+   */
   default boolean isExpandArchives() {
     return false;
   }
 
+  /**
+   * Calculate actual {@link Path} if possible.
+   * <p>
+   * Implementations must provide an actual {@link Path} to the data where
+   * possible.
+   *
+   * @return
+   */
   default Optional<Path> getPathIfAvailable() {
     return empty();
   }
 
   /**
-   * @return actual byte length of the inputstream if known
+   * actual byte length of the inputstream if known
+   *
+   * @return
    */
   default Optional<Long> getInputStreamLength() {
     return ofNullable(getOriginalLength()).map(Long::parseLong);
   }
 
+  /**
+   * Number of "rows" (of structured data) if known
+   *
+   * @return
+   */
   default Optional<Long> getNumRows() {
     return ofNullable(getOriginalRowCount()).map(Long::parseLong);
   }
 
   /**
-   * Nullable value for string length of file stream
+   * Nullable persisted value for string length of file stream
    *
    * @return
    */
   String getOriginalLength();
 
   /**
-   * Nullable value for string count of "records" (or lines or whatever)
+   * Nullable persisted value for string count of "records" (or lines or whatever)
    *
    * @return
    */
   String getOriginalRowCount();
 
-  Optional<UUID> getReferencedSchemaId();
+  /**
+   * Optional reference to an {@link IBSchema} that defines the schema of this
+   * stream
+   * <p>
+   * Note that the references schema is one that the system uses for translation,
+   * but that {@code getMimeType} defines the actual type of the bytestream.
+   *
+   * @return
+   */
+  default Optional<UUID> getReferencedSchemaId() {
+    return empty();
+  }
 
   /**
-   * Return the id IBSchema that this stream references.
+   * Return the {@link IBSchema) that this stream references if an
+   * {@link IBDataEngine} is available
    *
    * @return
    */
   default Optional<IBSchema> getSchema() {
     return getReferencedSchemaId().flatMap(id -> {
-      return getParent().flatMap(IBDataSet::getEngine).flatMap(e -> e.fetchSchemaById(id));
+      return getEngine().flatMap(e -> e.fetchSchemaById(id));
     });
   }
 
-  Optional<IBDataProvenance> getProvenance();
-
-  Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata();
-
   /**
-   * Certain instances will not have an available parent
+   * Fetch the enclosing {@link IBDataSet}
+   * <p>
+   * This will usually be available within the system supplied by implementations
    *
    * @return
    */
@@ -275,10 +321,55 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
     return empty();
   }
 
+  /**
+   * Fetch the {@link IBDataEngine} instance used by the parent
+   * <p>
+   * Providing the reference directly is not recommended. Override
+   * {@code getParent} instead.
+   *
+   * @return {@link IBDataEngine} instance if available
+   */
   default Optional<IBDataEngine> getEngine() {
+    return getParent().flatMap(IBDataSet::getEngine);
+  }
+
+  /**
+   * Get the temporary id assigned to this stream during ingestion
+   * <p>
+   * During ingestion, an actual UUID is not available from {@code getId} until
+   * finalization occurs. Thus, any reference to a stream "in-flight" must be
+   * based on a temporary id that is not persisted with the stream.
+   * <p>
+   * Implementations must create local storage for and override this method
+   *
+   * @return
+   */
+  default Optional<String> getTemporaryId() {
+    return ofNullable(getId()).map(UUID::toString);
+  }
+
+  /**
+   * Fetch the provenance record if available
+   * <p>
+   *
+   * @return
+   */
+  default Optional<IBDataProvenance> getProvenance() {
     return empty();
   }
 
-  Optional<String> getTemporaryId();
+  /**
+   * Fetch the {@link IBDataStructuredDataMetadata} for this stream if available
+   * <p>
+   * The structured metadata values must be calculated during some processing
+   * operation to exist, so many of those values will not be available prior to
+   * transformation. However, underlying instances are encouraged to produce the
+   * structured metadata as they transform a stream.
+   *
+   * @return
+   */
+  default Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata() {
+    return empty();
+  }
 
 }

@@ -53,10 +53,14 @@ public class DataSchemaTest {
     d.setSchemaType(st);
     d.setMetadata(new Metadata());
     List<IBDataSchemaAsset> l = d.getSchemaAssets();
+    DataSchema h = d.clone();
+    d = h;
 
     Thread.currentThread().sleep(10L);
     e = new DataSchema();
     e.setMetadata(new Metadata());
+    DataSchema v = e.clone();
+    e = v;
   }
 
   @After

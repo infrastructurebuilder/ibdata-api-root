@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Optional;
 
+import org.infrastructurebuilder.data.model.StructuredFieldMetadata;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,60 +34,18 @@ public class IBDataStructuredDataFieldMetadataTest {
 
   @Before
   public void setUp() throws Exception {
-    k = new IBDataStructuredDataFieldMetadata() {
-
-      private IBDataStructuredDataMetadataType t;
-
-      @Override
-      public int getIndex() {
-        return 0;
-      }
-
-      @Override
-      public List<String> getEnumerations() {
-        return asList("A", "B");
-      }
-
-      @Override
-      public String getMinAsStringValue() {
-        return null;
-      }
-
-      @Override
-      public String getMaxAsStringValue() {
-        return null;
-      }
-
-      @Override
-      public Optional<String> getName() {
-        return Optional.empty();
-      }
-
-      @Override
-      public Optional<Boolean> isNullable() {
-        return Optional.empty();
-      }
-
-      @Override
-      public Optional<IBDataStructuredDataMetadataType> getType() {
-        return Optional.empty();
-      }
-
-    };
+    k = new StructuredFieldMetadata();
   }
 
   @Test
   public void testDefaults() {
-    assertEquals(0, k.getIndex());
-    assertEquals(asList("A", "B"), k.getEnumerations());
-    assertTrue(k.isEnumeration());
+    assertEquals(-1, k.getIndex());
     assertFalse(k.getMaxIntValue().isPresent());
     assertFalse(k.getMinIntValue().isPresent());
     assertEquals(empty(), k.getUniqueValuesCount());
-    assertFalse(k.isNullable().isPresent());
+    assertFalse(k.isNulled().isPresent());
     assertFalse(k.getMaxRealValue().isPresent());
     assertFalse(k.getMinRealValue().isPresent());
-    assertEquals(empty(), k.getType());
   }
 
 }

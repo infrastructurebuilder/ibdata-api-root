@@ -21,6 +21,17 @@ import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
 public interface IBField extends ChecksumEnabled, Comparable<IBField> {
 
   /**
+   * Get describes the IBfield from a base of 0. Default value set to -1 to ensure
+   * setting proper index. Indices are forced reset prior to persistence.
+   * <p>
+   * Note that the equals and comparable are all done based on field
+   * and no other values.  This means that tracking index creation during
+   * schema ingestion is essential.
+   *
+   * @return int zero-based field index within the set
+   */
+  int getIndex(); // -- int getIndex()
+  /**
    * Get a detailed description of the IBDataField.
    *
    * @return String
@@ -34,13 +45,6 @@ public interface IBField extends ChecksumEnabled, Comparable<IBField> {
    */
   java.util.List<String> getEnumerations(); // -- java.util.List<String> getEnumerations()
 
-  /**
-   * Get describes the IBfield from a base of 0. Default value set to -1 to ensure
-   * setting proper index. Indices are forced reset prior to persistence.
-   *
-   * @return int
-   */
-  int getIndex(); // -- int getIndex()
 
   /**
    * Get additional metadata.
@@ -124,6 +128,11 @@ public interface IBField extends ChecksumEnabled, Comparable<IBField> {
         .asChecksum();
   }
 
+  /**
+   * The only viable implementation of compareTo is this.
+   * <p>
+   * Do not override this method
+   */
   @Override
   default int compareTo(IBField o) {
     return Integer.compare(getIndex(), o.getIndex());
