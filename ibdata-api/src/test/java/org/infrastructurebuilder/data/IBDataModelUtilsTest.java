@@ -134,7 +134,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     IBUtils.deletePath(tPath); // Fails if exists
     List<IBDataStreamSupplier> ibdssList = new ArrayList<>();
     TypeToExtensionMapper t2e = new FakeTypeToExtensionMapper();
-    List<IBSchemaSupplier> ibdssSchemaList = new ArrayList<>();
+    List<IBIngestedSchemaSupplier> ibdssSchemaList = new ArrayList<>();
     IBChecksumPathType v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, ibdssSchemaList , t2e, empty());
     assertEquals(tPath, v.getPath());
     assertNotNull(v.get());

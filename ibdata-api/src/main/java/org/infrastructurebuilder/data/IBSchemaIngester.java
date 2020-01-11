@@ -38,8 +38,8 @@ public interface IBSchemaIngester extends LoggerEnabled {
    *
    * Ingestion returns an List<IBDataStreamSupplier>, which is supplied to a finalizer to produce a DataSet
 
-   * @param dss
-   * @return
+   * @param dss which is going to come from {@code DefaultIBDataSetIdentifier#asSchemaIngestion()}
+   * @return a sorted
    */
-  SortedSet<IBSchemaSupplier> ingest(SortedMap<String, IBDataSchemaIngestionConfig> dss);
+  SortedSet<IBIngestedSchemaSupplier> ingest(SortedMap<String, IBDataSchemaIngestionConfig> dss);
 }

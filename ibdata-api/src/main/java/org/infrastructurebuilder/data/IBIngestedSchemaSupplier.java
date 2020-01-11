@@ -45,14 +45,15 @@ import java.util.function.Supplier;
  * </ol>
  * <b>What this REALLY means</b>
  * <p>
- * {@link IBSchemaSupplier} instances or their producers must maintain internal
- * state. Once the {@code get} method is called, producing an {@link IBSchema},
- * they must update any internal storage for {@code getAssetSuppliers}.
+ * {@link IBIngestedSchemaSupplier} instances or their producers must maintain
+ * internal state. Once the {@code get} method is called, producing an
+ * {@link IBSchema}, they must update any internal storage for
+ * {@code getAssetSuppliers}.
  * <p>
  *
  * @author mykel.alvis
  * @see IBDataSchemaIngesterSupplier
  * @see IBSchemaIngester
  */
-public interface IBSchemaSupplier extends Supplier<IBSchemaDAO> {
+public interface IBIngestedSchemaSupplier extends Supplier<IBSchemaDAO>, Comparable<IBIngestedSchemaSupplier> {
 }

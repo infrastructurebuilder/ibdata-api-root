@@ -15,9 +15,17 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import org.infrastructurebuilder.data.IBDataSchemaIdentifier;
-import org.infrastructurebuilder.util.config.CMSConfigurableSupplier;
+import org.infrastructurebuilder.data.IBDataSchemaIngesterSupplier;
+import org.infrastructurebuilder.data.IBSchemaIngester;
+import org.infrastructurebuilder.util.LoggerSupplier;
+import org.infrastructurebuilder.util.config.ConfigMapSupplier;
+import org.infrastructurebuilder.util.config.PathSupplier;
 
-public interface IBDataSchemaHarvester extends CMSConfigurableSupplier<IBDataSchemaIdentifier> {
+abstract public class AbstractIBSchemaIngesterSupplier extends AbstractIBDataConfigurableSupplier<IBSchemaIngester>
+    implements IBDataSchemaIngesterSupplier {
+
+  protected AbstractIBSchemaIngesterSupplier(PathSupplier wps, LoggerSupplier log, ConfigMapSupplier config) {
+    super(wps, log, config);
+  }
 
 }
