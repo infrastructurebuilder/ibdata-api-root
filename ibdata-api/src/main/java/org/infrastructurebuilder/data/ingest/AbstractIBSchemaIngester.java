@@ -13,15 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.data.ingest;
 
-import java.util.function.Supplier;
+import java.nio.file.Path;
 
-/**
- * @author mykel.alvis
- *
- */
-public interface IBDataSchemaSourceSupplier extends Supplier<IBSchemaSource>, Comparable<IBDataSchemaSourceSupplier> {
-  String getId();
+import org.infrastructurebuilder.data.IBSchemaIngester;
+import org.infrastructurebuilder.util.config.ConfigMap;
+import org.slf4j.Logger;
+
+abstract public class AbstractIBSchemaIngester extends AbstractIBRootIngester implements IBSchemaIngester {
+
+  /**
+   * @param workingPath
+   * @param log
+   * @param config
+   */
+  public AbstractIBSchemaIngester(Path workingPath, Logger log, ConfigMap config) {
+    super(workingPath, log, config);
+  }
+
+  public AbstractIBSchemaIngester configure(ConfigMap map) {
+    return this;
+  }
 
 }

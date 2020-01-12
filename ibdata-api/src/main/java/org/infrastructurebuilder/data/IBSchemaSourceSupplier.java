@@ -21,7 +21,7 @@ import java.util.function.Supplier;
  * @author mykel.alvis
  *
  */
-public interface IBDataSchemaSourceSupplier extends Supplier<IBSchemaSource>, Comparable<IBDataSchemaSourceSupplier> {
+public interface IBSchemaSourceSupplier extends Supplier<IBSchemaSource>, Comparable<IBSchemaSourceSupplier> {
   String getId();
 
 }

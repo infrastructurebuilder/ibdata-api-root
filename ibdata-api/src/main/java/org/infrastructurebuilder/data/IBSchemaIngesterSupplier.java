@@ -15,13 +15,7 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.util.function.Supplier;
+import org.infrastructurebuilder.util.config.CMSConfigurableSupplier;
 
-/**
- * @author mykel.alvis
- *
- */
-public interface IBDataSchemaSourceSupplier extends Supplier<IBSchemaSource>, Comparable<IBDataSchemaSourceSupplier> {
-  String getId();
-
+public interface IBSchemaIngesterSupplier extends CMSConfigurableSupplier<IBSchemaIngester> {
 }

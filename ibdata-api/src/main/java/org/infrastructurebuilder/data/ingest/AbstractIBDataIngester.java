@@ -21,11 +21,7 @@ import org.infrastructurebuilder.data.IBDataIngester;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.slf4j.Logger;
 
-abstract public class AbstractIBDataIngester implements IBDataIngester {
-
-  private final Path workingPath;
-  private final ConfigMap config;
-  private final Logger log;
+abstract public class AbstractIBDataIngester extends AbstractIBRootIngester implements IBDataIngester {
 
   /**
    * @param workingPath
@@ -33,28 +29,11 @@ abstract public class AbstractIBDataIngester implements IBDataIngester {
    * @param config
    */
   public AbstractIBDataIngester(Path workingPath, Logger log, ConfigMap config) {
-    this.workingPath = workingPath;
-    this.log = log;
-    this.config = config;
+    super(workingPath, log, config);
   }
 
-  @Override
-  public Logger getLog() {
-    return log;
-  }
-
-  protected ConfigMap getConfig() {
-    return config;
-  }
-
-  protected Path getWorkingPath() {
-    return workingPath;
-  }
-
-  @Override
   public AbstractIBDataIngester configure(ConfigMap map) {
     return this;
   }
-
 
 }

@@ -42,7 +42,7 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
  * @author mykel.alvis
  *
  */
-public interface IBDataSchemaSource extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap> , IBLoggerEnabled {
+public interface IBSchemaSource extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap> , IBLoggerEnabled {
   /**
    * This is really a descriptive value, although it needs to be unique as well
    *
@@ -64,6 +64,6 @@ public interface IBDataSchemaSource extends ConfigurableSupplier<List<IBChecksum
 
 //  Optional<String> getMimeType();
 
-  IBDataSchemaSource configure(ConfigMap config);
+  IBSchemaSource configure(ConfigMap config);
 
 }

@@ -13,9 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.data.ingest;
 
-import org.infrastructurebuilder.util.config.CMSConfigurableSupplier;
+import java.nio.file.Path;
+import java.util.SortedMap;
 
-public interface IBDataSchemaIngesterSupplier extends CMSConfigurableSupplier<IBSchemaIngester> {
+import org.infrastructurebuilder.data.IBDataSourceSupplier;
+import org.infrastructurebuilder.data.IBSchemaSourceSupplier;
+
+public interface IBSchemaSourceSupplierFactory {
+
+  SortedMap<String, IBSchemaSourceSupplier> mapIngestionToSuppliers(IBIngestion i);
+
+  Path getTargetPath();
+
 }

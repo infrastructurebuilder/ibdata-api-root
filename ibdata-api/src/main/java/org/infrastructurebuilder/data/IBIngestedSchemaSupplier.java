@@ -52,8 +52,14 @@ import java.util.function.Supplier;
  * <p>
  *
  * @author mykel.alvis
- * @see IBDataSchemaIngesterSupplier
+ * @see IBSchemaIngesterSupplier
  * @see IBSchemaIngester
  */
 public interface IBIngestedSchemaSupplier extends Supplier<IBSchemaDAO>, Comparable<IBIngestedSchemaSupplier> {
+  String getTemporaryId();
+
+  @Override
+  default int compareTo(IBIngestedSchemaSupplier o) {
+    return getTemporaryId().compareTo(o.getTemporaryId());
+  }
 }
