@@ -63,6 +63,7 @@ public class DefaultIBDataStreamIdentifierConfigBean extends DataStream {
     super.setMetadata(translateToMetadata.apply(metadata));
   }
 
+  @Override
   public void setSha512(String checksum) {
     if (checksum != null && checksum.length() != 128)
       throw new IBDataException("Sha512s are 128 hex characters");
@@ -73,6 +74,7 @@ public class DefaultIBDataStreamIdentifierConfigBean extends DataStream {
     this.expandArchives = expandArchives;
   }
 
+  @Override
   public boolean isExpandArchives() {
     return expandArchives;
   }

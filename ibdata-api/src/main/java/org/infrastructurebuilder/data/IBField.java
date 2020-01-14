@@ -117,6 +117,7 @@ public interface IBField extends ChecksumEnabled, Comparable<IBField> {
    */
   boolean isNullable(); // -- boolean isNullable()
 
+  @Override
   default Checksum asChecksum() {
     return org.infrastructurebuilder.util.artifacts.ChecksumBuilder.newInstance() //
         .addString(getName()) // name

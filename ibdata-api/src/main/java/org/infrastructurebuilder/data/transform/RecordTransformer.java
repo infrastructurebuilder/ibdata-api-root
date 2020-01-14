@@ -70,6 +70,7 @@ public class RecordTransformer extends Transformer {
         .overrideConfiguration(this.recordFinalizerConfig);
   }
 
+  @Override
   public ConfigMapSupplier getConfigurationAsConfigMapSupplier(ConfigMapSupplier defaults) {
     final DefaultConfigMapSupplier cmap = new DefaultConfigMapSupplier(
         super.getConfigurationAsConfigMapSupplier(defaults));

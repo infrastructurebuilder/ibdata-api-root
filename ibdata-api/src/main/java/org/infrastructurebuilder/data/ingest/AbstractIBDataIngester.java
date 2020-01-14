@@ -32,6 +32,7 @@ abstract public class AbstractIBDataIngester extends AbstractIBRootIngester impl
     super(workingPath, log, config);
   }
 
+  @Override
   public AbstractIBDataIngester configure(ConfigMap map) {
     return this;
   }

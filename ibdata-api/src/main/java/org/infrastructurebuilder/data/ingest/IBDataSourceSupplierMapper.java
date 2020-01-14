@@ -19,6 +19,7 @@ import java.nio.file.Path;
 
 import org.infrastructurebuilder.data.IBDataSourceSupplier;
 import org.infrastructurebuilder.data.IBDataStreamIdentifier;
+import org.infrastructurebuilder.util.config.PathSupplier;
 
 public interface IBDataSourceSupplierMapper {
 
@@ -26,6 +27,6 @@ public interface IBDataSourceSupplierMapper {
 
   IBDataSourceSupplier<?> getSupplierFor(String temporaryId, IBDataStreamIdentifier v);
 
-  Path getWorkingPath();
+  PathSupplier getWps();
 
 }

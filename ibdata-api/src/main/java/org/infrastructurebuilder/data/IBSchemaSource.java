@@ -62,6 +62,7 @@ public interface IBSchemaSource<P>
 
   Optional<String> getDescription();
 
+  @Override
   IBSchemaSource<P> configure(ConfigMap config);
 
 }

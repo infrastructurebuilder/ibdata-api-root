@@ -72,6 +72,7 @@ public interface IBDataSource<P> extends ConfigurableSupplier<List<IBChecksumPat
 
   Optional<String> getMimeType();
 
+  @Override
   IBDataSource<P> configure(ConfigMap config);
 
 }

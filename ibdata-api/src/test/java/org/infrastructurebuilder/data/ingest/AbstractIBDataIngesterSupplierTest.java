@@ -24,6 +24,7 @@ import org.infrastructurebuilder.data.IBDataIngester;
 import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
+import org.infrastructurebuilder.util.config.PathSupplier;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class AbstractIBDataIngesterSupplierTest {
       }
 
       @Override
-      protected IBDataIngester getInstance(Optional<Path> workingPath, Optional<Object> in) {
+      protected IBDataIngester getInstance(PathSupplier workingPath, Optional<Object> in) {
         return null;
       }
     };

@@ -81,6 +81,7 @@ public interface IBDataSetIdentifier extends ChecksumEnabled {
    */
   Optional<String> getPath();
 
+  @Override
   default Checksum asChecksum() {
     return ChecksumBuilder.newInstance() //
         .addChecksumEnabled(getGAV())//

@@ -26,6 +26,7 @@ public interface IBDatabaseDialectMapper {
    * @return non-null some IBDataDatabaseDriverSupplier instance, if available
    * @deprecated  This isn't necessary
    */
+  @Deprecated
   Optional<IBDataDatabaseDriverSupplier> getSupplier(String key);
 
   /**

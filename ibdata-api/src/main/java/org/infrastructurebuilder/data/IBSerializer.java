@@ -36,6 +36,7 @@ public interface IBSerializer<T, C, S extends AutoCloseable> extends AutoCloseab
 
   Optional<S> getSerializer();
 
+  @Override
   default void close() throws Exception {
     getSerializer().ifPresent(e -> cet.withTranslation(() -> e.close()));
   }
