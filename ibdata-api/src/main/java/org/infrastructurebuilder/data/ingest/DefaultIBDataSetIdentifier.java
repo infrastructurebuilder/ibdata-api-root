@@ -16,20 +16,19 @@
 package org.infrastructurebuilder.data.ingest;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.synchronizedSortedMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;;
@@ -149,10 +148,9 @@ public class DefaultIBDataSetIdentifier extends DataSet {
   }
 
   public SortedMap<String, IBDataSchemaIngestionConfig> asSchemaIngestion() {
-    return dataSchemas.stream()
-        .collect(Collectors.toMap(k -> k.getTemporaryId(), Function.identity(), (left, right) -> {
-          throw new RuntimeException(String.format("Duplicate key for %s and %s", left, right));
-        }, TreeMap::new));
+    return dataSchemas.stream().collect(toMap(k -> k.getTemporaryId(), identity(), (left, right) -> {
+      throw new RuntimeException(String.format("Duplicate key for %s and %s", left, right));
+    }, () -> synchronizedSortedMap(new TreeMap<>())));
   }
 
 }

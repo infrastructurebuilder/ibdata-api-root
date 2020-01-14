@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data.transform;
 
+import java.util.Date;
 import java.util.List;
 import java.util.SortedMap;
 
@@ -34,24 +35,28 @@ public class FakeIBTransformation implements IBTransformation {
   public FakeIBTransformation(DataSet ds) {
     this.ds = ds;
   }
-    // TODO Auto-generated constructor stub
-
+  // TODO Auto-generated constructor stub
 
   public FakeIBTransformation() {
     this(null, "some name", "some description", null);
   }
-
 
   public FakeIBTransformation(String id, String name, String desc, XmlPlexusConfiguration xmlPlexusConfiguration) {
     this.id = id;
     this.name = name;
     this.desc = desc;
     this.md = xmlPlexusConfiguration;
+    this.ds = new DataSet();
+    ds.setUuid(id);
+    ds.setName(name);
+    ds.setDescription(desc);
+    ds.setMetadata(xmlPlexusConfiguration);
+    ds.setCreationDate(new Date());
   }
 
   @Override
   public DataSet asDataSet() {
-    return this.ds;
+    return new DataSet();
   }
 
   @Override

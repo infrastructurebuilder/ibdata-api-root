@@ -152,7 +152,7 @@ public class IBDataModelUtils {
    * @throws IOException
    */
   public final static IBChecksumPathType forceToFinalizedPath(Date creationDate, Path workingPath, DataSet finalData,
-      List<IBDataStreamSupplier> ibdssList, List<IBIngestedSchemaSupplier> schemaSuppliers, TypeToExtensionMapper t2e,
+      List<IBDataStreamSupplier> ibdssList, List<IBSchemaDAOSupplier> schemaSuppliers, TypeToExtensionMapper t2e,
       Optional<String> basedir) throws IOException {
 
     // This archive is about to be created
@@ -170,7 +170,7 @@ public class IBDataModelUtils {
         // List all the schema
         schemaSuppliers.stream()
             // Get the schema, if you need it for some reason
-            .map(IBIngestedSchemaSupplier::get)
+            .map(IBSchemaDAOSupplier::get)
             // to a (unique) list
             .collect(toList());
     List<Map<String, IBDataStreamSupplier>> finalizedSchemaDataStreams = //

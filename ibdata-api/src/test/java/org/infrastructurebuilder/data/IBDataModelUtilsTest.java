@@ -47,12 +47,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
-import org.infrastructurebuilder.data.model.PersistedIBSchema;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
@@ -134,7 +132,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     IBUtils.deletePath(tPath); // Fails if exists
     List<IBDataStreamSupplier> ibdssList = new ArrayList<>();
     TypeToExtensionMapper t2e = new FakeTypeToExtensionMapper();
-    List<IBIngestedSchemaSupplier> ibdssSchemaList = new ArrayList<>();
+    List<IBSchemaDAOSupplier> ibdssSchemaList = new ArrayList<>();
     IBChecksumPathType v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, ibdssSchemaList , t2e, empty());
     assertEquals(tPath, v.getPath());
     assertNotNull(v.get());

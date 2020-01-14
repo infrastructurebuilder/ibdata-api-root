@@ -41,12 +41,12 @@ public class IBDataSourceTest {
   public final static Logger log = LoggerFactory.getLogger(IBDataSourceTest.class);
   public static final TestingPathSupplier wps = new TestingPathSupplier();
 
-  private IBDataSource i;
+  private IBDataSource<Object> i;
 
   @Before
   public void setUp() throws Exception {
     Path p = wps.getTestClasses().resolve("test.jar");
-    i = new IBDataSource() {
+    i = new IBDataSource<Object>() {
 
       @Override
       public Logger getLog() {
@@ -94,7 +94,7 @@ public class IBDataSourceTest {
       }
 
       @Override
-      public IBDataSource configure(ConfigMap config) {
+      public IBDataSource<Object> configure(ConfigMap config) {
         return this;
       }
       @Override

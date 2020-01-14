@@ -18,12 +18,13 @@ package org.infrastructurebuilder.data;
 import java.util.function.Supplier;
 
 /**
- *
- * The contract here is that an IBSchemaSupplier will supply all the required
+ * The contract is that an IBSchemaDAOSupplier will supply all the required
  * data for the underlying persistence of an {@link IBSchema} as an
- * {@link IBSchemaDAO}
+ * {@link IBSchemaDAO}.
  * <p>
- * <b><i>Warning:</i></b> IBSchemaSupplier instances are intrinsically
+ * Note that an IBSchemaDAOSupplier can supply a very arbitrary number
+ * of resources within the IBSchemaDAO instance.
+ * <b><i>Warning:</i></b> IBSchemaDAOSupplier instances are intrinsically
  * dangerous. They provide relatively arbitrary data streams during ingestion,
  * and thus should be subject to as much scrutiny as is possible. If the system
  * is using schema supplies from outside of the InfrastructureBuilder project,
@@ -41,11 +42,15 @@ import java.util.function.Supplier;
  * A schema supplier implementation <b>should</b>
  * <ol>
  * <li>Provide a stream to the original inbound schema, if available, mapping
- * that to the key value provided by {@code getOriginalAssetName}
+ * that to the key value provided by {@code getOriginalAssetName}.  This is not
+ * applicable if ingesting an inline schema directly, but if translating an
+ * Avro schema into an IBSchema, then storing the original avro schem with some
+ * mapped key that conforms to {@link IBSchemaDAO#getOriginalAssetKeyName()} is
+ * required.
  * </ol>
  * <b>What this REALLY means</b>
  * <p>
- * {@link IBIngestedSchemaSupplier} instances or their producers must maintain
+ * {@link IBSchemaDAOSupplier} instances or their producers must maintain
  * internal state. Once the {@code get} method is called, producing an
  * {@link IBSchema}, they must update any internal storage for
  * {@code getAssetSuppliers}.
@@ -55,11 +60,11 @@ import java.util.function.Supplier;
  * @see IBSchemaIngesterSupplier
  * @see IBSchemaIngester
  */
-public interface IBIngestedSchemaSupplier extends Supplier<IBSchemaDAO>, Comparable<IBIngestedSchemaSupplier> {
+public interface IBSchemaDAOSupplier extends Supplier<IBSchemaDAO>, Comparable<IBSchemaDAOSupplier> {
   String getTemporaryId();
 
   @Override
-  default int compareTo(IBIngestedSchemaSupplier o) {
+  default int compareTo(IBSchemaDAOSupplier o) {
     return getTemporaryId().compareTo(o.getTemporaryId());
   }
 }

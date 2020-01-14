@@ -18,31 +18,33 @@ package org.infrastructurebuilder.data;
 import java.util.SortedMap;
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.data.ingest.IBDataSchemaIngestionConfig;
-import org.infrastructurebuilder.data.ingest.IBIngestion;
 import org.infrastructurebuilder.util.LoggerEnabled;
 import org.infrastructurebuilder.util.config.ConfigMap;
 
 /**
- * Instances of this need to Inject a  Named(IBDATA_WORKING_PATH_SUPPLIER) WorkingPathSupplier wps
- * if they need working paths.  The ingester mojo will configure that path properly.
+ * Instances of this need to Inject a Named(IBDATA_WORKING_PATH_SUPPLIER)
+ * WorkingPathSupplier wps if they need working paths. The ingester mojo will
+ * configure that path properly.
+ *
  * @author mykel.alvis
  *
  */
 public interface IBSchemaIngester extends LoggerEnabled {
 
   IBSchemaIngester configure(ConfigMap map);
+
   /**
    *
-   * Reads a source and returns a calculated set of attributes.  Since the result of any write action is
-   * expected to be the output of some finalizer, the execution of how that set of data arrives is left to that component
+   * Reads a source and returns a calculated set of attributes. Since the result
+   * of any write action is expected to be the output of some finalizer, the
+   * execution of how that set of data arrives is left to that component
    *
-   * Ingestion returns an List<IBDataStreamSupplier>, which is supplied to a finalizer to produce a DataSet
-
-   * @param dss which is going to come from {@code DefaultIBDataSetIdentifier#asSchemaIngestion()}
+   * Ingestion returns an List<IBDataStreamSupplier>, which is supplied to a
+   * finalizer to produce a DataSet
+   *
+   * @param dss which is going to come from
+   *            {@code DefaultIBDataSetIdentifier#asSchemaIngestion()}
    * @return a sorted
    */
-  SortedSet<IBIngestedSchemaSupplier> ingest(
-      SortedMap<String, IBSchemaSourceSupplier> dss
-      );
+  SortedSet<IBSchemaDAOSupplier> ingest(SortedMap<String, IBSchemaSourceSupplier> dss);
 }

@@ -17,6 +17,7 @@ package org.infrastructurebuilder.data.ingest;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 
 import java.io.Writer;
@@ -26,7 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.PersistedIBSchema;
@@ -58,7 +58,7 @@ public class DefaultIBDataSchema extends DataSchema {
           () -> DefaultIBChecksumPathType.fromPath(e.getValue()) // Expensive part
               .moveTo(requireNonNull(workingPath, "working path")))
           .getChecksum().toString());
-    }).collect(Collectors.toList()));
+    }).collect(toList()));
     setUuid(asChecksum().asUUID().get().toString());
   }
 

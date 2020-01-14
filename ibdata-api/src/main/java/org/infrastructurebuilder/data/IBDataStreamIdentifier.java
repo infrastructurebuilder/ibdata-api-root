@@ -33,7 +33,8 @@ import java.util.UUID;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
-import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;;
+import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
+import org.infrastructurebuilder.util.files.TypeToExtensionMapper;;
 
 /**
  * This is the top-level interface that describes an arbitrary stream of data

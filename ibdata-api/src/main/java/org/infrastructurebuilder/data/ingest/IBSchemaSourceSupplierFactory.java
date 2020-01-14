@@ -18,7 +18,6 @@ package org.infrastructurebuilder.data.ingest;
 import java.nio.file.Path;
 import java.util.SortedMap;
 
-import org.infrastructurebuilder.data.IBDataSourceSupplier;
 import org.infrastructurebuilder.data.IBSchemaSourceSupplier;
 
 public interface IBSchemaSourceSupplierFactory {

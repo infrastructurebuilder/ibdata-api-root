@@ -15,14 +15,14 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import org.infrastructurebuilder.data.IBSchemaIngesterSupplier;
 import org.infrastructurebuilder.data.IBSchemaIngester;
+import org.infrastructurebuilder.data.IBSchemaIngesterSupplier;
 import org.infrastructurebuilder.util.LoggerSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.PathSupplier;
 
-abstract public class AbstractIBSchemaIngesterSupplier extends AbstractIBDataConfigurableSupplier<IBSchemaIngester>
-    implements IBSchemaIngesterSupplier {
+abstract public class AbstractIBSchemaIngesterSupplier<P> extends AbstractIBDataConfigurableSupplier<IBSchemaIngester,P>
+    implements IBSchemaIngesterSupplier<P> {
 
   protected AbstractIBSchemaIngesterSupplier(PathSupplier wps, LoggerSupplier log, ConfigMapSupplier config) {
     super(wps, log, config);

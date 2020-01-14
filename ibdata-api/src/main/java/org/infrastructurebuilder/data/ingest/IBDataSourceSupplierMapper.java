@@ -24,7 +24,7 @@ public interface IBDataSourceSupplierMapper {
 
   boolean respondsTo(IBDataStreamIdentifier v);
 
-  IBDataSourceSupplier getSupplierFor(String temporaryId, IBDataStreamIdentifier v);
+  IBDataSourceSupplier<?> getSupplierFor(String temporaryId, IBDataStreamIdentifier v);
 
   Path getWorkingPath();
 

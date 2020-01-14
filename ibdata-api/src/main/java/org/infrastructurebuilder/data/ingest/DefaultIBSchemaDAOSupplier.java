@@ -13,15 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.data.ingest;
 
-import java.util.function.Supplier;
+import java.util.Objects;
 
-/**
- * @author mykel.alvis
- *
- */
-public interface IBDataSourceSupplier<P> extends Supplier<IBDataSource<P>>, Comparable<IBDataSourceSupplier<P>> {
-  String getId();
+import org.infrastructurebuilder.data.IBSchemaDAO;
+import org.infrastructurebuilder.data.IBSchemaDAOSupplier;
+
+public class DefaultIBSchemaDAOSupplier implements IBSchemaDAOSupplier {
+
+  private final String tempId;
+  private final IBSchemaDAO dao;
+
+  public DefaultIBSchemaDAOSupplier(String tempId, IBSchemaDAO dao) {
+    this.tempId = tempId;
+    this.dao = Objects.requireNonNull(dao);
+  }
+
+  @Override
+  public IBSchemaDAO get() {
+    return dao;
+  }
+
+  @Override
+  public String getTemporaryId() {
+    return tempId;
+  }
 
 }

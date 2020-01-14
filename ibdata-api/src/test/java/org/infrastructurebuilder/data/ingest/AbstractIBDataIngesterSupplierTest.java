@@ -18,6 +18,7 @@ package org.infrastructurebuilder.data.ingest;
 import static org.junit.Assert.assertEquals;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.infrastructurebuilder.data.IBDataIngester;
 import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
@@ -34,7 +35,7 @@ public class AbstractIBDataIngesterSupplierTest {
   private Path p;
   private Path c;
   private DefaultConfigMapSupplier cms;
-  private AbstractIBDataIngesterSupplier i;
+  private AbstractIBDataIngesterSupplier<Object> i;
   private final static TestingPathSupplier wps = new TestingPathSupplier();
 
   @Before
@@ -42,15 +43,15 @@ public class AbstractIBDataIngesterSupplierTest {
     p = wps.get();
     c = wps.get();
     cms = new DefaultConfigMapSupplier();
-    i = new AbstractIBDataIngesterSupplier(wps,() -> log, cms) {
+    i = new AbstractIBDataIngesterSupplier<Object>(wps, () -> log, cms) {
 
       @Override
-      public AbstractCMSConfigurableSupplier<IBDataIngester> getConfiguredSupplier(ConfigMapSupplier cms) {
+      public AbstractCMSConfigurableSupplier<IBDataIngester, Object> getConfiguredSupplier(ConfigMapSupplier cms) {
         return this;
       }
 
       @Override
-      protected IBDataIngester getInstance() {
+      protected IBDataIngester getInstance(Optional<Path> workingPath, Optional<Object> in) {
         return null;
       }
     };
@@ -63,12 +64,7 @@ public class AbstractIBDataIngesterSupplierTest {
 
   @Test
   public void testGetConfig() {
-    assertEquals(0,i.getConfig().get().size());
-  }
-
-  @Test
-  public void testGetWps() {
-    assertEquals(wps, i.getWps());
+    assertEquals(0, i.getConfig().get().size());
   }
 
 }

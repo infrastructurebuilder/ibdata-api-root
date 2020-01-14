@@ -42,7 +42,7 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
  * @author mykel.alvis
  *
  */
-public interface IBDataSource extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap> , IBLoggerEnabled {
+public interface IBDataSource<P> extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap,P> , IBLoggerEnabled {
 //  public static final String TARGET_PATH = "Source-Target-Path";
 
   String getSourceURL();
@@ -72,6 +72,6 @@ public interface IBDataSource extends ConfigurableSupplier<List<IBChecksumPathTy
 
   Optional<String> getMimeType();
 
-  IBDataSource configure(ConfigMap config);
+  IBDataSource<P> configure(ConfigMap config);
 
 }

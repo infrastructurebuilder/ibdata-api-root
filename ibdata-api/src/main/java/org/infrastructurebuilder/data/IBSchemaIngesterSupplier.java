@@ -17,5 +17,5 @@ package org.infrastructurebuilder.data;
 
 import org.infrastructurebuilder.util.config.CMSConfigurableSupplier;
 
-public interface IBSchemaIngesterSupplier extends CMSConfigurableSupplier<IBSchemaIngester> {
+public interface IBSchemaIngesterSupplier<P> extends CMSConfigurableSupplier<IBSchemaIngester,P> {
 }

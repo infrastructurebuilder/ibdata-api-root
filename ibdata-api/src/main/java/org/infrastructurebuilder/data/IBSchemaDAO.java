@@ -26,11 +26,11 @@ public interface IBSchemaDAO extends Supplier<Map<String, IBDataStreamSupplier>>
 
   IBSchema getSchema();
 
-  default public String getPrimaryAssetName() {
+  default public String getPrimaryAssetKeyName() {
     return DEFAULT;
   }
 
-  default public Optional<String> getOriginalAssetName() {
+  default public Optional<String> getOriginalAssetKeyName() {
     return empty();
   }
 

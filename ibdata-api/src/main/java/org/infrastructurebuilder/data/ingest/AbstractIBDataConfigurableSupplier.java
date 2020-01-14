@@ -21,19 +21,11 @@ import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.PathSupplier;
 
-public abstract class AbstractIBDataConfigurableSupplier<T> extends AbstractCMSConfigurableSupplier<T>
+public abstract class AbstractIBDataConfigurableSupplier<T,P> extends AbstractCMSConfigurableSupplier<T,P>
     implements IBLoggerEnabled {
-  private final PathSupplier wps;
-
   public AbstractIBDataConfigurableSupplier(PathSupplier wps, LoggerSupplier log, ConfigMapSupplier config) {
-    super(config, log);
-    this.wps = wps;
+    super(wps, config, log);
   }
-
-  protected PathSupplier getWps() {
-    return wps;
-  }
-
 
 
 }

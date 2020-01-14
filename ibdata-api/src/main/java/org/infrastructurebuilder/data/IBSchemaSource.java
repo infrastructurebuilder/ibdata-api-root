@@ -23,8 +23,7 @@ import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigurableSupplier;
-import org.infrastructurebuilder.util.files.IBChecksumPathType;
-;
+import org.infrastructurebuilder.util.files.IBChecksumPathType;;
 
 /**
  * An IBDataSource understands where a data stream originates and how to acquire
@@ -42,7 +41,8 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
  * @author mykel.alvis
  *
  */
-public interface IBSchemaSource extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap> , IBLoggerEnabled {
+public interface IBSchemaSource<P>
+    extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap, P>, IBLoggerEnabled {
   /**
    * This is really a descriptive value, although it needs to be unique as well
    *
@@ -62,8 +62,6 @@ public interface IBSchemaSource extends ConfigurableSupplier<List<IBChecksumPath
 
   Optional<String> getDescription();
 
-//  Optional<String> getMimeType();
-
-  IBSchemaSource configure(ConfigMap config);
+  IBSchemaSource<P> configure(ConfigMap config);
 
 }

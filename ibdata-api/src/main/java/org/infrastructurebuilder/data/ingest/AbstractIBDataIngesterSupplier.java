@@ -21,8 +21,8 @@ import org.infrastructurebuilder.util.LoggerSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.PathSupplier;
 
-abstract public class AbstractIBDataIngesterSupplier extends AbstractIBDataConfigurableSupplier<IBDataIngester>
-    implements IBDataIngesterSupplier {
+abstract public class AbstractIBDataIngesterSupplier<P> extends AbstractIBDataConfigurableSupplier<IBDataIngester,P>
+    implements IBDataIngesterSupplier<P> {
 
   protected AbstractIBDataIngesterSupplier(PathSupplier wps, LoggerSupplier log, ConfigMapSupplier config) {
     super(wps, log, config);

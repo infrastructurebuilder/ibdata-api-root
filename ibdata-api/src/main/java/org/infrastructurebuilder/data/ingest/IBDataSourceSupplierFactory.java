@@ -22,7 +22,7 @@ import org.infrastructurebuilder.data.IBDataSourceSupplier;
 
 public interface IBDataSourceSupplierFactory {
 
-  SortedMap<String, IBDataSourceSupplier> mapIngestionToSourceSuppliers(IBIngestion i);
+  SortedMap<String, IBDataSourceSupplier<?>> mapIngestionToSourceSuppliers(IBIngestion i);
 
   Path getTargetPath();
 
