@@ -15,12 +15,22 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
+import static org.infrastructurebuilder.IBConstants.DESCRIPTION;
+import static org.infrastructurebuilder.IBConstants.NAME;
+import static org.infrastructurebuilder.IBConstants.TEMPORARYID;
+import static org.infrastructurebuilder.data.IBDataConstants.CREDS_QUERY;
+import static org.infrastructurebuilder.data.IBDataConstants.METADATA;
+import static org.infrastructurebuilder.data.IBDataConstants.SCHEMA;
+import static org.infrastructurebuilder.data.IBDataConstants.SCHEMA_QUERY;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.Metadata;
+import org.infrastructurebuilder.util.config.ConfigMap;
 
 public interface IBDataSchemaIngestionConfig {
 
@@ -32,11 +42,15 @@ public interface IBDataSchemaIngestionConfig {
 
   Metadata getMetadata();
 
-  Optional<String> getInline();
+  Optional<Xpp3Dom> getInline();
 
   Optional<SchemaQueryBean> getSchemaQuery();
 
+  Optional<IBJDBCQuery> getJDBCQuery();
+
   Optional<List<Path>> getFiles();
+
+  Optional<String> getCredentialsQuery();
 
   default Supplier<StringBuilder> toStringSupplier(Class<?> thisClazz) {
     StringBuilder builder = new StringBuilder();
@@ -54,6 +68,17 @@ public interface IBDataSchemaIngestionConfig {
     ;
 //        .append("]");  // Apply this in the toString method
     return () -> builder;
+  }
 
+  default ConfigMap asConfigMap() {
+    ConfigMap cm = new ConfigMap();
+    cm.put(TEMPORARYID, getTemporaryId());
+    getName().ifPresent(n -> cm.put(NAME, n));
+    getDescription().ifPresent(d -> cm.put(DESCRIPTION, d));
+    cm.put(METADATA, getMetadata());
+    getInline().ifPresent(i -> cm.put(SCHEMA, i));
+    cm.put(SCHEMA_QUERY, getSchemaQuery()); // Injects opti
+    getCredentialsQuery().ifPresent(cq -> cm.put(CREDS_QUERY, cq));
+    return cm;
   }
 }

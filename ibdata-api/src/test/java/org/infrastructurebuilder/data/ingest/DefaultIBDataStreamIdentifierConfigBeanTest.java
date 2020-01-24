@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
+import static org.infrastructurebuilder.IBConstants.TEXT_PLAIN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -39,8 +40,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultIBDataStreamIdentifierConfigBeanTest {
+  public final static Logger log = LoggerFactory.getLogger(DefaultIBDataStreamIdentifierConfigBeanTest.class);
   public static final String CHECKSUM = "3b2c63ccb53069e8b0472ba50053fcae7d1cc84ef774ff2b01c8a0658637901b7d91e71534243b5d29ee246e925efb985b4dbd7330ab1ab251d1e1b8848b9c49";
   private static final String HTTPURL = "http://www.google.com";
   private TestingPathSupplier wps;
@@ -89,8 +93,12 @@ public class DefaultIBDataStreamIdentifierConfigBeanTest {
     //    ds1.set_metadata(IBDataSetIdentifier.emptyDocumentSupplier.get());
     ds1.setDescription("S1 desc");
     ds1.setName("somename");
-    ds1.setMimeType("text/plain");
+    ds1.setMimeType(TEXT_PLAIN);
     ds1.setUrl(sourceURL);
+    ds1.setExpandArchives(false);
+
+    assertFalse(ds1.isExpandArchives());
+    log.info("ds1 is " + ds1.toString());
     streams = new ArrayList<>(Arrays.asList(ds1));
 
     ds2 = new DefaultIBDataStreamIdentifierConfigBean();

@@ -21,15 +21,6 @@ public interface IBDatabaseDialectMapper {
 
 
   /**
-   * Return an IBDataDatabaseDriverSupplier instance associated with the given key, if available
-   * @param key Non-null key
-   * @return non-null some IBDataDatabaseDriverSupplier instance, if available
-   * @deprecated  This isn't necessary
-   */
-  @Deprecated
-  Optional<IBDataDatabaseDriverSupplier> getSupplier(String key);
-
-  /**
    * Return an IBDataDatabaseDriverSupplier for a given jdbc URL, if available
    * @param jdbcURL
    * @return a (disposable) instance if available and empty() otherwise

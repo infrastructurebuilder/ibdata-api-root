@@ -15,47 +15,47 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+//import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.assertFalse;
+//import static org.junit.Assert.assertTrue;
+//
+//import java.util.Arrays;
+//import java.util.List;
+//import java.util.Optional;
+//
+//import org.junit.Before;
+//import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Test;
-
-public class IBDataTypedStreamSupplierSupplierTest {
-
-  private IBDataTypedStreamSupplierSupplier i;
-
-  @Before
-  public void setUp() throws Exception {
-    i = new IBDataTypedStreamSupplierSupplier() {
-
-      @Override
-      public List<String> getRespondsToTypes() {
-        return Arrays.asList("A","C");
-      }
-
-      @Override
-      public Optional<IBDataSpecificStreamFactory> from(IBDataStream ds) {
-        return null;
-      }
-    };
-  }
-
-  @Test
-  public void testGetWeight() {
-    assertEquals(0,i.getWeight().intValue());
-  }
-
-  @Test
-  public void testRespondsTo() {
-    assertTrue(i.respondsTo("A"));
-    assertTrue(i.respondsTo("C"));
-    assertFalse(i.respondsTo("B"));
-  }
-
-}
+//public class IBDataTypedStreamSupplierSupplierTest {
+//
+//  private IBDataTypedStreamSupplierSupplier i;
+//
+//  @Before
+//  public void setUp() throws Exception {
+//    i = new IBDataTypedStreamSupplierSupplier() {
+//
+//      @Override
+//      public List<String> getRespondsToTypes() {
+//        return Arrays.asList("A","C");
+//      }
+//
+//      @Override
+//      public Optional<IBDataSpecificStreamFactory> from(IBDataStream ds) {
+//        return null;
+//      }
+//    };
+//  }
+//
+//  @Test
+//  public void testGetWeight() {
+//    assertEquals(0,i.getWeight().intValue());
+//  }
+//
+//  @Test
+//  public void testRespondsTo() {
+//    assertTrue(i.respondsTo("A"));
+//    assertTrue(i.respondsTo("C"));
+//    assertFalse(i.respondsTo("B"));
+//  }
+//
+//}

@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>28</version>
+    <version>29-SNAPSHOT</version>
   </parent>
   <groupId>org.infrastructurebuilder.data</groupId>
   <artifactId>ibdata-api-root</artifactId>
@@ -79,5 +79,6 @@
   </dependencies>
   <modules>
     <module>ibdata-api</module>
+    <module>ibdata-liquibase-types</module>
   </modules>
 </project>

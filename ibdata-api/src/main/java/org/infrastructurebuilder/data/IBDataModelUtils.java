@@ -38,6 +38,7 @@ import static org.infrastructurebuilder.data.IBDataConstants.APPLICATION_IBDATA_
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
 import static org.infrastructurebuilder.data.IBDataException.cet;
+import static org.infrastructurebuilder.data.IBMetadataUtils.toDataSchema;
 import static org.infrastructurebuilder.data.IBMetadataUtils.toDataStream;
 import static org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper;
 
@@ -48,13 +49,16 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
+import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
@@ -62,10 +66,10 @@ import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
-import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
-import org.infrastructurebuilder.util.files.IBChecksumPathType;
+import org.infrastructurebuilder.util.files.DefaultIBResource;
+import org.infrastructurebuilder.util.files.IBResource;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
+import org.infrastructurebuilder.util.files.model.IBResourceModel;
 
 public class IBDataModelUtils {
 
@@ -77,13 +81,14 @@ public class IBDataModelUtils {
     try (Writer writer = Files.newBufferedWriter(v, UTF_8, CREATE_NEW)) {
       DataSet d = ds.clone();
       d.getStreams().stream().forEach(s -> {
-        final String k = s.getUrl().get();
-        basedirString.ifPresent(basedir -> {
-          if (k.contains(basedir))
-            s.setUrl(k.replace(basedir, "${basedir}"));
-        });
+        s.getUrl().ifPresent(k -> {
+          basedirString.ifPresent(basedir -> {
+            if (k.contains(basedir))
+              s.setUrl(k.replace(basedir, "${basedir}"));
+          });
         if (k.contains("!/") && !(k.startsWith("zip:") || k.startsWith("jar:")))
           s.setUrl("jar:" + s.getUrl());
+        });
       });
       xpp3Writer.write(writer, d);
     } catch (Throwable e) { // Catch anything and translate it to an IBDataException
@@ -144,15 +149,30 @@ public class IBDataModelUtils {
    * moves or copies), that maps to a state that will allow us to generate an
    * archive
    *
-   * @param workingPath This is a current working path.
-   * @param finalData   This is as much of the metadata of the dataset as we
-   *                    currently know. It has no streams attached at the moment
-   * @param ibdssList   These are the streams we will attach
+   * @param creationDate    The date to set all the model elements to as a
+   *                        creation date
+   * @param workingPath     This is a current working path.
+   * @param finalData       This is as much of the metadata of the dataset as we
+   *                        currently know. It has no streams attached at the
+   *                        moment
+   * @param ibdssList       These are the streams we will attach
+   * @param schemaSuppliers schemas and their available streams to attach here
+   * @param t2e             {@link TypeToExtensionMapper} for managing extensions
+   * @param basedir         The {@code ${basedir} } of this build for
+   *                        relativisation of inbound resources
+   *
    * @return A location suitable for archive generation
    * @throws IOException
    */
-  public final static IBChecksumPathType forceToFinalizedPath(Date creationDate, Path workingPath, DataSet finalData,
-      List<IBDataStreamSupplier> ibdssList, List<IBSchemaDAOSupplier> schemaSuppliers, TypeToExtensionMapper t2e,
+  public final static IBResource forceToFinalizedPath(
+      // Reset everything to this creation date
+      Date creationDate
+      // Target WP
+      , Path workingPath
+      // The inbound data set
+      , DataSet finalData
+      // The inbound data streams (not including
+      , List<IBDataStreamSupplier> ibdssList, List<IBSchemaDAOSupplier> schemaSuppliers, TypeToExtensionMapper t2e,
       Optional<String> basedir) throws IOException {
 
     // This archive is about to be created
@@ -173,7 +193,16 @@ public class IBDataModelUtils {
             .map(IBSchemaDAOSupplier::get)
             // to a (unique) list
             .collect(toList());
-    List<Map<String, IBDataStreamSupplier>> finalizedSchemaDataStreams = //
+
+    List<DataSchema> schemasList = finalizedDataSchemaList.stream()
+        // Get the IBSchema
+        .map(IBSchemaDAO::getSchema)
+        // Convert it to a DataSchema
+        .map(toDataSchema)
+        // turn into a list to be processed later
+        .collect(toList());
+
+    List<Map<String, IBDataStreamSupplier>> schemaDataStreams = //
         // All finalized schema
         finalizedDataSchemaList.stream()
             //
@@ -181,18 +210,36 @@ public class IBDataModelUtils {
             //
             .collect(toList());
 
+    Map<String, DataStream> schemaMap = new HashMap<>();
+    schemaDataStreams.forEach(dz -> {
+      dz.forEach((k, v) -> {
+        DataStream t = toDataStream.apply(v.get().relocateTo(newWorkingPath, t2e));
+        schemaMap.put(k, t);
+        // TODO Remap assets here
+      });
+    });
+
     List<DataStream> finalizedDataStreams =
-        // The list of streams
-        ibdssList.stream()
-            // Fetch the IBDS
-            .map(Supplier::get)
-            // Relocate the stream
-            .map(dss -> dss.relocateTo(newWorkingPath, t2e))
-            // Map the IBDataStream to a DataStream object
-            .map(toDataStream)
+        // Join the two streams
+        Stream.concat(
+            // Values from the schema
+            schemaMap.values().stream(),
+            // Values from regular data streams
+            ibdssList.stream()
+                // Fetch the IBDS
+                .map(Supplier::get)
+                // Relocate the stream
+                .map(dss -> dss.relocateTo(newWorkingPath, t2e))
+                // Map the IBDataStream to a DataStream object
+                .map(toDataStream))
             // to list
-            .collect(toList());
+            .collect(toList()
+            // End Concat
+            );
+
+    // TODO Maybe we ADD streams and schema here?
     finalData.setStreams(finalizedDataStreams);
+    finalData.setSchemas(schemasList);
     // finalData.getStreams().stream().forEach(dss ->
     // dss.setPath(IBDataModelUtils.relativizePath(finalData, dss)));
     // The id of the archive is based on the checksum of the data within it
@@ -202,6 +249,7 @@ public class IBDataModelUtils {
     Path newTarget = workingPath.getParent().resolve(finalData.getUuid().toString());
     move(newWorkingPath, newTarget, ATOMIC_MOVE);
     finalData.setPath(newTarget.toAbsolutePath().toUri().toURL().toExternalForm());
+
     // Create the IBDATA dir so that we can write the metadata xml
     createDirectories(newTarget.resolve(IBDATA));
     // Clear the path so that it doesn't persist in the metadata xml
@@ -210,20 +258,20 @@ public class IBDataModelUtils {
     // write the dataset to disk
     IBDataModelUtils.writeDataSet(finalData2, newTarget, basedir);
     // newTarget now points to a valid DataSet with metadata and referenced streams
-    return DefaultIBChecksumPathType.from(newTarget, dsChecksum, APPLICATION_IBDATA_ARCHIVE);
+    return DefaultIBResource.from(newTarget, dsChecksum, APPLICATION_IBDATA_ARCHIVE);
   }
 
   /**
-   * "remodel" the existing result into an IBChecksumPathTypeModel Eventually,
-   * this will probably be how moveTo relocates URLs that aren't concrete physical
-   * file paths (like paths into archives)
+   * "remodel" the existing result into an IBResourceModel Eventually, this will
+   * probably be how moveTo relocates URLs that aren't concrete physical file
+   * paths (like paths into archives)
    *
    * @param theResult
    * @return
    */
-  public final static IBChecksumPathTypeModel remodel(IBChecksumPathType theResult) {
-    if (theResult instanceof IBChecksumPathTypeModel)
-      return (IBChecksumPathTypeModel) theResult;
+  public final static IBResourceModel remodel(IBResource theResult) {
+    if (theResult instanceof IBResourceModel)
+      return (IBResourceModel) theResult;
     throw new IBDataException("Cannot cast to model");
   }
 

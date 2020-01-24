@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.ingest;
+package org.infrastructurebuilder.data;
 
-import org.infrastructurebuilder.util.files.IBChecksumPathType;
+import java.util.Optional;
+import java.util.function.Supplier;
 
-public interface IBDataAvroRecordWriter<R> {
-
-  IBChecksumPathType writeRecords(Iterable<R> result);
+public interface IBDataDecoratedDAO<T> extends Supplier<T>{
+  String getNameSpace();
+  String getName();
+  String getThisVersion();
+  String getDescription();
+  Optional<String> getSource();
+  Class<T> getType();
 
 }

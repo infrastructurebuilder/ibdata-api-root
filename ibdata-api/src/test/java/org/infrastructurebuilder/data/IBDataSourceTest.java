@@ -29,8 +29,8 @@ import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
-import org.infrastructurebuilder.util.files.IBChecksumPathType;
+import org.infrastructurebuilder.util.files.DefaultIBResource;
+import org.infrastructurebuilder.util.files.IBResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -54,8 +54,8 @@ public class IBDataSourceTest {
       }
 
       @Override
-      public List<IBChecksumPathType> get() {
-        return Arrays.asList(DefaultIBChecksumPathType.from(p, new Checksum(p), APPLICATION_OCTET_STREAM));
+      public List<IBResource> get() {
+        return Arrays.asList(DefaultIBResource.from(p, new Checksum(p), APPLICATION_OCTET_STREAM));
       }
 
       @Override

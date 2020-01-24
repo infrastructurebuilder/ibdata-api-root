@@ -18,17 +18,22 @@ package org.infrastructurebuilder.data.ingest;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.infrastructurebuilder.data.IBDataException.cet;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
 
 import java.io.File;
+import java.io.StringReader;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.infrastructurebuilder.data.IBDataException;
-import org.infrastructurebuilder.data.Metadata;;
+import org.infrastructurebuilder.data.Metadata;
+import org.infrastructurebuilder.util.CredentialsFactory;
 
 public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestionConfig {
 
@@ -41,9 +46,17 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
   private XmlPlexusConfiguration inline;
   private List<File> files;
   private SchemaQueryBean schemaQuery;
+  private String credentialsQuery;
+  private IBJDBCQuery databaseQuery;
+  private CredentialsFactory factory;
 
   public DefaultIBDataSchemaIngestionConfig() {
     super();
+  }
+
+  DefaultIBDataSchemaIngestionConfig setCredentialsFactory(CredentialsFactory factory) {
+    this.factory = factory;
+    return this;
   }
 
   public void setTemporaryId(String temporaryId) {
@@ -74,11 +87,14 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
     if (this.files != null || this.schemaQuery != null)
       throw new IBDataException(ELEMENT);
     this.inline = inline;
+    if (!"schema".equals(this.getInline().get().getName()))
+      throw new IBDataException("Inline config must be a <schema/>");
   }
 
   @Override
-  public Optional<String> getInline() {
-    return ofNullable(inline).map(XmlPlexusConfiguration::toString);
+  public Optional<Xpp3Dom> getInline() {
+    return ofNullable(inline).map(XmlPlexusConfiguration::toString).map(StringReader::new)
+        .map(s -> cet.withReturningTranslation(() -> Xpp3DomBuilder.build(s)));
   }
 
   @Override
@@ -117,7 +133,8 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
 
   @Override
   public int hashCode() {
-    return Objects.hash(description, files, inline, getMetadata(), name, schemaQuery, temporaryId);
+    return Objects.hash(description, files, inline, getMetadata(), name, schemaQuery, temporaryId, databaseQuery,
+        factory);
   }
 
   @Override
@@ -130,6 +147,7 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
     return Objects.equals(description, other.description) && Objects.equals(files, other.files)
         && Objects.equals(inline, other.inline) && Objects.equals(metadata, other.metadata)
         && Objects.equals(name, other.name) && Objects.equals(schemaQuery, other.schemaQuery)
+        && Objects.equals(databaseQuery, other.databaseQuery) && Objects.equals(factory, other.factory)
         && Objects.equals(temporaryId, other.temporaryId);
   }
 
@@ -137,7 +155,7 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
   public String toString() {
     StringBuilder builder = toStringSupplier(this.getClass()).get();
     return builder
-        // Add files?  Maybe?
+        // Add files? Maybe?
         .append(", files=").append(files)
         // final closer
         .append("]")
@@ -145,6 +163,21 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
         .toString();
   }
 
+  public void setDatabaseQuery(IBJDBCQuery databaseQuery) {
+    this.databaseQuery = databaseQuery.setFactory(factory);
+  }
 
+  @Override
+  public Optional<IBJDBCQuery> getJDBCQuery() {
+    return ofNullable(this.databaseQuery);
+  }
 
+  public void setCredentialsQuery(String credentialsQuery) {
+    this.credentialsQuery = credentialsQuery;
+  }
+
+  @Override
+  public Optional<String> getCredentialsQuery() {
+    return ofNullable(this.credentialsQuery);
+  }
 }

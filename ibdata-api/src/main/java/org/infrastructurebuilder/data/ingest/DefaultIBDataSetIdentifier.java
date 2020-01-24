@@ -31,7 +31,8 @@ import java.util.TreeMap;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.DataSet;
-import org.infrastructurebuilder.data.model.DataStream;;
+import org.infrastructurebuilder.data.model.DataStream;
+import org.infrastructurebuilder.util.CredentialsFactory;;
 
 /**
  * Configuration Bean for plugin
@@ -49,6 +50,7 @@ public class DefaultIBDataSetIdentifier extends DataSet {
 
   @SuppressWarnings("unused") // Used to type the inbound setter
   private XmlPlexusConfiguration metadata;
+  private CredentialsFactory factory;
 
   public DefaultIBDataSetIdentifier() {
     super();
@@ -61,6 +63,10 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     this.dataStreams = i.getDataStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList());
   }
 
+  DefaultIBDataSetIdentifier setFactory(CredentialsFactory factory) {
+    this.factory = factory;
+    return this;
+  }
   /**
    * Inbound DataStreams may set the "referencedSchema" to be the temporaryId of
    * an inbound schema. This will all be cleared up during the ingestion
@@ -103,7 +109,7 @@ public class DefaultIBDataSetIdentifier extends DataSet {
   }
 
   public void setDataSchemas(List<DefaultIBDataSchemaIngestionConfig> dataSchemas) {
-    this.dataSchemas = requireNonNull(dataSchemas);
+    this.dataSchemas = requireNonNull(dataSchemas).stream().map(ds -> ds.setCredentialsFactory(factory)).collect(toList());
   }
 
   public final DefaultIBDataSetIdentifier injectGAV(String groupId, String artifactId, String version) {

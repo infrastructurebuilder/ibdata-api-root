@@ -27,6 +27,7 @@ public interface IBDataConstants {
   public final static String MAP_SPLITTER = "|";
   public final static String WORKING_PATH_CONFIG_ITEM = UNCONFIGURABLE + ".workingPath";
 
+  public static final String IBDATA_ENTITY = "IBData";
   public static final String IBDATA = "IBDATA-INF";
   public static final String IBDATA_DIR = "/" + IBDATA + "/";
   public static final String IBDATASET_XML = "ibdataset.xml";
@@ -57,4 +58,17 @@ public interface IBDataConstants {
   public static final String PROTOBUF1 = "application/x-protobuf";
   public static final String PROTOBUF2 = "application/x-google-protobuf";
   public static final String PROTOBUF3 = "application/protobuf";
+
+  public static final String QUERY = "query";
+  public static final String DIALECT = "dialect";
+  public static final String SCHEMA = "schema"; // "Optional" (sort of )
+  public static final String SCHEMA_QUERY = "schemaQuery";
+  public static final String CREDS_QUERY = "credsQuery";
+
+  public static final String NAMESPACE = "namespace";
+  public static final String METADATA = "metadata";
+  public static final String INLINE = "inline";
+
+  public static final String JDBC_TYPE_NAME = "jdbcTypeName";
+
 }

@@ -35,4 +35,5 @@ public interface IBDatabaseDialect extends Supplier<String> {
   String liquibaseDatabaseClass();
 
   Optional<String> springDbName();
+
 }

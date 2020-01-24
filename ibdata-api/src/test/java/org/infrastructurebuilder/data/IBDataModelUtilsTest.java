@@ -53,10 +53,10 @@ import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
-import org.infrastructurebuilder.util.files.IBChecksumPathType;
+import org.infrastructurebuilder.util.files.DefaultIBResource;
+import org.infrastructurebuilder.util.files.IBResource;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
+import org.infrastructurebuilder.util.files.model.IBResourceModel;
 import org.junit.Test;
 
 public class IBDataModelUtilsTest extends AbstractModelTest {
@@ -133,7 +133,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     List<IBDataStreamSupplier> ibdssList = new ArrayList<>();
     TypeToExtensionMapper t2e = new FakeTypeToExtensionMapper();
     List<IBSchemaDAOSupplier> ibdssSchemaList = new ArrayList<>();
-    IBChecksumPathType v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, ibdssSchemaList , t2e, empty());
+    IBResource v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, ibdssSchemaList , t2e, empty());
     assertEquals(tPath, v.getPath());
     assertNotNull(v.get());
   }
@@ -151,20 +151,20 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
 
   @Test
   public void testIBDataRemodel1() {
-    IBChecksumPathTypeModel k = new IBChecksumPathTypeModel();
-    IBChecksumPathTypeModel v = IBDataModelUtils.remodel(k);
+    IBResourceModel k = new IBResourceModel();
+    IBResourceModel v = IBDataModelUtils.remodel(k);
     Path p = wps.getTestClasses().resolve("test-metadata.xml");
-    DefaultIBChecksumPathType k2 = new DefaultIBChecksumPathType(p, new Checksum(),
+    DefaultIBResource k2 = new DefaultIBResource(p, new Checksum(),
         Optional.of(IBConstants.APPLICATION_OCTET_STREAM));
     v = IBDataModelUtils.remodel(k2);
   }
 
   @Test(expected = IBDataException.class)
   public void testOtherIBDAtaRemodel2() {
-    IBChecksumPathType k = new IBChecksumPathType() {
+    IBResource k = new IBResource() {
 
       @Override
-      public IBChecksumPathType moveTo(Path target) throws IOException {
+      public IBResource moveTo(Path target) throws IOException {
         // TODO Auto-generated method stub
         return null;
       }
@@ -187,7 +187,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
         return null;
       }
     };
-    IBChecksumPathTypeModel v = IBDataModelUtils.remodel(k);
+    IBResourceModel v = IBDataModelUtils.remodel(k);
 
   }
 }

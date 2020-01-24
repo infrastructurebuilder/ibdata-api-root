@@ -20,7 +20,7 @@ import java.util.SortedMap;
 
 import org.infrastructurebuilder.data.IBSchemaSourceSupplier;
 
-public interface IBSchemaSourceSupplierFactory {
+public interface IBSchemaSourceSupplierFactory extends AutoCloseable {
 
   SortedMap<String, IBSchemaSourceSupplier> mapIngestionToSuppliers(IBIngestion i);
 

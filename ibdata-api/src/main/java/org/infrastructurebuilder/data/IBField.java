@@ -15,6 +15,11 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+
+import java.util.Optional;
+
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
 
@@ -51,7 +56,7 @@ public interface IBField extends ChecksumEnabled, Comparable<IBField> {
    *
    * @return Object
    */
-  Object getMetadata(); // -- Object getMetadata()
+  Metadata getMetadata(); // -- Object getMetadata()
 
   /**
    * Get the full name of the IBDataField. This name may be munged during
@@ -120,6 +125,8 @@ public interface IBField extends ChecksumEnabled, Comparable<IBField> {
   @Override
   default Checksum asChecksum() {
     return org.infrastructurebuilder.util.artifacts.ChecksumBuilder.newInstance() //
+        .addInteger(getIndex())
+        .addString(getType())
         .addString(getName()) // name
         .addString(getDescription()) // Desc
         .addString(getMetadata().toString()) // metadata
@@ -137,6 +144,16 @@ public interface IBField extends ChecksumEnabled, Comparable<IBField> {
   @Override
   default int compareTo(IBField o) {
     return Integer.compare(getIndex(), o.getIndex());
+  }
+
+  Optional<IBDataStructuredDataFieldMetadata> getTransientStructuredFieldMetadata();
+
+  default Optional<IBDataStructuredDataMetadataType> getMdType() {
+    try {
+      return of(IBDataStructuredDataMetadataType.valueOf(getType()));
+    } catch (Throwable t) {
+      return empty();
+    }
   }
 
 }

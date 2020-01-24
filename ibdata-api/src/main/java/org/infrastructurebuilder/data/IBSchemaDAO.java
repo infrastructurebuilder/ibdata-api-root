@@ -18,13 +18,24 @@ package org.infrastructurebuilder.data;
 import static java.util.Optional.empty;
 import static org.infrastructurebuilder.IBConstants.DEFAULT;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.infrastructurebuilder.data.model.io.xpp3.PersistedIBSchemaXpp3Reader;
+
 public interface IBSchemaDAO extends Supplier<Map<String, IBDataStreamSupplier>> {
 
-  IBSchema getSchema();
+  default IBSchema getSchema() {
+    try (InputStream ins = get().get(getPrimaryAssetKeyName()).get().get()) {
+      return getReader().read(ins);
+    } catch (IOException | XmlPullParserException e) {
+      throw new IBDataException(e);
+    }
+  }
 
   default public String getPrimaryAssetKeyName() {
     return DEFAULT;
@@ -34,4 +45,11 @@ public interface IBSchemaDAO extends Supplier<Map<String, IBDataStreamSupplier>>
     return empty();
   }
 
+  default Optional<IBSchemaSource<?>> getSource() {
+    return empty();
+  }
+
+  default PersistedIBSchemaXpp3Reader getReader() {
+    return new PersistedIBSchemaXpp3Reader();
+  }
 }

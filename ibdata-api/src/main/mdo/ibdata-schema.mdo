@@ -74,6 +74,13 @@
           <type>String</type>
         </field>
         <field java.getter="false">
+          <name>nameSpace</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>The full namespace of the DataSchema.</description>
+          <type>String</type>
+        </field>
+        <field java.getter="false">
           <name>description</name>
           <version>1.0.0+</version>
           <description>A detailed description of the DataSchema</description>
@@ -123,6 +130,16 @@
           </association>
         </field>
         <field>
+          <name>indexes</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Mechanisms for describing indexing in target systems</description>
+          <association>
+            <type>SchemaIndex</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
           <name>forcedMap</name>
           <version>1.0.0+</version>
           <description>A uuid that indicates a DataStream
@@ -166,6 +183,7 @@
     this.setSha512(ds.getSha512());
     this.setDescription(ds.getDescription().orElse(null));
     this.setName(ds.getName().orElse(null));
+    this.setNameSpace(ds.getNameSpace().orElse(null));
     this.setMetadata(ds.getMetadata());
     this.setMimeType(ds.getMimeType());
     this.setFields(ds.getFields().stream().map(SchemaField::new).collect(java.util.stream.Collectors.toList()));
@@ -195,7 +213,9 @@
           s.fields.get(i).setIndex(i);
         }
     }
-    s.setUuid(s.asChecksum().get().get().toString());
+    org.infrastructurebuilder.util.artifacts.Checksum cs = s.asChecksum();
+    s.setSha512(cs.toString());
+    s.setUuid(cs.get().get().toString());
   }
 
   ]]>
@@ -208,7 +228,7 @@
             <![CDATA[
   @Override
   public int hashCode() {
-    return java.util.Objects.hash(uuid, name, creationDate, description, fields, metadata);
+    return java.util.Objects.hash(uuid, nameSpace, name, creationDate, description, fields, indexes, metadata);
   }
 
   @Override
@@ -222,19 +242,26 @@
     PersistedIBSchema other = (PersistedIBSchema) obj;
     return
            java.util.Objects.equals(uuid, other.uuid)
+        && java.util.Objects.equals(nameSpace, other.nameSpace)
         && java.util.Objects.equals(name, other.name)
         && java.util.Objects.equals(creationDate, other.creationDate)
         && java.util.Objects.equals(description, other.description)
         && java.util.Objects.equals(mimeType, other.mimeType)
-        && java.util.Objects.equals(fields, other.fields)
-        && java.util.Objects.equals(metadata, other.metadata)
+        && java.util.Objects.equals(getFields(), other.getFields())
+        && java.util.Objects.equals(getIndexes(), other.getIndexes())
+        && java.util.Objects.equals(getMetadata(), other.getMetadata())
         ;
   }
 
   @Override
   public String toString() {
-    return "PersistedIBSchema [uuid=" + uuid + ", name=" + name + ", description=" + description + ", creationDate="
-        + creationDate + "mimeType = " + mimeType + ", metadata=" + metadata + ", fields=" + fields + "]";
+    return "PersistedIBSchema [uuid=" + uuid + ", nameSpace=" + nameSpace
+        + ", name=" + name + ", description=" + description + ", creationDate="
+        + creationDate + ", mimeType = " + mimeType
+        + ", metadata=" + metadata
+        + ", fields=" + fields
+        + ", indexes=" + indexes
+        + "]";
   }
 
   @Override
@@ -282,6 +309,13 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
+  /**
+   * @return the name if available
+   */
+  @Override
+  public java.util.Optional<String> getNameSpace() {
+     return java.util.Optional.ofNullable(nameSpace);
+  }
   /**
    * @return the name if available
    */
@@ -334,9 +368,31 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-//  public java.util.Optional<org.infrastructurebuilder.data.IBDataStructuredDataMetadata> getStructuredDataMetadata() {
-//    return java.util.Optional.ofNullable(this.getStructuredDataDescriptor());
-//  }            ]]>
+  /**
+   * Return a sorted set of the schema fields
+   */
+  @Override
+  public java.util.SortedSet<org.infrastructurebuilder.data.IBIndex> getSchemaIndexes() {
+    return getIndexes().stream().sorted().collect(java.util.stream.Collectors.toCollection(java.util.TreeSet::new));
+  }
+              ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  /**
+   * Force an update to the existing fields index value
+   */
+  public PersistedIBSchema forceIndexUpdatePostRead() {
+    for (int i = 0; i < getFields().size(); ++i) {
+      SchemaField f = getFields().get(i);
+      f.setIndex(i);
+    }
+    return this;
+  }
+              ]]>
           </code>
         </codeSegment>
       </codeSegments>
@@ -373,8 +429,8 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class xml.tagName="field"
-      java.clone.hook="mutatingSchemaFieldCloneHook" java.clone="deep">
+    <class xml.tagName="field" java.clone.hook="mutatingCloneHook"
+      java.clone="deep">
       <name>SchemaField</name>
       <version>1.0.0+</version>
       <description> <![CDATA[ The <code>&lt;schema&gt;</code>
@@ -464,7 +520,7 @@
           <type>String</type>
           <required>false</required>
         </field>
-        <field>
+        <field java.getter="false">
           <name>metadata</name>
           <version>1.0.0+</version>
           <required>true</required>
@@ -496,14 +552,14 @@
     this.setDeprecated(ds.isDeprecated());
     this.setVersionDeprecated(ds.getVersionDeprecated());
     this.setMetadata(ds.getMetadata());
-    mutatingSchemaFieldCloneHook(this);
+    mutatingCloneHook(this);
   }
 ]]> </code>
         </codeSegment>
         <codeSegment>
           <version>1.0.0+</version>
           <code> <![CDATA[
-  private void mutatingSchemaFieldCloneHook(SchemaField s)
+  private void mutatingCloneHook(SchemaField s)
 
   {
     if (!"ENUM".equals(s.getType())) {
@@ -540,7 +596,7 @@
   }
 
  /**
-   * equals depends solely on index
+   * DANGER!!! Contract violation!!!! equals depends solely on index
    */
   @Override
   public boolean equals(Object obj) {
@@ -565,46 +621,374 @@
 ]]>
 </code>
         </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  private org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata transientStructuredFieldMetadata = null;
+  @Override
+  public java.util.Optional<org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata> getTransientStructuredFieldMetadata() {
+      return java.util.Optional.of(this.transientStructuredFieldMetadata);
+  }
+  public void setTransientStructuredFieldMetadata(
+      org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata transientStructuredFieldMetadata) {
+    this.transientStructuredFieldMetadata = transientStructuredFieldMetadata;
+  }
+          ]]>
+          </code>
+
+
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+      <![CDATA[
+  @Override
+  public org.infrastructurebuilder.data.Metadata getMetadata() {
+      if (this.metadata == null)
+         this.metadata = new org.infrastructurebuilder.data.Metadata();
+      if (!(this.metadata instanceof org.infrastructurebuilder.data.Metadata))
+        this.metadata = new org.infrastructurebuilder.data.Metadata(this.metadata);
+      return (org.infrastructurebuilder.data.Metadata) this.metadata;
+  }
+
+      ]]>
+      </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+      <![CDATA[
+        @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("SchemaField [index=").append(index).append(", name=").append(name).append(", description=")
+        .append(description).append(", type=").append(type).append(", nullable=").append(nullable)
+        .append(", enumerations=").append(enumerations).append(", versionAppeared=").append(versionAppeared)
+        .append(", deprecated=").append(deprecated).append(", versionDeprecated=").append(versionDeprecated)
+        .append(", metadata=").append(metadata).append(", transientStructuredFieldMetadata=")
+        .append(transientStructuredFieldMetadata).append("]");
+    return builder.toString();
+    }
+      ]]>
+      </code>
+        </codeSegment>
       </codeSegments>
     </class>
-    <!--
-    <class java.clone="deep">
-      <name>PersistedIBSchemaInputLocation</name>
+
+
+
+
+
+
+
+    <class xml.tagName="indexedField"
+      java.clone.hook="mutatingCloneHook" java.clone="deep">
+      <name>IndexField</name>
       <version>1.0.0+</version>
+      <description>Describes a field element that is part of an index </description>
+      <interfaces>
+        <interface>org.infrastructurebuilder.data.IBIndexField</interface>
+      </interfaces>
       <fields>
+        <field>
+          <name>index</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>The index of the field.</description>
+          <type>int</type>
+          <defaultValue>-1</defaultValue>
+        </field>
+        <field>
+          <name>type</name>
+          <description>Value must match the typing enumeration in IBData (currently found in IBFieldIndexType).  The default value (DEFAULT) indicates that this index is ordered according to default underlying technology</description>
+          <type>String</type>
+          <required>true</required>
+          <defaultValue>DEFAULT</defaultValue>
+        </field>
       </fields>
       <codeSegments>
         <codeSegment>
           <version>1.0.0+</version>
-          <code> <![CDATA[ @Override public String toString() { return getLineNumber()
-      + " : " + getColumnNumber() + ", " + getSource(); } ]]> </code>
+          <code> <![CDATA[
+   /** * Default constructor */
+  public IndexField() {
+  }
+
+  /**
+   * * Copy constructor (should match clone)
+   */
+  public IndexField(IndexField ds) {
+    this.setIndex(ds.getIndex());
+    this.setType(ds.getType());
+    mutatingCloneHook(this);
+  }
+]]> </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code> <![CDATA[
+  private void mutatingCloneHook(IndexField s)
+
+  {
+  }
+
+ ]]> </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+<![CDATA[
+
+@Override
+  public int hashCode() {
+    return java.util.Objects.hash(
+          index
+        , type);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (!(obj instanceof IndexField))
+      return false;
+    IndexField other = (IndexField) obj;
+    return index == other.index
+        && java.util.Objects.equals(type, other.type);
+  }
+
+]]>
+</code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+      <![CDATA[
+    @Override
+    public String toString() {
+        return  new StringBuilder().append("IndexField [")
+          .append("index=").append(index)
+          .append("type=").append(type)
+          .append("]").toString();
+    }
+      ]]>
+      </code>
         </codeSegment>
       </codeSegments>
     </class>
-    <class sourceTracker="source" java.clone="shallow">
-      <name>PersistedIBSchemaInputSource</name>
+
+
+
+    <class xml.tagName="index" java.clone.hook="mutatingCloneHook"
+      java.clone="deep">
+      <name>SchemaIndex</name>
       <version>1.0.0+</version>
+      <description> <![CDATA[ The <code>&lt;schema&gt;</code>
+      element contains information about a single schema. ]]> </description>
+      <interfaces>
+        <interface>org.infrastructurebuilder.data.IBIndex</interface>
+      </interfaces>
       <fields>
         <field>
-          <name>modelId</name>
+          <name>name</name>
           <version>1.0.0+</version>
+          <required>true</required>
+          <description>The full name of the SchemaIndex. This name may be munged during translation.</description>
           <type>String</type>
         </field>
         <field>
-          <name>location</name>
+          <name>description</name>
           <version>1.0.0+</version>
+          <description>A detailed description of the SchemaIndex</description>
           <type>String</type>
         </field>
+        <field>
+          <name>type</name>
+          <description>Value must match the typing
+      enumeration in IBData (currently found in IBDataIndexingType).
+      The default value (DEFAULT) indicates that this index is non-unique ascending naturally ordered</description>
+          <type>String</type>
+          <required>true</required>
+          <defaultValue>DEFAULT</defaultValue>
+        </field>
+        <field>
+          <name>unique</name>
+          <description>If true, then this field is allowed to be null.</description>
+          <type>boolean</type>
+          <required>true</required>
+          <defaultValue>false</defaultValue>
+        </field>
+        <field>
+          <name>versionAppeared</name>
+          <description>version where this SchemaIndex became valid. Versions should
+      be truncated to api version. This field is required when updating a schema
+      to a new version.</description>
+          <type>String</type>
+          <required>false</required>
+        </field>
+        <field>
+          <name>deprecated</name>
+          <description>If set to true, this
+      SchemaIndex is deprecated. Schema deprecation is different than language
+      deprecation. A deprecated field is not represented in outbound schema, but
+      might be accepted as inbound schema. Deprecation definitely means different
+      things to different underlying providers, but it may (likely) not be possible
+      to back out a deprecation. For some providers, the only means of moving forward
+      is to re-add the field as a new field with a later "versionAppeared".</description>
+          <type>boolean</type>
+          <required>false</required>
+        </field>
+        <field>
+          <name>versionDeprecated</name>
+          <description>version where this SchemaIndex became invalid. Versions should
+      be truncated to api version. This field is required when producing a deprecation
+      (note that a non-null value here does not indicate a deprecation. The flag
+      must still be set in order to deprecate).</description>
+          <type>String</type>
+          <required>false</required>
+        </field>
+        <field>
+          <name>fields</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Targeted fields by name</description>
+          <association>
+            <type>IndexField</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+
+
       </fields>
       <codeSegments>
         <codeSegment>
           <version>1.0.0+</version>
-          <code> <![CDATA[ @Override public String toString() { return getModelId()
-      + " " + getLocation(); } ]]> </code>
+          <code> <![CDATA[
+   /** * Default constructor */
+  public SchemaIndex() {
+  }
+
+  /**
+   * * Copy constructor (should match clone)
+   */
+  public SchemaIndex(SchemaIndex ds) {
+    this.setName(ds.getName());
+    this.setDescription(ds.getDescription());
+    this.setType(ds.getType());
+    this.setUnique(ds.isUnique());
+    this.setVersionAppeared(ds.getVersionAppeared());
+    this.setDeprecated(ds.isDeprecated());
+    this.setVersionDeprecated(ds.getVersionDeprecated());
+    this.setFields(ds.getFields().stream().collect(java.util.stream.Collectors.toList()));
+    mutatingCloneHook(this);
+  }
+]]> </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code> <![CDATA[
+  private void mutatingCloneHook(SchemaIndex s)
+  {
+    if (s.fields == null)
+      s.setFields(new java.util.ArrayList<>());
+
+  }
+
+ ]]> </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+<![CDATA[
+
+@Override
+  public int hashCode() {
+    return java.util.Objects.hash(
+          description
+        , name
+        , type
+        , unique
+        , versionAppeared
+        , versionDeprecated);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (!(obj instanceof SchemaIndex))
+      return false;
+    SchemaIndex other = (SchemaIndex) obj;
+    return java.util.Objects.equals(description, other.description)
+        && java.util.Objects.equals(name, other.name)
+        && java.util.Objects.equals(type, other.type)
+        && unique == other.unique
+        && java.util.Objects.equals(versionAppeared, other.versionAppeared)
+        && java.util.Objects.equals(versionDeprecated, other.versionDeprecated);
+  }
+
+]]>
+</code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+      <![CDATA[
+    @Override
+    public String toString() {
+        return  new StringBuilder().append("SchemaIndex [")
+          .append("type=").append(type)
+          .append(", unique=").append(unique)
+          .append(", name=").append(name)
+          .append(", description=").append(description)
+          .append(", versionAppeared=").append(versionAppeared)
+          .append(", versionDeprecated=").append(versionDeprecated)
+          .append("]").toString();
+    }
+      ]]>
+      </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+      <![CDATA[
+
+    @Override
+    public java.util.SortedSet<org.infrastructurebuilder.data.IBIndexField> getIndexFields() {
+      if ( this.fields == null )
+      {
+          this.fields = new java.util.ArrayList<IndexField>();
+      }
+
+      return this.fields.stream().collect(java.util.stream.Collectors.toCollection(java.util.TreeSet::new));
+    }
+
+      ]]>
+      </code>
         </codeSegment>
       </codeSegments>
     </class>
-     -->
+
+
+
+
+
+
+    <!-- <class java.clone="deep"> <name>PersistedIBSchemaInputLocation</name>
+      <version>1.0.0+</version> <fields> </fields> <codeSegments> <codeSegment>
+      <version>1.0.0+</version> <code> <![CDATA[ @Override public String toString()
+      { return getLineNumber() + " : " + getColumnNumber() + ", " + getSource();
+      } ]]> </code> </codeSegment> </codeSegments> </class> <class sourceTracker="source"
+      java.clone="shallow"> <name>PersistedIBSchemaInputSource</name> <version>1.0.0+</version>
+      <fields> <field> <name>modelId</name> <version>1.0.0+</version> <type>String</type>
+      </field> <field> <name>location</name> <version>1.0.0+</version> <type>String</type>
+      </field> </fields> <codeSegments> <codeSegment> <version>1.0.0+</version>
+      <code> <![CDATA[ @Override public String toString() { return getModelId()
+      + " " + getLocation(); } ]]> </code> </codeSegment> </codeSegments> </class> -->
     <class xml.tagName="gav" java.clone="deep">
       <name>Dependency</name>
       <version>1.0.0+</version>

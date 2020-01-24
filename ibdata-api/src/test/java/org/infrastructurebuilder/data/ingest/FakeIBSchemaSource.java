@@ -19,6 +19,7 @@ import static java.util.Optional.empty;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.infrastructurebuilder.data.IBSchemaSource;
@@ -26,16 +27,17 @@ import org.infrastructurebuilder.data.Metadata;
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.files.IBChecksumPathType;
+import org.infrastructurebuilder.util.files.IBResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FakeIBSchemaSource<P> implements IBSchemaSource<P> {
+  public static final String ID = "id";
   public final static Logger log = LoggerFactory.getLogger(FakeIBSchemaSource.class);
 
   @Override
-  public List<IBChecksumPathType> get() {
-    return Collections.emptyList();
+  public Map<String,IBResource> get() {
+    return Collections.emptyMap();
   }
 
   @Override
@@ -45,7 +47,7 @@ public class FakeIBSchemaSource<P> implements IBSchemaSource<P> {
 
   @Override
   public String getId() {
-    return "id";
+    return ID;
   }
 
   @Override

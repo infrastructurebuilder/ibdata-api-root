@@ -373,4 +373,8 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
     return empty();
   }
 
+  default Optional<String> getCredentialsQuery() {
+    return empty();
+  }
+
 }

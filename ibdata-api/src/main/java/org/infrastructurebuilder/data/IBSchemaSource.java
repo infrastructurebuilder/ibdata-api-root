@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.BasicCredentials;
@@ -23,17 +23,17 @@ import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigurableSupplier;
-import org.infrastructurebuilder.util.files.IBChecksumPathType;;
+import org.infrastructurebuilder.util.files.IBResource;;
 
 /**
  * An IBDataSource understands where a data stream originates and how to acquire
  * it. Furthermore, it actually acquires that datastream.
  *
- * An IBDataSource always returns `IBChecksumPathType` which is a path to an
+ * An IBDataSource always returns {@link IBResource} which is a path to an
  * acquired file with type and a checksum. The contract for IBDataSource: 1. An
  * IBDataSource should produce the same value for a get() call every time. This
  * means cacheing the results 1. the Path supplied is to the same file every
- * time. 1. The list of IBChecksumPathTypes is called for getMimeType(). This
+ * time. 1. The list of {@link IBResource} is called for getMimeType(). This
  * should probably be removed.
  *
  *
@@ -42,7 +42,7 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;;
  *
  */
 public interface IBSchemaSource<P>
-    extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap, P>, IBLoggerEnabled {
+    extends ConfigurableSupplier<Map<String,IBResource>, ConfigMap, P>, IBLoggerEnabled {
   /**
    * This is really a descriptive value, although it needs to be unique as well
    *

@@ -18,6 +18,7 @@ package org.infrastructurebuilder.data;
 import static java.util.Optional.empty;
 import static org.infrastructurebuilder.data.IBMetadataUtils.asChecksum;
 import static org.infrastructurebuilder.data.IBMetadataUtils.emptyXpp3Supplier;
+import static org.infrastructurebuilder.data.IBMetadataUtils.toDataSchema;
 import static org.infrastructurebuilder.data.IBMetadataUtils.toDataStream;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
 import static org.junit.Assert.assertEquals;
@@ -27,9 +28,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.UUID;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -77,6 +80,20 @@ public class IBMetadataUtilsTest {
     d2.setSha512(EMPTY_DOCUMENT_CHECKSUM);
     Checksum q = d2.getChecksum();
     DataStream ds = toDataStream.apply(d2);
+    assertNotNull(ds);
+  }
+  @Test
+  public void testToDataSchema() throws IOException {
+    Path p = wps.get();
+    Path v = p.resolve(UUID.randomUUID().toString());
+    FakeIBDataSchema d2 = new FakeIBDataSchema();
+    d2.setName("name");
+    d2.setDescription("desc");
+    d2.setCreationDate(new Date());
+    assertEquals(128, EMPTY_DOCUMENT_CHECKSUM.length());
+    d2.setSha512(EMPTY_DOCUMENT_CHECKSUM);
+    Checksum q = d2.asChecksum();
+    DataSchema ds = toDataSchema.apply(d2);
     assertNotNull(ds);
   }
 

@@ -18,7 +18,7 @@ package org.infrastructurebuilder.data.ingest;
 import static org.junit.Assert.assertEquals;
 
 import java.nio.file.Path;
-import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.IBDataIngester;
 import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
@@ -52,7 +52,7 @@ public class AbstractIBDataIngesterSupplierTest {
       }
 
       @Override
-      protected IBDataIngester getInstance(PathSupplier workingPath, Optional<Object> in) {
+      protected IBDataIngester getInstance(PathSupplier workingPath, Object in) {
         return null;
       }
     };

@@ -23,18 +23,17 @@ import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigurableSupplier;
-import org.infrastructurebuilder.util.files.IBChecksumPathType;
-;
+import org.infrastructurebuilder.util.files.IBResource;;
 
 /**
  * An IBDataSource understands where a data stream originates and how to acquire
  * it. Furthermore, it actually acquires that datastream.
  *
- * An IBDataSource always returns `IBChecksumPathType` which is a path to an
+ * An IBDataSource always returns {@link IBResource} which is a path to an
  * acquired file with type and a checksum. The contract for IBDataSource: 1. An
  * IBDataSource should produce the same value for a get() call every time. This
  * means cacheing the results 1. the Path supplied is to the same file every
- * time. 1. The list of IBChecksumPathTypes is called for getMimeType(). This
+ * time. 1. The list of {@link IBResource} es is called for getMimeType(). This
  * should probably be removed.
  *
  *
@@ -42,7 +41,7 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
  * @author mykel.alvis
  *
  */
-public interface IBDataSource<P> extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap,P> , IBLoggerEnabled {
+public interface IBDataSource<P> extends ConfigurableSupplier<List<IBResource>, ConfigMap, P>, IBLoggerEnabled {
 //  public static final String TARGET_PATH = "Source-Target-Path";
 
   String getSourceURL();

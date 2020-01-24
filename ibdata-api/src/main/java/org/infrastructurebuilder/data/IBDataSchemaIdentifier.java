@@ -15,12 +15,14 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.util.IBUtils.nullSafeStringComparator;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -98,5 +100,8 @@ public interface IBDataSchemaIdentifier extends ChecksumEnabled, Comparable<IBDa
     throw new IBDataException("getSuppliedDataStreams not implemented in the model or by default.  It must be overriden to supply");
   }
 
+  default Optional<String> getCredentialsQuery() {
+    return empty();
+  }
 
 }

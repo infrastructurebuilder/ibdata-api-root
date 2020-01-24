@@ -21,27 +21,31 @@ import java.util.function.Supplier;
 
 import javax.sql.DataSource;
 
-import org.infrastructurebuilder.util.BasicCredentials;
+import org.infrastructurebuilder.util.LoggerEnabled;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.slf4j.Logger;
 
 /**
- * Supplies the class name for the driver to make a Connection using a given JDBC URL
+ * Supplies the class name for the driver to make a Connection using a given
+ * JDBC URL
  *
  * @author mykel.alvis
  *
  */
-public interface IBDataDatabaseDriverSupplier {
+public interface IBDataDatabaseDriverSupplier extends LoggerEnabled {
 
-  Logger getLog();
   /**
-   * Return a list of coordinates that must be in the classpath in order to load the driver
-   * @return List of GAV items in order of required insertion into the (new) classpath that the driver will be created from
+   * Return a list of coordinates that must be in the classpath in order to load
+   * the driver
+   *
+   * @return List of GAV items in order of required insertion into the (new)
+   *         classpath that the driver will be created from
    */
   List<GAV> getRequiredArtifacts();
 
   /**
    * Returns the Jooq Dialect name for a JDBC url if possible
+   *
    * @param jdbcUrl
    * @return Jooq Dialect name or empty()
    */
@@ -49,12 +53,15 @@ public interface IBDataDatabaseDriverSupplier {
 
   /**
    * The mapped hint for type of component
+   *
    * @return
    */
   String getHint();
 
   /**
-   * The name of the Jooq SQLDialect enum.  Defaults to be the same as the getHint() call
+   * The name of the Jooq SQLDialect enum. Defaults to be the same as the
+   * getHint() call
+   *
    * @return
    */
   default String getJooqName() {
@@ -63,6 +70,7 @@ public interface IBDataDatabaseDriverSupplier {
 
   /**
    * Get an IBDatabaseDialect from a JDBC url if possible
+   *
    * @param jdbcUrl
    * @return IBDatabaseDialect or empty() if not possible
    */
@@ -70,5 +78,15 @@ public interface IBDataDatabaseDriverSupplier {
 
   boolean respondsTo(String jdbcURL);
 
-  Optional<Supplier<DataSource>> getDataSourceSupplier(String jdbcURL, Optional<BasicCredentials> creds);
+  Optional<Supplier<DataSource>> getDataSourceSupplier(URLAndCreds in);
+
+  /**
+   * Generate a schema by running the query against the target datastore
+   *
+   * @param jdbcURL URL of the target database
+   * @param query   query to run against the database
+   * @return {@link IBSchema} instance, if possible
+   */
+
+  Optional<IBSchema> schemaFrom(URLAndCreds in, String query, String nameSpace, String name, Optional<String> desc);
 }

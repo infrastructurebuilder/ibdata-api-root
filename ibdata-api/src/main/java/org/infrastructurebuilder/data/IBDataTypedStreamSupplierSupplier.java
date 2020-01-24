@@ -15,33 +15,33 @@
  */
 package org.infrastructurebuilder.data;
 
-import static java.util.Objects.requireNonNull;
-
-import java.util.List;
-import java.util.Optional;
-
-public interface IBDataTypedStreamSupplierSupplier {
-  // Weighted use.  Higher number gets used first
-  default Integer getWeight() {
-    return 0;
-  }
-
-  /**
-   * Does this factory supply suppliers for the given MIME type?
-   * @param mimeType
-   * @return true if the factory can supply a supplier for the given mime type
-   */
-  default boolean respondsTo(String mimeType) {
-    return getRespondsToTypes().contains(requireNonNull(mimeType));
-  }
-
-  List<String> getRespondsToTypes();
-
-  /**
-   * GEt the supplier from the stream
-   * @param ds
-   * @return a supplier of some type.  IF this factory does not respondsTyp that streams's type, return empty()
-   */
-  Optional<IBDataSpecificStreamFactory> from(IBDataStream ds);
-
-}
+//import static java.util.Objects.requireNonNull;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//public interface IBDataTypedStreamSupplierSupplier {
+//  // Weighted use.  Higher number gets used first
+//  default Integer getWeight() {
+//    return 0;
+//  }
+//
+//  /**
+//   * Does this factory supply suppliers for the given MIME type?
+//   * @param mimeType
+//   * @return true if the factory can supply a supplier for the given mime type
+//   */
+//  default boolean respondsTo(String mimeType) {
+//    return getRespondsToTypes().contains(requireNonNull(mimeType));
+//  }
+//
+//  List<String> getRespondsToTypes();
+//
+//  /**
+//   * GEt the supplier from the stream
+//   * @param ds
+//   * @return a supplier of some type.  IF this factory does not respondsTyp that streams's type, return empty()
+//   */
+//  Optional<IBDataSpecificStreamFactory> from(IBDataStream ds);
+//
+//}

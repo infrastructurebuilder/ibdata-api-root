@@ -32,7 +32,7 @@ import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
  */
 public interface IBDataEngine {
   // FIXME This won't work.  IbdataApiVersioning is loaded from the classpath, not localized
-  public static final IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.getVersion()).apiVersion();  // The final name of the metadata resources
+  public static final IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.apiVersion());  // The final name of the metadata resources
 
   /**
    * Should be overriden in implementations because top-level erasure is a thingS

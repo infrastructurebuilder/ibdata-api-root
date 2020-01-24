@@ -15,8 +15,6 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import java.nio.file.Path;
-
 import org.infrastructurebuilder.data.IBDataSourceSupplier;
 import org.infrastructurebuilder.data.IBDataStreamIdentifier;
 import org.infrastructurebuilder.util.config.PathSupplier;
@@ -25,8 +23,8 @@ public interface IBDataSourceSupplierMapper {
 
   boolean respondsTo(IBDataStreamIdentifier v);
 
-  IBDataSourceSupplier<?> getSupplierFor(String temporaryId, IBDataStreamIdentifier v);
+  IBDataSourceSupplier<?> getSupplierFor(IBDataStreamIdentifier v);
 
-  PathSupplier getWps();
+  PathSupplier getWorkingPathSupplier();
 
 }

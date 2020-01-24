@@ -17,11 +17,16 @@ package org.infrastructurebuilder.data;
 
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.data.ingest.IBDataSchemaIngestionConfig;
+
 /**
  * @author mykel.alvis
  *
  */
-public interface IBSchemaSourceSupplier extends Supplier<IBSchemaSource<?>>, Comparable<IBSchemaSourceSupplier> {
+public interface IBSchemaSourceSupplier extends Supplier<IBSchemaSource<?>>, Comparable<IBSchemaSourceSupplier>, AutoCloseable {
   String getId();
 
+  IBDataSchemaIngestionConfig getIngestionConfig();
+
+  // implement new close function if a supplier creates closeable objects
 }

@@ -25,5 +25,5 @@ public interface IBStreamerFactory {
    * @param ds Stream in question
    * @return Optional stream of objects from teh data stream
    */
-  Optional<Stream<? extends Object>> from(IBDataStream ds);
+  Optional<Stream<?>> from(IBDataStream ds);
 }

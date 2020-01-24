@@ -21,11 +21,11 @@ import java.util.Optional;
 
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.files.IBChecksumPathType;
+import org.infrastructurebuilder.util.files.IBResource;
 
 public interface WGetter {
 
-  Optional<List<IBChecksumPathType>> collectCacheAndCopyToChecksumNamedFile(boolean deleteExistingCacheIfPresent,
+  Optional<List<IBResource>> collectCacheAndCopyToChecksumNamedFile(boolean deleteExistingCacheIfPresent,
       Optional<BasicCredentials> creds, Path outputPath, String sourceString, Optional<Checksum> checksum,
       Optional<String> type,  int retries, int readTimeOut, boolean skipCache, boolean expandArchives);
 
@@ -39,6 +39,6 @@ public interface WGetter {
    * @return List of expanded read, typed, and renamed files, not including the original.
    */
 
-  List<IBChecksumPathType> expand(Path tempPath, IBChecksumPathType source, Optional<String> oSource);
+  List<IBResource> expand(Path tempPath, IBResource source, Optional<String> oSource);
 
 }

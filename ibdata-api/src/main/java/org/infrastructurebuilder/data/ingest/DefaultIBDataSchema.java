@@ -15,24 +15,24 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
+import static java.nio.file.Files.newBufferedWriter;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBDataException.cet;
+import static org.infrastructurebuilder.util.files.DefaultIBResource.fromPath;
 
 import java.io.Writer;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.PersistedIBSchema;
 import org.infrastructurebuilder.data.model.SchemaAsset;
 import org.infrastructurebuilder.data.model.io.xpp3.PersistedIBSchemaXpp3Writer;
-import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
 
 public class DefaultIBDataSchema extends DataSchema {
 
@@ -46,8 +46,8 @@ public class DefaultIBDataSchema extends DataSchema {
     finalized.putAll(requireNonNull(moreAssets).orElse(emptyMap()));
     // Unapologetically wipe out any hope of joy for inserting a PRIMARY asset
     finalized.put(PRIMARY, cet.withReturningTranslation(() -> {
-      final Path p = workingPath.resolve(UUID.randomUUID().toString());
-      try (Writer w = Files.newBufferedWriter(p)) {
+      final Path p = workingPath.resolve(randomUUID().toString());
+      try (Writer w = newBufferedWriter(p)) {
         writer.write(w, requireNonNull(primary, "Primary schema"));
         return p;
       }
@@ -55,7 +55,7 @@ public class DefaultIBDataSchema extends DataSchema {
     setSchemaAssets(finalized.entrySet().stream().map(e -> {
       return new SchemaAsset(e.getKey(), cet.withReturningTranslation(
           // Getting the correct SHA-512 can be expensive
-          () -> DefaultIBChecksumPathType.fromPath(e.getValue()) // Expensive part
+          () -> fromPath(e.getValue()) // Expensive part
               .moveTo(requireNonNull(workingPath, "working path")))
           .getChecksum().toString());
     }).collect(toList()));

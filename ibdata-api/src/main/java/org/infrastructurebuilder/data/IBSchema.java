@@ -16,6 +16,8 @@
 package org.infrastructurebuilder.data;
 
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.List;
 import java.util.Map;
@@ -23,13 +25,13 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
 
 public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
+  public static final String SCHEMA_IO_TYPE = IBSchema.class.getName();
 
   /**
    * Return Id. This value is calculated at persistence time, and is thus
@@ -58,7 +60,7 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
   /**
    * Get a detailed description of the schema.
    *
-   * @return String
+   * @return Non Null not empty String
    */
   Optional<String> getDescription(); // -- String getDescription()
 
@@ -70,6 +72,13 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
   SortedSet<IBField> getSchemaFields(); // -- from java.util.List<IBField> getFields()
 
   /**
+   * get schema fields. The sorting must be via {@code IBField#getIndex()}
+   *
+   * @return List
+   */
+  SortedSet<IBIndex> getSchemaIndexes(); // -- from java.util.List<IBField> getFields()
+
+  /**
    * Get additional metadata.
    *
    * @return Object
@@ -77,9 +86,16 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
   Metadata getMetadata(); // -- Object getMetadata()
 
   /**
+   * Get the namespace of the IBDataSchema.
+   *
+   * @return Non Null not empty String
+   */
+  Optional<String> getNameSpace(); // -- String getName()
+
+  /**
    * Get the full name of the IBDataSchema.
    *
-   * @return String
+   * @return Non Null not empty String
    */
   Optional<String> getName(); // -- String getName()
 
@@ -102,17 +118,18 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
 
   @Override
   default Checksum asChecksum() {
-    Map<String, String> map = getSchemaResourcesMappedFromName().entrySet().stream().collect(Collectors
-        .toMap(k -> k.getKey(), v -> v.getValue().stream().map(UUID::toString).sorted().collect(joining("|"))));
+    Map<String, String> map = getSchemaResourcesMappedFromName().entrySet().stream()
+        .collect(toMap(k -> k.getKey(), v -> v.getValue().stream().map(UUID::toString).sorted().collect(joining("|"))));
     return ChecksumBuilder.newInstance() //
+        .addString(getNameSpace()) // name
         .addString(getName()) // name
         .addString(getDescription()) // desc
         .addString(getMimeType()) // MIME type
         .addDate(getCreationDate()) // date
         .addString(getUrl()) // url
         .addString(getMetadata().toString()) // metadata as a string
-        .addSortedSetChecksumEnabled(
-            getSchemaFields().stream().collect(java.util.stream.Collectors.toCollection(TreeSet::new)))
+        .addSortedSetChecksumEnabled(getSchemaFields().stream().collect(toCollection(TreeSet::new)))
+        .addSortedSetChecksumEnabled(getSchemaIndexes().stream().collect(toCollection(TreeSet::new)))
         .addMapStringString(map) // Strings of UUIDs
         .asChecksum();
   }
@@ -139,4 +156,5 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
    */
 
   Optional<String> getUrl();
+
 }

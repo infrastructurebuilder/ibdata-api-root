@@ -68,13 +68,19 @@ public class IBDataDatabaseDriverSupplierTest {
       }
 
       @Override
-      public Optional<Supplier<DataSource>> getDataSourceSupplier(String jdbcURL, Optional<BasicCredentials> creds) {
+      public Optional<Supplier<DataSource>> getDataSourceSupplier(URLAndCreds in) {
         return empty();
       }
 
       @Override
       public Logger getLog() {
         return log;
+      }
+
+      @Override
+      public Optional<IBSchema> schemaFrom(URLAndCreds in, String query, String nameSpace, String name,
+          Optional<String> desc) {
+        return empty();
       }
 
     };

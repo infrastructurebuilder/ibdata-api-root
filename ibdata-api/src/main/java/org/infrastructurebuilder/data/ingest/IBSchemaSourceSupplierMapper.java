@@ -16,13 +16,15 @@
 package org.infrastructurebuilder.data.ingest;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.infrastructurebuilder.data.IBSchemaSourceSupplier;
+import org.infrastructurebuilder.util.CredentialsSupplier;
 
-public interface IBSchemaSourceSupplierMapper {
+public interface IBSchemaSourceSupplierMapper extends AutoCloseable, CredentialsSupplier {
   boolean respondsTo(IBDataSchemaIngestionConfig v);
 
-  IBSchemaSourceSupplier getSupplierFor(String temporaryId, IBDataSchemaIngestionConfig v);
+  Optional<IBSchemaSourceSupplier> getSupplierFor(IBDataSchemaIngestionConfig v);
 
   Path getWorkingPath();
 

@@ -23,6 +23,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -35,9 +37,13 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.data.model.DataStreamStructuredMetadata;
+import org.infrastructurebuilder.data.model.SchemaAsset;
+import org.infrastructurebuilder.data.model.SchemaType;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.w3c.dom.Document;
 
 public class IBMetadataUtils {
@@ -87,18 +93,21 @@ public class IBMetadataUtils {
     return writer.toString();
   });
 
-  public final static Function<Object, Metadata> translateToMetadata = (document) -> cet.withReturningTranslation(() -> {
-    if (document instanceof Metadata || document == null)
-      return (Metadata) document;
-    else if (document instanceof Document) {
-      Document d = (Document) document;
-      if (d.hasAttributes() || d.hasChildNodes())
-        return new Metadata(Xpp3DomBuilder.build(new StringReader(stringifyDocument.apply(d))));
-      else
-        return new Metadata();
-    } else
-      return new Metadata(Xpp3DomBuilder.build(new StringReader(document.toString()), true));
-  });
+  public final static Function<Object, Metadata> translateToMetadata = (document) -> cet
+      .withReturningTranslation(() -> {
+        if (document == null)
+          return new Metadata();
+        if (document instanceof Metadata)
+          return (Metadata) document;
+        if (document instanceof Document) {
+          Document d = (Document) document;
+          if (d.hasAttributes() || d.hasChildNodes())
+            return new Metadata(Xpp3DomBuilder.build(new StringReader(stringifyDocument.apply(d))));
+          else
+            return new Metadata();
+        } else
+          return new Metadata(Xpp3DomBuilder.build(new StringReader(document.toString()), true));
+      });
 
   public final static Function<Xpp3Dom, Checksum> asChecksum = (dom) -> {
     return new Checksum(new ByteArrayInputStream(dom.toString().getBytes(StandardCharsets.UTF_8)));
@@ -123,7 +132,37 @@ public class IBMetadataUtils {
 
       ds.setStructuredDataDescriptor(newSMD);
     });
-    return ds;
+    return ds.clone();
+  };
+
+  public final static Function<IBSchema, DataSchema> toDataSchema = (ibds) -> {
+    DataSchema ds = new DataSchema();
+    ds.setName(requireNonNull(ibds).getName().orElseThrow(() -> new IBDataException("Name is required")));
+    ds.setCreationDate(ibds.getCreationDate());
+    ds.setDescription(ibds.getDescription().orElseThrow(() -> new IBDataException("Description is required")));
+    ds.setMetadata(ibds.getMetadata());
+    ds.setSha512(ibds.asChecksum().toString());
+    ds.setUuid(ibds.asChecksum().asUUID().get().toString());
+    SchemaType schemaType = new SchemaType();
+    schemaType.setVersionedProvider(new DefaultGAV(IbdataApiVersioning.getJSONCoordinates())
+        .setVersion(IbdataApiVersioning.apiVersion()).asMavenDependencyGet().get());
+    ds.setSchemaType(schemaType);
+    List<SchemaAsset> schemaAssets = new ArrayList<>();
+    ibds.getSchemaResourcesMappedFromName().forEach((k, v) -> {
+      v.forEach(uuid -> {
+
+      });
+    });
+    ds.setSchemaAssets(schemaAssets);
+//    ibds.getPathIfAvailable().ifPresent(p -> {
+//      ds.setOriginalLength(new Long(cet.withReturningTranslation(() -> Files.size(p))).toString());
+//    });
+//    ibds.getStructuredDataMetadata().ifPresent(smd -> {
+//      DataStreamStructuredMetadata newSMD = new DataStreamStructuredMetadata();
+//
+//      ds.setStructuredDataDescriptor(newSMD);
+//    });
+    return ds.clone();
   };
 
 //  /**

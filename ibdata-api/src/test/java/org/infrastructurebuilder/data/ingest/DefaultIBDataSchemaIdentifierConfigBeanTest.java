@@ -15,10 +15,24 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.Metadata;
+import org.infrastructurebuilder.util.BasicCredentials;
+import org.infrastructurebuilder.util.CredentialsFactory;
+import org.infrastructurebuilder.util.DefaultBasicCredentials;
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,6 +41,7 @@ import org.junit.Test;;
 
 public class DefaultIBDataSchemaIdentifierConfigBeanTest {
 
+  private static final String SCHEMA = "schema";
   private static final String NAME = "A name";
   private static final String DESCRIPTION = "description";
 
@@ -39,15 +54,26 @@ public class DefaultIBDataSchemaIdentifierConfigBeanTest {
   }
 
   private DefaultIBDataSchemaIngestionConfig b;
+  private CredentialsFactory factory = new CredentialsFactory() {
+
+    @Override
+    public Optional<BasicCredentials> getCredentialsFor(String query) {
+      return Optional.ofNullable(("1".equals(query)) ? new DefaultBasicCredentials("A", Optional.of("B")) : null);
+    }
+  };
 
   @Before
   public void setUp() throws Exception {
     b = new DefaultIBDataSchemaIngestionConfig();
+    b.setCredentialsFactory(factory);
     b.setTemporaryId("A");
     b.setDescription(DESCRIPTION);
     b.getMetadata();
     b.setMetadata(new XmlPlexusConfiguration("metadata"));
     b.setName(NAME);
+    assertTrue(b.equals(b));
+    assertFalse(b.equals(null));
+    assertFalse(b.equals("X"));
   }
 
   @After
@@ -56,7 +82,7 @@ public class DefaultIBDataSchemaIdentifierConfigBeanTest {
 
   @Test
   public void testHashCode() {
-    assertEquals(-443259407, b.hashCode());
+    assertNotEquals(0, b.hashCode());
   }
 
   @Test
@@ -83,6 +109,46 @@ public class DefaultIBDataSchemaIdentifierConfigBeanTest {
   @Test
   public void testSetSchemaQuery() {
     b.setSchemaQuery(new SchemaQueryBean());
+  }
+
+  @Test(expected = IBDataException.class)
+  public void testSetSchemaQueryFail1() {
+    b.setInline(new XmlPlexusConfiguration(SCHEMA));
+    b.setSchemaQuery(new SchemaQueryBean());
+  }
+
+  @Test(expected = IBDataException.class)
+  public void testSetSchemaQueryFail2() {
+    b.setFiles(emptyList());
+    b.setSchemaQuery(new SchemaQueryBean());
+  }
+
+  @Test(expected = IBDataException.class)
+  public void testSetInlineFail1() {
+    b.setSchemaQuery(new SchemaQueryBean());
+    b.setInline(new XmlPlexusConfiguration(SCHEMA));
+  }
+
+  @Test(expected = IBDataException.class)
+  public void testSetInlineFail2() {
+    b.setFiles(emptyList());
+    b.setInline(new XmlPlexusConfiguration(SCHEMA));
+  }
+
+  @Test(expected = IBDataException.class)
+  public void testSetInlineFail3() {
+    b.setInline(new XmlPlexusConfiguration("A"));
+  }
+
+  @Test
+  public void testToString() {
+    assertNotNull(b.toString());
+  }
+
+  @Test
+  public void testAsconfigMap() {
+    ConfigMap q = b.asConfigMap();
+    assertEquals("A", q.get(IBConstants.TEMPORARYID));
   }
 
 }

@@ -28,8 +28,8 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
-import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
-import org.infrastructurebuilder.util.files.IBChecksumPathType;
+import org.infrastructurebuilder.util.files.DefaultIBResource;
+import org.infrastructurebuilder.util.files.IBResource;
 
 /**
  * An IBDataSet is a logical grouping of D
@@ -67,9 +67,9 @@ public interface IBDataSet extends IBDataSetIdentifier {
 
   }
 
-  default IBChecksumPathType asChecksumType() {
+  default IBResource asChecksumType() {
     Checksum c = new Checksum();
-    return DefaultIBChecksumPathType.from(Paths.get(getPath().get()), c, APPLICATION_IBDATA_ARCHIVE);
+    return DefaultIBResource.from(Paths.get(getPath().get()), c, APPLICATION_IBDATA_ARCHIVE);
   }
 
   default List<IBDataStream> asStreamsList() {

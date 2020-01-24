@@ -31,9 +31,8 @@
   <description>APIs for dealing with data streams</description>
   <!-- URL for site gen -->
   <properties>
-    <test.coverage.percentage.required>74</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>7</jacoco.max.missed.classes>
-    <ibcore.bom.version>0.16.0.0-SNAPSHOT</ibcore.bom.version>
+    <test.coverage.percentage.required>83</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
   </properties>
   <url>${github.url.base}/${project.artifactId}</url>
   <dependencies>

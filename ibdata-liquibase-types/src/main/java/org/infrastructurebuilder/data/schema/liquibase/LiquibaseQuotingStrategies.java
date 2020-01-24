@@ -13,31 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.ingest;
+package org.infrastructurebuilder.data.schema.liquibase;
 
-import java.util.Objects;
-
-import org.infrastructurebuilder.data.IBSchemaDAO;
-import org.infrastructurebuilder.data.IBSchemaDAOSupplier;
-
-public class DefaultIBSchemaDAOSupplier implements IBSchemaDAOSupplier {
-
-  private final String tempId;
-  private final IBSchemaDAO dao;
-
-  public DefaultIBSchemaDAOSupplier(String tempId, IBSchemaDAO dao) {
-    this.tempId = tempId;
-    this.dao = Objects.requireNonNull(dao);
-  }
-
-  @Override
-  public IBSchemaDAO get() {
-    return dao;
-  }
-
-  @Override
-  public String getTemporaryId() {
-    return tempId;
-  }
+public enum LiquibaseQuotingStrategies {
+  LEGACY, // - Same behavior as in Liquibase 2.0
+  QUOTE_ALL_OBJECTS, // - Every object gets quoted. e.g. person becomes "person".
+  QUOTE_ONLY_RESERVED_WORDS, // - Quote reserved keywords and invalid column names.
 
 }
