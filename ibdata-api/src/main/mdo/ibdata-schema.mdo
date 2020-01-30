@@ -190,6 +190,9 @@
     this.setUuid(java.util.Optional.ofNullable(ds.getUuid()).map(java.util.UUID::toString).orElse(null));
     this.setForcedMap(ds.getForcedMap().stream().collect(java.util.stream.Collectors.toList()));
     this.setUrl(ds.getUrl().orElse(null));
+    this.decoratedSchemaResources = ds.decoratedSchemaResources;
+
+    this.
 
     mutatingDataSchemaCloneHook(this);
   }
@@ -391,6 +394,28 @@
       f.setIndex(i);
     }
     return this;
+  }
+              ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  private java.util.Map<String, org.infrastructurebuilder.data.IBDecoratedSchemaSupplier> decoratedSchemaResources = null;
+
+  @Override
+  public java.util.Map<String, org.infrastructurebuilder.data.IBDecoratedSchemaSupplier> getDecoratedSchemaResources() {
+    return decoratedSchemaResources;
+  }
+
+  public void setDecoratedSchemaResources(
+      java.util.List<org.infrastructurebuilder.data.IBDecoratedSchemaSupplier> decoratedSchemaResources) {
+    this.decoratedSchemaResources = java.util.Optional.ofNullable(decoratedSchemaResources)
+        .map(s -> s.stream()
+            .collect(java.util.stream.Collectors.toMap(v -> v.getType(), java.util.function.Function.identity())))
+        .orElseThrow(
+            () -> new org.infrastructurebuilder.data.IBDataException("decoratedSchemaResoures have not been set"));
   }
               ]]>
           </code>

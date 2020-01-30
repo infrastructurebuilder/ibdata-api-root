@@ -19,8 +19,10 @@ import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.infrastructurebuilder.data.IBDataException;
@@ -33,7 +35,8 @@ import org.infrastructurebuilder.util.artifacts.Checksum;;
 public class DefaultIBDataStreamIdentifierConfigBean extends DataStream {
   private static final long serialVersionUID = -4944685799856848753L;
   private boolean expandArchives;
-  private SchemaQueryBean schemaQuery = new SchemaQueryBean();
+  private SchemaQueryBean schemaQuery = null;
+  private IBJDBCQuery databaseQuery;
 
   public DefaultIBDataStreamIdentifierConfigBean() {
   }
@@ -47,7 +50,8 @@ public class DefaultIBDataStreamIdentifierConfigBean extends DataStream {
       DefaultIBDataStreamIdentifierConfigBean p = (DefaultIBDataStreamIdentifierConfigBean) o;
       setTemporaryId(p.getTemporaryId().orElse(null));
       this.expandArchives = p.expandArchives;
-      this.schemaQuery = p.schemaQuery;
+      this.schemaQuery = p.getSchemaQuery().map(SchemaQueryBean::copy).orElse(null);
+      this.databaseQuery = p.getDatabaseQuery().map(IBJDBCQuery::copy).orElse(null);
     }
   }
 
@@ -130,4 +134,35 @@ public class DefaultIBDataStreamIdentifierConfigBean extends DataStream {
     return super.getMetadata();
   }
 
+  public void setDatabaseQuery(IBJDBCQuery databaseQuery) {
+    this.databaseQuery = databaseQuery;
+  }
+
+  public Optional<IBJDBCQuery> getDatabaseQuery() {
+    return ofNullable(databaseQuery);
+  }
+
+  @Override
+  public String getReferencedSchema() {
+    if (getSchemaQuery().isPresent()) {
+      return getSchemaQuery().map(sq -> {
+        List<UUID> l = sq.get();
+        if (l.size() != 1)
+          throw new IBDataException("List of queried schemas was more than 1 : " + l);
+        return l.get(0).toString();
+      }).orElseThrow(() -> new IBDataException("Query must return a single schema id"));
+    }
+    return super.getReferencedSchema();
+  }
+
+  public Optional<SchemaQueryBean> getSchemaQuery() {
+    return ofNullable(schemaQuery);
+  }
+
+  @Override
+  public Optional<String> getUrl() {
+    if (getDatabaseQuery().isPresent())
+      return Optional.of(getDatabaseQuery().get().getUrl());
+    return super.getUrl();
+  }
 }

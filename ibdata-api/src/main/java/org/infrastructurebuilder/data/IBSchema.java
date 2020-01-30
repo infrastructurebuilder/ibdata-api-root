@@ -147,6 +147,8 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
    */
   Map<String, List<UUID>> getSchemaResourcesMappedFromName();
 
+  Map<String, IBDecoratedSchemaSupplier> getDecoratedSchemaResources();
+
   /**
    * URL of schema. May be prefaced with a type (i.e.
    * avro:file:/path/to/schema.avsc). Types must map to hints of components that
@@ -157,4 +159,8 @@ public interface IBSchema extends ChecksumEnabled, Comparable<IBSchema> {
 
   Optional<String> getUrl();
 
+  default String xSVHeaderLine(String separator) {
+    return getSchemaFields().stream().filter(i -> !i.isDeprecated()).map(sf -> "\"" + sf.getName() + "\"")
+        .collect(joining(separator));
+  }
 }

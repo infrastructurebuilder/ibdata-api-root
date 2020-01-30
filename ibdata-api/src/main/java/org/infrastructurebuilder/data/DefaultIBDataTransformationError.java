@@ -43,4 +43,12 @@ public class DefaultIBDataTransformationError implements IBDataTransformationErr
   public Optional<Throwable> getError() {
     return e;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("DefaultIBDataTransformationError [message=").append(message).append(", e=").append(e).append("]");
+    return builder.toString();
+  }
+
 }

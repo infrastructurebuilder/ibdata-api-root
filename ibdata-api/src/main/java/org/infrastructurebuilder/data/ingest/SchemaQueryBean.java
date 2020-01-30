@@ -28,6 +28,13 @@ public class SchemaQueryBean implements Supplier<List<UUID>> {
   private String byUUID = null;
   private String byLookup = null;
 
+  public SchemaQueryBean() {
+  }
+  private SchemaQueryBean(String byUUID2, String byLookup2) {
+    this.byLookup = byLookup2;
+    this.byUUID = byUUID2;
+  }
+
   public void setByLookup(String byLookup) {
     if (byUUID != null)
       throw new IBDataException(ERROR);
@@ -48,6 +55,10 @@ public class SchemaQueryBean implements Supplier<List<UUID>> {
   private String getUUID() {
     // FIXME Fix the query lookup. This is definitely not OK
     return this.byUUID;
+  }
+
+  public SchemaQueryBean copy() {
+    return new SchemaQueryBean(byUUID, byLookup);
   }
 
 }

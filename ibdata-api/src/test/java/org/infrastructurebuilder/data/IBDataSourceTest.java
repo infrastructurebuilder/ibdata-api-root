@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.BasicCredentials;
+import org.infrastructurebuilder.util.URLAndCreds;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
@@ -34,8 +35,7 @@ import org.infrastructurebuilder.util.files.IBResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-;
+import org.slf4j.LoggerFactory;;
 
 public class IBDataSourceTest {
   public final static Logger log = LoggerFactory.getLogger(IBDataSourceTest.class);
@@ -59,11 +59,6 @@ public class IBDataSourceTest {
       }
 
       @Override
-      public String getSourceURL() {
-        return null;
-      }
-
-      @Override
       public Optional<String> getName() {
         return empty();
       }
@@ -84,11 +79,6 @@ public class IBDataSourceTest {
       }
 
       @Override
-      public Optional<BasicCredentials> getCredentials() {
-        return empty();
-      }
-
-      @Override
       public Optional<Checksum> getChecksum() {
         return empty();
       }
@@ -97,9 +87,21 @@ public class IBDataSourceTest {
       public IBDataSource<Object> configure(ConfigMap config) {
         return this;
       }
+
       @Override
       public Optional<String> getMimeType() {
         return Optional.of(APPLICATION_OCTET_STREAM);
+      }
+
+      @Override
+      public Optional<String> getNamespace() {
+        return empty();
+      }
+
+      @Override
+      public URLAndCreds getSource() {
+        // TODO Auto-generated method stub
+        return null;
       }
     };
   }
@@ -108,6 +110,7 @@ public class IBDataSourceTest {
   public void testIsExpand() {
     assertFalse(i.isExpandArchives());
   }
+
   @Test
   public void testGetMimeType() {
     assertEquals(APPLICATION_OCTET_STREAM, i.getMimeType().get());

@@ -17,6 +17,8 @@ package org.infrastructurebuilder.data;
 
 import java.util.Optional;
 
+import org.infrastructurebuilder.util.URLAndCreds;
+
 public interface IBDatabaseDialectMapper {
 
 
@@ -25,6 +27,6 @@ public interface IBDatabaseDialectMapper {
    * @param jdbcURL
    * @return a (disposable) instance if available and empty() otherwise
    */
-  Optional<IBDataDatabaseDriverSupplier> getSupplierForURL(String jdbcURL);
+  Optional<IBDataDatabaseDriverSupplier> getSupplierForURL(URLAndCreds jdbcURL);
 
 }

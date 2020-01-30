@@ -54,7 +54,7 @@ public class DefaultIBDataSchemaIdentifierConfigBeanTest {
   }
 
   private DefaultIBDataSchemaIngestionConfig b;
-  private CredentialsFactory factory = new CredentialsFactory() {
+  private CredentialsFactory cf = new CredentialsFactory() {
 
     @Override
     public Optional<BasicCredentials> getCredentialsFor(String query) {
@@ -65,7 +65,6 @@ public class DefaultIBDataSchemaIdentifierConfigBeanTest {
   @Before
   public void setUp() throws Exception {
     b = new DefaultIBDataSchemaIngestionConfig();
-    b.setCredentialsFactory(factory);
     b.setTemporaryId("A");
     b.setDescription(DESCRIPTION);
     b.getMetadata();

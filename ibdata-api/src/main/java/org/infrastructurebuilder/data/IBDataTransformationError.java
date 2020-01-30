@@ -17,10 +17,15 @@ package org.infrastructurebuilder.data;
 
 import java.util.Optional;
 
-public interface IBDataTransformationError {
+public interface IBDataTransformationError extends Comparable<IBDataTransformationError> {
 
   Optional<String> getMessage();
 
   Optional<Throwable> getError();
+
+  @Override
+  default int compareTo(IBDataTransformationError o) {
+    return toString().compareTo(o.toString());
+  }
 
 }

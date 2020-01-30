@@ -54,7 +54,6 @@ public class IBJDBCQueryTest {
   @Before
   public void setUp() throws Exception {
     q = new IBJDBCQuery();
-    q.setFactory(cf);
     q.setServerId("1");
     q.setUrl(JDBC__URL);
     assertNotNull(q.toString());
@@ -76,7 +75,7 @@ public class IBJDBCQueryTest {
 
   @Test
   public void testGetCreds() {
-    BasicCredentials v = q.getCreds().get();
+    BasicCredentials v = cf.getCredentialsFor(q).get();
     assertEquals("SA", v.getKeyId());
     assertFalse(v.getSecret().isPresent());
   }

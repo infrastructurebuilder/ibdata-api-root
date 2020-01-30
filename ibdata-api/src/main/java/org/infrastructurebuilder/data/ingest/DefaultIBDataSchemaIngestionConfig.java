@@ -43,20 +43,14 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
   private String name;
   private String description;
   private XmlPlexusConfiguration metadata;
-  private XmlPlexusConfiguration inline;
   private List<File> files;
-  private SchemaQueryBean schemaQuery;
-  private String credentialsQuery;
+  private String serverId;
   private IBJDBCQuery databaseQuery;
-  private CredentialsFactory factory;
+  private XmlPlexusConfiguration inline;
+  private SchemaQueryBean schemaQuery;
 
   public DefaultIBDataSchemaIngestionConfig() {
     super();
-  }
-
-  DefaultIBDataSchemaIngestionConfig setCredentialsFactory(CredentialsFactory factory) {
-    this.factory = factory;
-    return this;
   }
 
   public void setTemporaryId(String temporaryId) {
@@ -133,8 +127,7 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
 
   @Override
   public int hashCode() {
-    return Objects.hash(description, files, inline, getMetadata(), name, schemaQuery, temporaryId, databaseQuery,
-        factory);
+    return Objects.hash(description, files, inline, getMetadata(), name, schemaQuery, temporaryId, databaseQuery);
   }
 
   @Override
@@ -147,8 +140,7 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
     return Objects.equals(description, other.description) && Objects.equals(files, other.files)
         && Objects.equals(inline, other.inline) && Objects.equals(metadata, other.metadata)
         && Objects.equals(name, other.name) && Objects.equals(schemaQuery, other.schemaQuery)
-        && Objects.equals(databaseQuery, other.databaseQuery) && Objects.equals(factory, other.factory)
-        && Objects.equals(temporaryId, other.temporaryId);
+        && Objects.equals(databaseQuery, other.databaseQuery) && Objects.equals(temporaryId, other.temporaryId);
   }
 
   @Override
@@ -164,7 +156,7 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
   }
 
   public void setDatabaseQuery(IBJDBCQuery databaseQuery) {
-    this.databaseQuery = databaseQuery.setFactory(factory);
+    this.databaseQuery = databaseQuery;
   }
 
   @Override
@@ -172,12 +164,12 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
     return ofNullable(this.databaseQuery);
   }
 
-  public void setCredentialsQuery(String credentialsQuery) {
-    this.credentialsQuery = credentialsQuery;
+  public void setServerId(String credentialsQuery) {
+    this.serverId = credentialsQuery;
   }
 
   @Override
   public Optional<String> getCredentialsQuery() {
-    return ofNullable(this.credentialsQuery);
+    return ofNullable(this.serverId);
   }
 }

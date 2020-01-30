@@ -18,18 +18,36 @@ package org.infrastructurebuilder.data.ingest;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
+import java.util.Objects;
 import java.util.Optional;
 
-import org.infrastructurebuilder.data.URLAndCreds;
+import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.CredentialsFactory;
+import org.infrastructurebuilder.util.URLAndCreds;
 
 public class IBJDBCQuery implements URLAndCreds {
 
   private String url; // jdbc url
   private String serverId; // from settings
-  private CredentialsFactory factory;
+  private String table;
+  private String where;
 
+  public IBJDBCQuery() {
+  }
+
+
+  public IBJDBCQuery(String url2, String serverId2, String table2, String where2) {
+    this.url = url2;
+    this.serverId = serverId2;
+    this.table = table2;
+    this.where = where2;
+  }
+
+
+  public IBJDBCQuery copy(){
+    return new IBJDBCQuery(url, serverId, table, where);
+  }
   public void setServerId(String serverId) {
     this.serverId = serverId;
   }
@@ -49,18 +67,38 @@ public class IBJDBCQuery implements URLAndCreds {
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    builder.append("IBJDBCQuery [url=").append(url).append(", serverId=").append(serverId).append("]");
+    builder.append("IBJDBCQuery [")
+    .append("url=").append(url)
+    .append(", table=").append(table)
+    .append(", where=").append(where)
+    .append(", serverId=").append(serverId)
+    .append("]");
     return builder.toString();
   }
 
-  IBJDBCQuery setFactory(CredentialsFactory factory) {
-    this.factory = factory;
-    return this;
+  public void setTable(String table) {
+    this.table = table;
   }
+
+  public void setWhere(String where) {
+    this.where = where;
+  }
+
+  public Optional<String> getWhere() {
+    return ofNullable(where);
+  }
+
+  public String getTable() {
+    return requireNonNull(table, "table name is required");
+  }
+
+  public Optional<String> getQuery() {
+    return ofNullable(where);
+  }
+
 
   @Override
-  public Optional<BasicCredentials> getCreds() {
-    return getServerId().flatMap(factory::getCredentialsFor);
+  public Optional<String> getCredentialsQuery() {
+    return getServerId();
   }
-
 }

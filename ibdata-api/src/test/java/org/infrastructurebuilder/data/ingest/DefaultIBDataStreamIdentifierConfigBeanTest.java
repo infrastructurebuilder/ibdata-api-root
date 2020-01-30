@@ -50,7 +50,7 @@ public class DefaultIBDataStreamIdentifierConfigBeanTest {
   private TestingPathSupplier wps;
   private Properties properties;
   private Path target;
-  private Map<String, IBDataSourceSupplier> dataSourceSuppliers;
+  private Map<String, IBDataSourceSupplier<?>> dataSourceSuppliers;
   private DefaultIBDataSetIdentifier ds, dsMulti;
   private ArrayList<DefaultIBDataStreamIdentifierConfigBean> streams;
   private DefaultIBDataStreamIdentifierConfigBean ds1;

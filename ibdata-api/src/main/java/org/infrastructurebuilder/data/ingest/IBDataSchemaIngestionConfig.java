@@ -77,7 +77,7 @@ public interface IBDataSchemaIngestionConfig {
     getDescription().ifPresent(d -> cm.put(DESCRIPTION, d));
     cm.put(METADATA, getMetadata());
     getInline().ifPresent(i -> cm.put(SCHEMA, i));
-    cm.put(SCHEMA_QUERY, getSchemaQuery()); // Injects opti
+    getSchemaQuery().ifPresent(i -> cm.put(SCHEMA_QUERY, i));
     getCredentialsQuery().ifPresent(cq -> cm.put(CREDS_QUERY, cq));
     return cm;
   }

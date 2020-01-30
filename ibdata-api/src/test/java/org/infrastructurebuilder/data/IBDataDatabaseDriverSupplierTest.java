@@ -20,13 +20,17 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.sql.DataSource;
 
 import org.infrastructurebuilder.util.BasicCredentials;
+import org.infrastructurebuilder.util.CredentialsFactory;
+import org.infrastructurebuilder.util.URLAndCreds;
 import org.infrastructurebuilder.util.artifacts.GAV;
+import org.infrastructurebuilder.util.files.IBResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -48,7 +52,7 @@ public class IBDataDatabaseDriverSupplierTest {
       }
 
       @Override
-      public Optional<String> getDatabaseDriverClassName(String jdbcUrl) {
+      public Optional<String> getDatabaseDriverClassName(URLAndCreds jdbcUrl) {
         return empty();
       }
 
@@ -58,12 +62,12 @@ public class IBDataDatabaseDriverSupplierTest {
       }
 
       @Override
-      public Optional<IBDatabaseDialect> getDialect(String jdbcUrl) {
+      public Optional<IBDatabaseDialect> getDialect(URLAndCreds jdbcUrl) {
         return empty();
       }
 
       @Override
-      public boolean respondsTo(String jdbcURL) {
+      public boolean respondsTo(URLAndCreds jdbcURL) {
         return false;
       }
 
@@ -78,8 +82,20 @@ public class IBDataDatabaseDriverSupplierTest {
       }
 
       @Override
-      public Optional<IBSchema> schemaFrom(URLAndCreds in, String query, String nameSpace, String name,
+      public CredentialsFactory getCredentialsFactory() {
+        return new CredentialsFactory() {
+
+          @Override
+          public Optional<BasicCredentials> getCredentialsFor(String query) {
+            return empty();
+          }
+        };
+      }
+
+      @Override
+      public Optional<Map<String, IBResource>> schemaFrom(URLAndCreds in, String query, String nameSpace, String name,
           Optional<String> desc) {
+        // TODO Auto-generated method stub
         return empty();
       }
 

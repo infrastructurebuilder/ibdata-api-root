@@ -30,7 +30,10 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.infrastructurebuilder.util.CredentialsFactory;
+import org.infrastructurebuilder.util.DefaultURLAndCreds;
 import org.infrastructurebuilder.util.IBUtils;
+import org.infrastructurebuilder.util.URLAndCreds;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
@@ -375,6 +378,10 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
   default Optional<String> getCredentialsQuery() {
     return empty();
+  }
+
+  default Optional<URLAndCreds> getURLAndCreds() {
+    return getUrl().map(u -> new DefaultURLAndCreds(u, getCredentialsQuery()));
   }
 
 }

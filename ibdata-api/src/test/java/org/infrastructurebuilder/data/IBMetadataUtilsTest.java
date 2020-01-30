@@ -17,7 +17,7 @@ package org.infrastructurebuilder.data;
 
 import static java.util.Optional.empty;
 import static org.infrastructurebuilder.data.IBMetadataUtils.asChecksum;
-import static org.infrastructurebuilder.data.IBMetadataUtils.emptyXpp3Supplier;
+import static org.infrastructurebuilder.data.IBMetadataUtils.emptyMetadataSupplier;
 import static org.infrastructurebuilder.data.IBMetadataUtils.toDataSchema;
 import static org.infrastructurebuilder.data.IBMetadataUtils.toDataStream;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
@@ -52,7 +52,7 @@ public class IBMetadataUtilsTest {
 
   @Before
   public void setUp() throws Exception {
-    testDocument = emptyXpp3Supplier.get();
+    testDocument = emptyMetadataSupplier.get();
     testDocument2 = translateToMetadata.apply(IBUtils.readFile(wps.getTestClasses().resolve(TEST_INPUT_0_11_XML_WO_SLASH)));
   }
 

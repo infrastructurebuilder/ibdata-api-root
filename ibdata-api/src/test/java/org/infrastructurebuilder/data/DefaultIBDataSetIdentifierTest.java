@@ -15,11 +15,14 @@
  */
 package org.infrastructurebuilder.data;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.infrastructurebuilder.data.ingest.DefaultIBDataSetIdentifier;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class DefaultIBDataSetIdentifierTest {
 
@@ -37,14 +40,14 @@ public class DefaultIBDataSetIdentifierTest {
   public void setUp() throws Exception {
     i = new DefaultIBDataSetIdentifier().injectGAV("A", "B", "1.0");
   }
+  @Test
+  public void TestToString() {
+    assertNotNull(new DefaultIBDataSetIdentifier().toString());
+  }
 
   @After
   public void tearDown() throws Exception {
   }
 
-//  @Test
-//  public void testFrom() {
-//    assertNotNull(DefaultIBDataSetIdentifier.from(i));
-//  }
 
 }

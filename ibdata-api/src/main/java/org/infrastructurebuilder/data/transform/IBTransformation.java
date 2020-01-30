@@ -37,6 +37,4 @@ public interface IBTransformation extends DataSetEnabled {
 
   ConfigMap getFinalizerConfig();
 
-  void forceDefaults(String groupId, String artifactId, String version);
-
 }

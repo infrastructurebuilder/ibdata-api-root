@@ -19,9 +19,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import org.infrastructurebuilder.data.IBSchemaSourceSupplier;
-import org.infrastructurebuilder.util.CredentialsSupplier;
 
-public interface IBSchemaSourceSupplierMapper extends AutoCloseable, CredentialsSupplier {
+public interface IBSchemaSourceSupplierMapper extends AutoCloseable {
   boolean respondsTo(IBDataSchemaIngestionConfig v);
 
   Optional<IBSchemaSourceSupplier> getSupplierFor(IBDataSchemaIngestionConfig v);

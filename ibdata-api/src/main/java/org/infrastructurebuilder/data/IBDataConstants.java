@@ -53,11 +53,6 @@ public interface IBDataConstants {
   public static final String LIQUIBASE_DATABASE_CORE_MARIA_DB_DATABASE = "liquibase.database.core.MariaDBDatabase";
 
 
-  // IBData's preferred content type for protobug is PROTOBUF0
-  public static final String PROTOBUF0 = "application/vnd.google.protobuf";
-  public static final String PROTOBUF1 = "application/x-protobuf";
-  public static final String PROTOBUF2 = "application/x-google-protobuf";
-  public static final String PROTOBUF3 = "application/protobuf";
 
   public static final String QUERY = "query";
   public static final String DIALECT = "dialect";
@@ -65,7 +60,6 @@ public interface IBDataConstants {
   public static final String SCHEMA_QUERY = "schemaQuery";
   public static final String CREDS_QUERY = "credsQuery";
 
-  public static final String NAMESPACE = "namespace";
   public static final String METADATA = "metadata";
   public static final String INLINE = "inline";
 

@@ -38,10 +38,15 @@ public class FakeIBTransformation implements IBTransformation {
   // TODO Auto-generated constructor stub
 
   public FakeIBTransformation() {
-    this(null, "some name", "some description", null);
+    this( "X", "Y", "1.0.0");
   }
 
-  public FakeIBTransformation(String id, String name, String desc, XmlPlexusConfiguration xmlPlexusConfiguration) {
+  public FakeIBTransformation(String groupId, String artifactId, String version) {
+    this(null, "some name", "some description", null, groupId, artifactId, version);
+  }
+
+  public FakeIBTransformation(String id, String name, String desc, XmlPlexusConfiguration xmlPlexusConfiguration,
+      String groupId, String artifactId, String version) {
     this.id = id;
     this.name = name;
     this.desc = desc;
@@ -97,12 +102,6 @@ public class FakeIBTransformation implements IBTransformation {
   public ConfigMap getFinalizerConfig() {
     // TODO Auto-generated method stub
     return null;
-  }
-
-  @Override
-  public void forceDefaults(String groupId, String artifactId, String version) {
-    // TODO Auto-generated method stub
-
   }
 
 }

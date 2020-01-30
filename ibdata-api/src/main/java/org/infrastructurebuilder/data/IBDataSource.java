@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.IBLoggerEnabled;
+import org.infrastructurebuilder.util.URLAndCreds;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigurableSupplier;
@@ -44,13 +45,17 @@ import org.infrastructurebuilder.util.files.IBResource;;
 public interface IBDataSource<P> extends ConfigurableSupplier<List<IBResource>, ConfigMap, P>, IBLoggerEnabled {
 //  public static final String TARGET_PATH = "Source-Target-Path";
 
-  String getSourceURL();
+  URLAndCreds getSource();
 
-  Optional<BasicCredentials> getCredentials();
+//  String getSourceURL();
+//
+//  Optional<BasicCredentials> getCredentials();
 
   Optional<Checksum> getChecksum();
 
   Optional<Metadata> getMetadata();
+
+  Optional<String> getNamespace();
 
   Optional<String> getName();
 

@@ -26,7 +26,7 @@ import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_XML;
-import static org.infrastructurebuilder.IBConstants.AVRO_BINARY;
+import static org.infrastructurebuilder.IBConstants.*;
 import static org.infrastructurebuilder.IBConstants.JAVA_LANG_STRING;
 import static org.infrastructurebuilder.IBConstants.ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD;
 import static org.infrastructurebuilder.IBConstants.ORG_W3C_DOM_NODE;
@@ -285,6 +285,9 @@ public class IBDataModelUtils {
     case TEXT_PLAIN:
     case TEXT_PSV:
     case TEXT_TSV:
+    case TEXT_CSV_WITH_HEADER:
+    case TEXT_PSV_WITH_HEADER:
+    case TEXT_TSV_WITH_HEADER:
       return of(JAVA_LANG_STRING);
     default: // FIXME there are other types to return
       return empty();

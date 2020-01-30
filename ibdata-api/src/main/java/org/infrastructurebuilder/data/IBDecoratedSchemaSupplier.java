@@ -15,26 +15,11 @@
  */
 package org.infrastructurebuilder.data;
 
-//import java.util.List;
-//
-//public interface IBDataSchemaTransformer {
-//  /**
-//   * The types of schema that are valid inputs for this transformer
-//   *
-//   * @return
-//   */
-//  List<String> getValidTypes();
-//
-//  /**
-//   * The types of results that can validly be produced by this transformer
-//   *
-//   * @return
-//   */
-//  List<String> getValidResults();
-//
-//  /**
-//   * Transform the inbound schema into a schema of the type specified in outbound
-//   * type
-//   */
-//  IBDataSchemaTransformerResults getResultFrom(IBDataSchemaIdentifier in, String out);
-//}
+import java.util.function.Supplier;
+
+public interface IBDecoratedSchemaSupplier {
+
+  String getType();
+
+  Supplier<Object> getSchemaSupplier();
+}

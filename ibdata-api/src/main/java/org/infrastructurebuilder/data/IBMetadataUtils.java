@@ -56,7 +56,7 @@ public class IBMetadataUtils {
 //  public final static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //  public final static Supplier<DocumentBuilder> builderSupplier = () -> cet
 //      .withReturningTranslation(() -> factory.newDocumentBuilder());
-  public final static Supplier<Metadata> emptyXpp3Supplier = () -> new Metadata();
+  public final static Supplier<Metadata> emptyMetadataSupplier = () -> new Metadata();
 
   private final static TransformerFactory tf = TransformerFactory.newInstance();
   private final static Supplier<Transformer> tfSupplier = () -> {

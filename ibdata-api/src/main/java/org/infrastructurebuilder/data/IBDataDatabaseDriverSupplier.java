@@ -15,15 +15,20 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Collections.emptyMap;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.sql.DataSource;
 
+import org.infrastructurebuilder.util.CredentialsFactory;
 import org.infrastructurebuilder.util.LoggerEnabled;
+import org.infrastructurebuilder.util.URLAndCreds;
 import org.infrastructurebuilder.util.artifacts.GAV;
-import org.slf4j.Logger;
+import org.infrastructurebuilder.util.files.IBResource;
 
 /**
  * Supplies the class name for the driver to make a Connection using a given
@@ -49,12 +54,12 @@ public interface IBDataDatabaseDriverSupplier extends LoggerEnabled {
    * @param jdbcUrl
    * @return Jooq Dialect name or empty()
    */
-  Optional<String> getDatabaseDriverClassName(String jdbcUrl);
+  Optional<String> getDatabaseDriverClassName(URLAndCreds jdbcUrl);
 
   /**
    * The mapped hint for type of component
    *
-   * @return
+   * @return non-null string hint from the component
    */
   String getHint();
 
@@ -74,19 +79,29 @@ public interface IBDataDatabaseDriverSupplier extends LoggerEnabled {
    * @param jdbcUrl
    * @return IBDatabaseDialect or empty() if not possible
    */
-  Optional<IBDatabaseDialect> getDialect(String jdbcUrl);
+  Optional<IBDatabaseDialect> getDialect(URLAndCreds jdbcUrl);
 
-  boolean respondsTo(String jdbcURL);
+  boolean respondsTo(URLAndCreds jdbcURL);
+
+  CredentialsFactory getCredentialsFactory();
 
   Optional<Supplier<DataSource>> getDataSourceSupplier(URLAndCreds in);
 
-  /**
-   * Generate a schema by running the query against the target datastore
-   *
-   * @param jdbcURL URL of the target database
-   * @param query   query to run against the database
-   * @return {@link IBSchema} instance, if possible
-   */
+  default Map<String, Object> getDbUnitConfigurationUpdates() {
+    return emptyMap();
+  }
 
-  Optional<IBSchema> schemaFrom(URLAndCreds in, String query, String nameSpace, String name, Optional<String> desc);
+  Optional<Map<String, IBResource>> schemaFrom(URLAndCreds in, String query, String nameSpace, String name,
+      Optional<String> desc);
+
+
+  // /**
+//   * Generate a schema by running the query against the target datastore
+//   *
+//   * @param jdbcURL URL of the target database
+//   * @param query   query to run against the database
+//   * @return {@link IBSchema} instance, if possible
+//   */
+//
+//  Optional<IBSchema> schemaFrom(URLAndCreds in, String query, String nameSpace, String name, Optional<String> desc);
 }

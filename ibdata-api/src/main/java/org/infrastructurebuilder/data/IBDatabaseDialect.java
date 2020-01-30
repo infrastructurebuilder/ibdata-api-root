@@ -15,25 +15,29 @@
  */
 package org.infrastructurebuilder.data;
 
+import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
- * A class for encapsulating Jooq dialects and possibly other types
- * The Supplier provides a reference for the name of the IBDataDatabaseDialect instance,
+ * A class for encapsulating Jooq dialects and possibly other types The Supplier
+ * provides a reference for the name of the IBDataDatabaseDialect instance,
  * which should be loadable via DI
+ *
  * @author mykel.alvis
  *
- * Translation mapping for various tools used within IBData
+ *         Translation mapping for various tools used within IBData
  *
  * @author mykel.alvis
  *
  */
-public interface IBDatabaseDialect extends Supplier<String> {
+public interface IBDatabaseDialect {
+  String getJooqName();
+
   Optional<String> hibernateDialectClass();
 
   String liquibaseDatabaseClass();
 
   Optional<String> springDbName();
 
+  Map<String, Object> getDbUnitConfigurationUpdates();
 }

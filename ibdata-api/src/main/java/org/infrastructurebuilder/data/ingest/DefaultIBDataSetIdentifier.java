@@ -109,7 +109,7 @@ public class DefaultIBDataSetIdentifier extends DataSet {
   }
 
   public void setDataSchemas(List<DefaultIBDataSchemaIngestionConfig> dataSchemas) {
-    this.dataSchemas = requireNonNull(dataSchemas).stream().map(ds -> ds.setCredentialsFactory(factory)).collect(toList());
+    this.dataSchemas = requireNonNull(dataSchemas).stream().collect(toList());
   }
 
   public final DefaultIBDataSetIdentifier injectGAV(String groupId, String artifactId, String version) {

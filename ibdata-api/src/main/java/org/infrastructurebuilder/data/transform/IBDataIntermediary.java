@@ -13,28 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.data.transform;
 
-//import java.util.List;
-//
-//public interface IBDataSchemaTransformer {
-//  /**
-//   * The types of schema that are valid inputs for this transformer
-//   *
-//   * @return
-//   */
-//  List<String> getValidTypes();
-//
-//  /**
-//   * The types of results that can validly be produced by this transformer
-//   *
-//   * @return
-//   */
-//  List<String> getValidResults();
-//
-//  /**
-//   * Transform the inbound schema into a schema of the type specified in outbound
-//   * type
-//   */
-//  IBDataSchemaTransformerResults getResultFrom(IBDataSchemaIdentifier in, String out);
-//}
+import java.util.Map;
+import java.util.Optional;
+
+import org.infrastructurebuilder.data.IBSchema;
+
+public interface IBDataIntermediary extends Map<String, Object> {
+  /**
+   * Get the {@link IBSchema} that was used to map this instance
+   *
+   * @return
+   */
+  IBSchema getSchema();
+
+  <T> Optional<T> getTyped(String targetType, String name);
+
+}

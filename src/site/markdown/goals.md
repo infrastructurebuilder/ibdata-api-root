@@ -29,4 +29,14 @@ Examples include:
 
 #### Transform Stream to Record-based Stream
 
+
 #### Transform Record-based Stream to Different Record-based Stream
+
+##### Filtering
+
+* Remove every 3rd record
+* Remove a record where the field "name" is not capitalized
+
+##### Change Type of Record
+
+* Read CSV file and write Avro stream
