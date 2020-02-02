@@ -20,6 +20,8 @@ import static java.util.Optional.of;
 
 import java.util.Optional;
 
+import org.infrastructurebuilder.data.type.IBDataType;
+import org.infrastructurebuilder.data.type.IBDataTypeHandler;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
 
@@ -29,13 +31,14 @@ public interface IBField extends ChecksumEnabled, Comparable<IBField> {
    * Get describes the IBfield from a base of 0. Default value set to -1 to ensure
    * setting proper index. Indices are forced reset prior to persistence.
    * <p>
-   * Note that the equals and comparable are all done based on field
-   * and no other values.  This means that tracking index creation during
-   * schema ingestion is essential.
+   * Note that the equals and comparable are all done based on field and no other
+   * values. This means that tracking index creation during schema ingestion is
+   * essential.
    *
    * @return int zero-based field index within the set
    */
   int getIndex(); // -- int getIndex()
+
   /**
    * Get a detailed description of the IBDataField.
    *
@@ -49,7 +52,6 @@ public interface IBField extends ChecksumEnabled, Comparable<IBField> {
    * @return List
    */
   java.util.List<String> getEnumerations(); // -- java.util.List<String> getEnumerations()
-
 
   /**
    * Get additional metadata.
@@ -125,9 +127,7 @@ public interface IBField extends ChecksumEnabled, Comparable<IBField> {
   @Override
   default Checksum asChecksum() {
     return org.infrastructurebuilder.util.artifacts.ChecksumBuilder.newInstance() //
-        .addInteger(getIndex())
-        .addString(getType())
-        .addString(getName()) // name
+        .addInteger(getIndex()).addString(getType()).addString(getName()) // name
         .addString(getDescription()) // Desc
         .addString(getMetadata().toString()) // metadata
         .addString(getVersionAppeared()) // appeard
@@ -148,12 +148,16 @@ public interface IBField extends ChecksumEnabled, Comparable<IBField> {
 
   Optional<IBDataStructuredDataFieldMetadata> getTransientStructuredFieldMetadata();
 
-  default Optional<IBDataStructuredDataMetadataType> getMdType() {
+  default Optional<IBDataType> getMdType(IBDataTypeHandler h) {
     try {
-      return of(IBDataStructuredDataMetadataType.valueOf(getType()));
+      return h.getTypeFor(getType());
     } catch (Throwable t) {
       return empty();
     }
   }
 
+  default IBDataType getIBDataType(IBDataTypeHandler h) {
+    return h.getTypeFor(getType())
+        .orElseThrow(() -> new IBDataException("Type " + getType() + " not found in type handler " + h));
+  }
 }

@@ -27,8 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.infrastructurebuilder.data.schema.IBSchemaTranslator;
-import org.infrastructurebuilder.util.LoggerSupplier;
-import org.slf4j.Logger;
+import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
 @Named
 public class DefaultIBDataTranslationClearinghouse implements IBDataTranslationClearinghouse {
@@ -38,12 +37,12 @@ public class DefaultIBDataTranslationClearinghouse implements IBDataTranslationC
   private final Map<String, IBSchemaTranslator<?, ?>> stInboundByClass;
   private final Map<String, IBSchemaTranslator<?, ?>> stOutboundByClass;
   private final Map<String, IBMappingTranslator<?>> mtByClass;
-  private final Logger log;
+  private final IBRuntimeUtils ibr;
 
   @Inject
-  public DefaultIBDataTranslationClearinghouse(LoggerSupplier l,
+  public DefaultIBDataTranslationClearinghouse(IBRuntimeUtils l,
       Map<String, IBSchemaTranslator<?, ?>> schemaTranslators, Map<String, IBMappingTranslator<?>> mappingTranslators) {
-    this.log = requireNonNull(l).get();
+    this.ibr = requireNonNull(l);
     this.st = requireNonNull(schemaTranslators);
     this.mt = requireNonNull(mappingTranslators);
     this.stInboundByClass = this.st.values().stream().filter(v -> v.getInboundType().isPresent())
@@ -51,7 +50,7 @@ public class DefaultIBDataTranslationClearinghouse implements IBDataTranslationC
     this.stOutboundByClass = this.st.values().stream().filter(v -> v.getOutboundType().isPresent())
         .collect(toMap(k -> k.getOutboundType().get(), identity()));
     this.mtByClass = this.mt.values().stream().collect(toMap(k -> k.getType(), identity()));
-    log.info(String.format("Loaded %s schema translators and %d mapping translators", st.size(), mt.size()));
+    ibr.getLog().info(String.format("Loaded %s schema translators and %d mapping translators", st.size(), mt.size()));
   }
 
   @Override

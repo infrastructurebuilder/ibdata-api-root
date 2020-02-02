@@ -101,6 +101,11 @@ public class DataSetReadWriteModel0_11Test {
         return Optional.empty();
       }
 
+      @Override
+      public void reset() {
+
+      }
+
     };
     ibDataEngine.fetchDataStreamByMetadataPatternMatcherFromStrings(Collections.emptyMap());
     set.setModelVersion(ibDataEngine.getEngineAPIVersion().toString());

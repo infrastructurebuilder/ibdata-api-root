@@ -20,10 +20,10 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
+import static org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper;
 
-import java.io.File;
 import java.io.StringReader;
-import java.nio.file.Path;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,9 +33,8 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.Metadata;
-import org.infrastructurebuilder.util.CredentialsFactory;
 
-public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestionConfig {
+public class DefaultIBDataSchemaIngestionConfigBean implements IBDataSchemaIngestionConfig {
 
   private static final String ELEMENT = "Only a single element of inline, files or schemaQuery is allowed";
 
@@ -43,14 +42,26 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
   private String name;
   private String description;
   private XmlPlexusConfiguration metadata;
-  private List<File> files;
+  private List<String> urls;
   private String serverId;
   private IBJDBCQuery databaseQuery;
   private XmlPlexusConfiguration inline;
-  private SchemaQueryBean schemaQuery;
+//  private SchemaQueryBean schemaQuery;
 
-  public DefaultIBDataSchemaIngestionConfig() {
+  public DefaultIBDataSchemaIngestionConfigBean() {
     super();
+  }
+
+  public DefaultIBDataSchemaIngestionConfigBean(IBDataSchemaIngestionConfig i) {
+    this();
+    this.temporaryId = i.getTemporaryId();
+    this.name = i.getName().orElse(null);
+    this.description = i.getDescription().orElse(null);
+    this.metadata = new XmlPlexusConfiguration(i.getMetadata());
+    this.urls = i.getUrls().map(l -> l.stream().map(URL::toExternalForm).collect(toList())).orElse(null);
+    this.serverId = i.getCredentialsQuery().orElse(null);
+    this.databaseQuery = i.getJDBCQuery().map(IBJDBCQuery::new).orElse(null);
+    this.inline = i.getInline().map(XmlPlexusConfiguration::new).orElse(null);
   }
 
   public void setTemporaryId(String temporaryId) {
@@ -71,17 +82,20 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
     return translateToMetadata.apply(metadata);
   }
 
-  public void setSchemaQuery(SchemaQueryBean schemaQuery) {
-    if (this.files != null || this.inline != null)
-      throw new IBDataException(ELEMENT);
-    this.schemaQuery = schemaQuery;
-  }
+//  public void setSchemaQuery(SchemaQueryBean schemaQuery) {
+//    if (this.urls != null || this.inline != null)
+//      throw new IBDataException(ELEMENT);
+//    this.schemaQuery = schemaQuery;
+//  }
 
   public void setInline(XmlPlexusConfiguration inline) {
-    if (this.files != null || this.schemaQuery != null)
+    if (this.urls != null /* || this.schemaQuery != null */)
       throw new IBDataException(ELEMENT);
     this.inline = inline;
-    if (!"schema".equals(this.getInline().get().getName()))
+    Xpp3Dom[] c = getInline().get().getChildren();
+    if (c.length != 1)
+      throw new IBDataException("Inline config must be a single <schema/>");
+    if (!"schema".equals(c[0].getName()))
       throw new IBDataException("Inline config must be a <schema/>");
   }
 
@@ -91,20 +105,22 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
         .map(s -> cet.withReturningTranslation(() -> Xpp3DomBuilder.build(s)));
   }
 
-  @Override
-  public Optional<SchemaQueryBean> getSchemaQuery() {
-    return ofNullable(schemaQuery);
-  }
-
-  public void setFiles(List<File> files) {
-    if (this.schemaQuery != null || this.inline != null)
+  /*
+   * @Override public Optional<SchemaQueryBean> getSchemaQuery() { return
+   * ofNullable(schemaQuery); }
+   *
+   */
+  public void setUrls(List<String> urls) {
+    if (/* this.schemaQuery != null || */ this.inline != null)
       throw new IBDataException(ELEMENT);
-    this.files = files;
+    this.urls = urls;
   }
 
   @Override
-  public Optional<List<Path>> getFiles() {
-    return ofNullable(files).map(f -> f.stream().map(File::toPath).collect(toList()));
+  public Optional<List<URL>> getUrls() {
+    return ofNullable(urls).map(
+        f -> f.stream().map(v -> nullSafeURLMapper.apply(v).orElseThrow(() -> new IBDataException("Invalid URL " + v)))
+            .collect(toList()));
   }
 
   public void setName(String name) {
@@ -127,19 +143,19 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
 
   @Override
   public int hashCode() {
-    return Objects.hash(description, files, inline, getMetadata(), name, schemaQuery, temporaryId, databaseQuery);
+    return Objects.hash(description, urls, inline, getMetadata(), name, temporaryId, databaseQuery/* , schemaQuery */);
   }
 
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (!(obj instanceof DefaultIBDataSchemaIngestionConfig))
+    if (!(obj instanceof DefaultIBDataSchemaIngestionConfigBean))
       return false;
-    DefaultIBDataSchemaIngestionConfig other = (DefaultIBDataSchemaIngestionConfig) obj;
-    return Objects.equals(description, other.description) && Objects.equals(files, other.files)
+    DefaultIBDataSchemaIngestionConfigBean other = (DefaultIBDataSchemaIngestionConfigBean) obj;
+    return Objects.equals(description, other.description) && Objects.equals(urls, other.urls)
         && Objects.equals(inline, other.inline) && Objects.equals(metadata, other.metadata)
-        && Objects.equals(name, other.name) && Objects.equals(schemaQuery, other.schemaQuery)
+        && Objects.equals(name, other.name) // && Objects.equals(schemaQuery, other.schemaQuery)
         && Objects.equals(databaseQuery, other.databaseQuery) && Objects.equals(temporaryId, other.temporaryId);
   }
 
@@ -148,7 +164,7 @@ public class DefaultIBDataSchemaIngestionConfig implements IBDataSchemaIngestion
     StringBuilder builder = toStringSupplier(this.getClass()).get();
     return builder
         // Add files? Maybe?
-        .append(", files=").append(files)
+        .append(", files=").append(urls)
         // final closer
         .append("]")
         //

@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
+import static java.util.Optional.empty;
 import static org.infrastructurebuilder.IBConstants.DESCRIPTION;
 import static org.infrastructurebuilder.IBConstants.NAME;
 import static org.infrastructurebuilder.IBConstants.TEMPORARYID;
@@ -23,7 +24,7 @@ import static org.infrastructurebuilder.data.IBDataConstants.METADATA;
 import static org.infrastructurebuilder.data.IBDataConstants.SCHEMA;
 import static org.infrastructurebuilder.data.IBDataConstants.SCHEMA_QUERY;
 
-import java.nio.file.Path;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -44,11 +45,14 @@ public interface IBDataSchemaIngestionConfig {
 
   Optional<Xpp3Dom> getInline();
 
-  Optional<SchemaQueryBean> getSchemaQuery();
+  @Deprecated
+  default Optional<SchemaQueryBean> getSchemaQuery() {
+    return empty();
+  }
 
   Optional<IBJDBCQuery> getJDBCQuery();
 
-  Optional<List<Path>> getFiles();
+  Optional<List<URL>> getUrls();
 
   Optional<String> getCredentialsQuery();
 

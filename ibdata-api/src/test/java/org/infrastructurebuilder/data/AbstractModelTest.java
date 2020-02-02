@@ -69,7 +69,7 @@ public class AbstractModelTest {
   protected Path ibd;
   protected List<Path> o11Paths;
 
-  public final static class FakeTypeToExtensionMapper implements TypeToExtensionMapper {
+  public final static class EverMoreFakeTypeToExtensionMapper implements TypeToExtensionMapper {
     @Override
     public String getExtensionForType(String type) {
       return "bin";

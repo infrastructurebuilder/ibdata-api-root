@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.transform.line;
+package org.infrastructurebuilder.data;
 
-import java.util.function.Supplier;
+import static org.junit.Assert.assertTrue;
 
-import org.infrastructurebuilder.util.config.ConfigMapSupplier;
-import org.slf4j.Logger;
+import org.junit.Test;
 
-/**
- * IMPORTANT!  READ THIS!
- * All Suppliers of IBDataTransformer, including suppliers of IBDataRecordTransformer,
- * are meant to provide disposable, non-singleton instances of the transformer.
- *
- * @author mykel.alvis
- *
- */
-public interface IBDataRecordTransformerSupplier<I, O> extends Supplier<IBDataRecordTransformer<I, O>> {
-  String getHint();
+public class IBDataEngineTest {
 
-  IBDataRecordTransformerSupplier<I, O> configure(ConfigMapSupplier cms);
+  @Test
+  public void testGetZipFSProvider() {
+    assertTrue(IBDataEngine.getZipFSProvider().isPresent());
+  }
 
 }

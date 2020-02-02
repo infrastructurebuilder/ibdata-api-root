@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.transform.line;
+package org.infrastructurebuilder.data.type;
 
-import java.util.function.Supplier;
+import java.util.Optional;
 
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
-import org.slf4j.Logger;
 
-/**
- * IMPORTANT!  READ THIS!
- * All Suppliers of IBDataTransformer, including suppliers of IBDataRecordTransformer,
- * are meant to provide disposable, non-singleton instances of the transformer.
- *
- * @author mykel.alvis
- *
- */
-public interface IBDataRecordTransformerSupplier<I, O> extends Supplier<IBDataRecordTransformer<I, O>> {
-  String getHint();
+public interface IBDataTypeHandler {
 
-  IBDataRecordTransformerSupplier<I, O> configure(ConfigMapSupplier cms);
-
+  Optional<IBDataType> getTypeFor(String typeName);
+  Optional<IBDataTypeTranslator<?>> getTranslatorFor(String otherType);
+  IBDataTypeHandler configure(ConfigMapSupplier cms);
 }

@@ -15,12 +15,19 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.infrastructurebuilder.data.schema.IBSchemaTranslator;
+import org.infrastructurebuilder.util.FakeCredentialsFactory;
+import org.infrastructurebuilder.util.artifacts.IBArtifactVersionMapper;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
+import org.infrastructurebuilder.util.config.FakeIBVersionsSupplier;
+import org.infrastructurebuilder.util.config.IBRuntimeUtils;
+import org.infrastructurebuilder.util.config.IBRuntimeUtilsTesting;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,6 +38,11 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultIBDataTranslationClearinghouseTest {
   public final static Logger log = LoggerFactory.getLogger(DefaultIBDataTranslationClearinghouseTest.class);
+  public final static TestingPathSupplier wps= new TestingPathSupplier();
+  private final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(wps, log,
+      new DefaultGAV(new FakeIBVersionsSupplier()), new FakeCredentialsFactory(), new IBArtifactVersionMapper() {
+      });
+
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -55,7 +67,7 @@ public class DefaultIBDataTranslationClearinghouseTest {
     st.put("fake2", f2);
     fm = new FakeIBMappingTranslator("UpperLower");
     mt.put("fake", fm);
-    c = new DefaultIBDataTranslationClearinghouse(() -> log, st, mt);
+    c = new DefaultIBDataTranslationClearinghouse(ibr, st, mt);
   }
 
   @After

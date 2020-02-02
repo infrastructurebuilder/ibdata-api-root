@@ -36,7 +36,7 @@ public interface IBDataMetadataCodec {
   Path getRoot();
 
   /**
-   * Read a dataset from an inputsttream
+   * Read a dataset from an inputstream
    * @param ins
    * @return
    */

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.data.model;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
@@ -45,9 +45,12 @@ import static org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +61,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import org.infrastructurebuilder.data.IBDataException;
+import org.infrastructurebuilder.data.IBDataSetIdentifier;
+import org.infrastructurebuilder.data.IBDataStreamSupplier;
+import org.infrastructurebuilder.data.IBSchemaDAO;
+import org.infrastructurebuilder.data.IBSchemaDAOSupplier;
 import org.infrastructurebuilder.data.model.DataSchema;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
@@ -86,8 +94,8 @@ public class IBDataModelUtils {
             if (k.contains(basedir))
               s.setUrl(k.replace(basedir, "${basedir}"));
           });
-        if (k.contains("!/") && !(k.startsWith("zip:") || k.startsWith("jar:")))
-          s.setUrl("jar:" + s.getUrl());
+          if (k.contains("!/") && !(k.startsWith("zip:") || k.startsWith("jar:")))
+            s.setUrl("jar:" + s.getUrl());
         });
       });
       xpp3Writer.write(writer, d);
@@ -97,7 +105,7 @@ public class IBDataModelUtils {
   }
 
   public final static String relativizePath(DataSet ds, DataStream s) {
-    return nullSafeURLMapper.apply(ds.getPath().orElse(null)).map(u -> {
+    return ds.getPathAsURL().map(u -> {
       String u1 = u.toExternalForm();
       String s2P = s.getPath();
       return ofNullable(s2P).map(s2 -> (s2.startsWith(u1)) ? s2.substring(u1.length()) : s2).orElse(null);
@@ -144,6 +152,16 @@ public class IBDataModelUtils {
     }
   };
 
+  public final static Function<? super URL, ? extends DataSet> mapURLToDataSet = (in) -> {
+    try (InputStream ins = requireNonNull(in).openStream()) {
+      DataSet d = mapInputStreamToDataSet.apply(ins);
+      Path p = (in.getProtocol().contains("file:")) ? Paths.get(in.toURI()) : null;
+      return d;
+    } catch (IOException | URISyntaxException e) {
+      throw new IBDataException(e);
+    }
+  };
+
   /**
    * Given the parameters, create a final data location (either through atomic
    * moves or copies), that maps to a state that will allow us to generate an
@@ -178,8 +196,7 @@ public class IBDataModelUtils {
     // This archive is about to be created
     finalData.setCreationDate(requireNonNull(creationDate)); // That is now
     Path newWorkingPath = workingPath.getParent().resolve(UUID.randomUUID().toString());
-    finalData
-        .setPath(cet.withReturningTranslation(() -> newWorkingPath.toAbsolutePath().toUri().toURL().toExternalForm()));
+    finalData.setPath(cet.withReturningTranslation(() -> newWorkingPath));
     // We're moving everything to a new path
     Files.createDirectories(newWorkingPath);
     // Set the schemas here!
@@ -248,13 +265,13 @@ public class IBDataModelUtils {
     // We're going to relocate the entire directory to a named UUID-backed directory
     Path newTarget = workingPath.getParent().resolve(finalData.getUuid().toString());
     move(newWorkingPath, newTarget, ATOMIC_MOVE);
-    finalData.setPath(newTarget.toAbsolutePath().toUri().toURL().toExternalForm());
+    finalData.setPath(newTarget);
 
     // Create the IBDATA dir so that we can write the metadata xml
     createDirectories(newTarget.resolve(IBDATA));
     // Clear the path so that it doesn't persist in the metadata xml
     DataSet finalData2 = finalData.clone(); // Executes the clone hook, including relativizing the path
-    finalData2.setPath(null);
+    finalData2.setPath((Path) null);
     // write the dataset to disk
     IBDataModelUtils.writeDataSet(finalData2, newTarget, basedir);
     // newTarget now points to a valid DataSet with metadata and referenced streams

@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import java.nio.file.Path;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -23,9 +22,14 @@ import java.util.TreeSet;
 import org.infrastructurebuilder.data.IBSchemaDAOSupplier;
 import org.infrastructurebuilder.data.IBSchemaIngester;
 import org.infrastructurebuilder.data.IBSchemaSourceSupplier;
+import org.infrastructurebuilder.util.FakeCredentialsFactory;
+import org.infrastructurebuilder.util.artifacts.IBArtifactVersionMapper;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
-import org.infrastructurebuilder.util.config.PathSupplier;
+import org.infrastructurebuilder.util.config.FakeIBVersionsSupplier;
+import org.infrastructurebuilder.util.config.IBRuntimeUtils;
+import org.infrastructurebuilder.util.config.IBRuntimeUtilsTesting;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +37,12 @@ import org.slf4j.LoggerFactory;
 public class FakeIBSchemaIngesterSupplier extends AbstractIBSchemaIngesterSupplier<Object> {
   public final static Logger log = LoggerFactory.getLogger(FakeIBSchemaIngesterSupplier.class);
   public final static TestingPathSupplier wps = new TestingPathSupplier();
+  private final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(wps, log,
+      new DefaultGAV(new FakeIBVersionsSupplier()), new FakeCredentialsFactory(), new IBArtifactVersionMapper() {
+      });
 
   public FakeIBSchemaIngesterSupplier(ConfigMapSupplier config) {
-    super(wps, () -> log, config);
+    super(ibr, config);
   }
 
   @Override
@@ -44,14 +51,14 @@ public class FakeIBSchemaIngesterSupplier extends AbstractIBSchemaIngesterSuppli
   }
 
   @Override
-  protected IBSchemaIngester getInstance(PathSupplier wps, Object in) {
-    return new FakeIBSchemaIngester(wps.get(), getLog(), getConfig().get());
+  protected IBSchemaIngester getInstance(IBRuntimeUtils ibr, Object in) {
+    return new FakeIBSchemaIngester(ibr, getConfig().get());
   }
 
   public class FakeIBSchemaIngester extends AbstractIBSchemaIngester {
 
-    public FakeIBSchemaIngester(Path workingPath, Logger log, ConfigMap config) {
-      super(workingPath, log, config);
+    public FakeIBSchemaIngester(IBRuntimeUtils ibr, ConfigMap config) {
+      super(ibr, config);
     }
 
     @Override

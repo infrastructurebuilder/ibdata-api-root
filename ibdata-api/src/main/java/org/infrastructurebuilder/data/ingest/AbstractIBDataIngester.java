@@ -15,21 +15,17 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import java.nio.file.Path;
-
 import org.infrastructurebuilder.data.IBDataIngester;
 import org.infrastructurebuilder.util.config.ConfigMap;
-import org.slf4j.Logger;
+import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
 abstract public class AbstractIBDataIngester extends AbstractIBRootIngester implements IBDataIngester {
 
   /**
-   * @param workingPath
-   * @param log
    * @param config
    */
-  public AbstractIBDataIngester(Path workingPath, Logger log, ConfigMap config) {
-    super(workingPath, log, config);
+  public AbstractIBDataIngester(IBRuntimeUtils ibr, ConfigMap config) {
+    super(ibr, config);
   }
 
   @Override

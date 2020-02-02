@@ -21,6 +21,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.infrastructurebuilder.IBConstants.DEFAULT;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToMetadata;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import org.infrastructurebuilder.util.CredentialsFactory;;
 public class DefaultIBDataSetIdentifier extends DataSet {
   private static final long serialVersionUID = -7357725622978715720L;
   private List<DefaultIBDataStreamIdentifierConfigBean> dataStreams = new ArrayList<>();
-  private List<DefaultIBDataSchemaIngestionConfig> dataSchemas = new ArrayList<>();
+  private List<DefaultIBDataSchemaIngestionConfigBean> dataSchemas = new ArrayList<>();
 
   @SuppressWarnings("unused") // Used to type the inbound setter
   private XmlPlexusConfiguration metadata;
@@ -59,8 +60,9 @@ public class DefaultIBDataSetIdentifier extends DataSet {
 
   private DefaultIBDataSetIdentifier(DefaultIBDataSetIdentifier i) {
     super(i);
-    setName(i.getName().orElse("default"));
+    setName(i.getName().orElse(DEFAULT));
     this.dataStreams = i.getDataStreams().stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList());
+    this.dataSchemas = i.getDataSchemas().stream().map(DefaultIBDataSchemaIngestionConfigBean::new).collect(toList());
   }
 
   DefaultIBDataSetIdentifier setFactory(CredentialsFactory factory) {
@@ -96,7 +98,7 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     return dataStreams.stream().map(DefaultIBDataStreamIdentifierConfigBean::new).collect(toList());
   }
 
-  public List<DefaultIBDataSchemaIngestionConfig> getDataSchemas() {
+  public List<DefaultIBDataSchemaIngestionConfigBean> getDataSchemas() {
     return dataSchemas.stream().collect(toList());
   }
 
@@ -108,7 +110,7 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     this.dataStreams = requireNonNull(streams);
   }
 
-  public void setDataSchemas(List<DefaultIBDataSchemaIngestionConfig> dataSchemas) {
+  public void setDataSchemas(List<DefaultIBDataSchemaIngestionConfigBean> dataSchemas) {
     this.dataSchemas = requireNonNull(dataSchemas).stream().collect(toList());
   }
 
@@ -128,7 +130,7 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     ds.setName(getName().orElse(null));
     ds.setDescription(getDescription().orElse(null));
     ds.setMetadata(getMetadata());
-    ds.setPath(getPath().orElse(null));
+    ds.setPath(getPathAsPath().orElse(null));
     ds.setCreationDate(getCreationDate());
     ds.setStreams(getStreams());
     ds.setSchemas(getSchemas());

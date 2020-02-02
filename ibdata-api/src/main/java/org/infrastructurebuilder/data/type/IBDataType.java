@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.ingest;
+package org.infrastructurebuilder.data.type;
 
-import java.nio.file.Path;
+import static java.util.Objects.requireNonNull;
 
-import org.infrastructurebuilder.data.IBSchemaIngester;
-import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.config.IBRuntimeUtils;
-import org.slf4j.Logger;
+import org.infrastructurebuilder.util.artifacts.Weighted;
+import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 
-abstract public class AbstractIBSchemaIngester extends AbstractIBRootIngester implements IBSchemaIngester {
+abstract public class IBDataType implements Weighted {
+  private final String type;
 
-  /**
-   * @param workingPath
-   * @param log
-   * @param config
-   */
-  public AbstractIBSchemaIngester(IBRuntimeUtils ibr, ConfigMap config) {
-    super(ibr, config);
+  public IBDataType(String type) {
+    this.type = requireNonNull(type);
   }
 
-  @Override
-  public AbstractIBSchemaIngester configure(ConfigMap map) {
+  public String getType() {
+    return type;
+  }
+
+  public String name() {
+    return getType();
+  }
+
+  public IBDataType configure(ConfigMapSupplier cms) {
     return this;
   }
 

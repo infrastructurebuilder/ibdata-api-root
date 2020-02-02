@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.infrastructurebuilder.data.model.DataSet;
+import org.infrastructurebuilder.data.model.IBDataModelUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class IBDataSetTest extends AbstractModelTest {
     super.setUp();
     try (InputStream t = getClass().getResourceAsStream(TEST_INPUT_0_11_XML);) {
       DataSet dsRead = IBDataModelUtils.mapInputStreamToDataSet.apply(t);
-      dsRead.setPath(ibd.toAbsolutePath().getParent().toString());
+      dsRead.setPath(ibd.toAbsolutePath().getParent());
       ds = new FakeIBDataSet(dsRead, o11Paths);
       assertEquals(2, ds.getStreamSuppliers().size());
     }

@@ -18,27 +18,26 @@ package org.infrastructurebuilder.data.ingest;
 import java.nio.file.Path;
 
 import org.infrastructurebuilder.util.config.ConfigMap;
+import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 import org.slf4j.Logger;
 
 abstract public class AbstractIBRootIngester {
 
-  protected final Path workingPath;
+  protected final IBRuntimeUtils ibr;
   protected final ConfigMap config;
-  protected final Logger log;
 
   /**
-   * @param workingPath
+   * @param ibr
    * @param log
    * @param config
    */
-  public AbstractIBRootIngester(Path workingPath, Logger log, ConfigMap config) {
-    this.workingPath = workingPath;
-    this.log = log;
+  public AbstractIBRootIngester(IBRuntimeUtils ibr, ConfigMap config) {
+    this.ibr = ibr;
     this.config = config;
   }
 
   public Logger getLog() {
-    return log;
+    return ibr.getLog();
   }
 
   protected ConfigMap getConfig() {
@@ -46,7 +45,7 @@ abstract public class AbstractIBRootIngester {
   }
 
   protected Path getWorkingPath() {
-    return workingPath;
+    return ibr.getWorkingPath();
   }
 
 }

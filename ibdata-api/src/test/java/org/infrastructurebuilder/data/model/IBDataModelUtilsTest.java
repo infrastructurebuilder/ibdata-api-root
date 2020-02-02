@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 import org.infrastructurebuilder.data.IBDataException;
-import org.infrastructurebuilder.data.IBDataModelUtils;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Test;
 

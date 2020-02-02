@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.ingest;
+package org.infrastructurebuilder.data.type;
 
-import org.infrastructurebuilder.data.IBSchemaIngester;
-import org.infrastructurebuilder.data.IBSchemaIngesterSupplier;
-import org.infrastructurebuilder.util.LoggerSupplier;
+import org.infrastructurebuilder.data.IBField;
+import org.infrastructurebuilder.util.artifacts.Weighted;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
-import org.infrastructurebuilder.util.config.IBRuntimeUtils;
-import org.infrastructurebuilder.util.config.PathSupplier;
 
-abstract public class AbstractIBSchemaIngesterSupplier<P> extends AbstractIBDataConfigurableSupplier<IBSchemaIngester,P>
-    implements IBSchemaIngesterSupplier<P> {
+public interface IBDataTypeTranslator<T> extends Weighted {
 
-  protected AbstractIBSchemaIngesterSupplier(IBRuntimeUtils ibr, ConfigMapSupplier config) {
-    super(ibr, config);
-  }
+  String getType();
+
+  IBField to(T in);
+  T from(IBField out);
+
+  IBDataTypeTranslator<T> configure(ConfigMapSupplier cms);
 
 }

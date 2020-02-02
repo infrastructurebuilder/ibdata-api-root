@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.transform.line;
+package org.infrastructurebuilder.data.type;
 
-import java.util.function.Supplier;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-import org.infrastructurebuilder.util.config.ConfigMapSupplier;
-import org.slf4j.Logger;
+@Named(UNKNOWNIBDataType.UNKNOWN)
+@Singleton
+public class UNKNOWNIBDataType extends IBDataType {
+  public   static final String UNKNOWN = "UNKNOWN";
 
-/**
- * IMPORTANT!  READ THIS!
- * All Suppliers of IBDataTransformer, including suppliers of IBDataRecordTransformer,
- * are meant to provide disposable, non-singleton instances of the transformer.
- *
- * @author mykel.alvis
- *
- */
-public interface IBDataRecordTransformerSupplier<I, O> extends Supplier<IBDataRecordTransformer<I, O>> {
-  String getHint();
-
-  IBDataRecordTransformerSupplier<I, O> configure(ConfigMapSupplier cms);
+  @Inject
+  public UNKNOWNIBDataType() {
+    super(UNKNOWN);
+  }
 
 }

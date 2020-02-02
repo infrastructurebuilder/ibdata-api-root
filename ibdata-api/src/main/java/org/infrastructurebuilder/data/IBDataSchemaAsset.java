@@ -82,7 +82,7 @@ public interface IBDataSchemaAsset extends Supplier<Path>, ChecksumEnabled {
 
   @Override
   default Path get() {
-    throw new IBDataException("Defaults implementations do not supply a viable path.");
+    throw new IBDataException("Default implementations do not supply a viable path.");
   }
 
 }

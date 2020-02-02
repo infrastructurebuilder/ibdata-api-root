@@ -16,16 +16,14 @@
 package org.infrastructurebuilder.data.ingest;
 
 import org.infrastructurebuilder.util.IBLoggerEnabled;
-import org.infrastructurebuilder.util.LoggerSupplier;
 import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
-import org.infrastructurebuilder.util.config.PathSupplier;
+import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
-public abstract class AbstractIBDataConfigurableSupplier<T,P> extends AbstractCMSConfigurableSupplier<T,P>
+public abstract class AbstractIBDataConfigurableSupplier<T, P> extends AbstractCMSConfigurableSupplier<T, P>
     implements IBLoggerEnabled {
-  public AbstractIBDataConfigurableSupplier(PathSupplier wps, LoggerSupplier log, ConfigMapSupplier config) {
-    super(wps, config, log);
+  public AbstractIBDataConfigurableSupplier(IBRuntimeUtils ibr, ConfigMapSupplier config) {
+    super(ibr, config);
   }
-
 
 }

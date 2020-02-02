@@ -20,6 +20,7 @@ public interface IBDataConstants {
   public final static String UNCONFIGURABLE = "<!-- UNCONFIGURABLE -->";
   public static final String PASS_THRU = UNCONFIGURABLE + "passthru";
   public final static String IBDATA_WORKING_PATH_SUPPLIER = "ibdata-working-path-supplier";
+  public final static String IBDATA_LOCAL_GAV_SUPPLIER = "ibdata-local-gav-supplier";
   public final static String IBDATA_DOWNLOAD_CACHE_DIR_SUPPLIER = "ibdata-download-cache-dir-supplier";
 //  public final static String CACHE_DIRECTORY_CONFIG_ITEM = UNCONFIGURABLE + ".cachePath";
   public final static String TRANSFORMERSLIST = UNCONFIGURABLE + ".transformers";

@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>29-SNAPSHOT</version>
+    <version>29</version>
   </parent>
   <groupId>org.infrastructurebuilder.data</groupId>
   <artifactId>ibdata-api-root</artifactId>
@@ -34,7 +34,7 @@
   <properties>
     <test.coverage.percentage.required>95</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
-    <ibcore.bom.version>0.16.0.0-SNAPSHOT</ibcore.bom.version>
+    <ibcore.bom.version>0.16.0.1</ibcore.bom.version>
   </properties>
   <url>${github.url.base}/${project.artifactId}</url>
   <dependencyManagement>
@@ -79,6 +79,8 @@
   </dependencies>
   <modules>
     <module>ibdata-api</module>
+    <!--
     <module>ibdata-liquibase-types</module>
+    -->
   </modules>
 </project>

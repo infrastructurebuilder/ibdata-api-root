@@ -17,11 +17,9 @@ package org.infrastructurebuilder.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.IBConstants;
@@ -55,7 +53,6 @@ public class IBDataStreamIdentifierTest extends AbstractModelTest {
     assertEquals(now, stream.getCreationDate());
     assertEquals(url, stream.getUrl().get());
     assertEquals(IBConstants.APPLICATION_OCTET_STREAM, stream.getMimeType());
-    assertEquals(Optional.empty(), stream.pathAsURL(finalData));
     assertEquals(STREAM_ID, stream.getId().toString());
     assertFalse(stream.getInputStreamLength().isPresent());
     assertFalse(stream.getNumRows().isPresent());
@@ -64,20 +61,8 @@ public class IBDataStreamIdentifierTest extends AbstractModelTest {
   }
 
   @Test
-  public void testPathAsURLMore() throws MalformedURLException {
-    String filePath = "/cf031c5a-3a34-3175-8140-26819803d395.csv";
-    stream.setPath(filePath);
-    String p = wps.getTestClasses().resolve("test.jar").toAbsolutePath().toUri().toURL().toExternalForm();
-    String p2 = p + "!" + IBDataConstants.IBDATA_IBDATASET_XML;
-    finalData.setPath(p);
-    Optional<URL> q = stream.pathAsURL(finalData);
-    assertTrue(q.get().toExternalForm().endsWith("test.jar!" + filePath));
-  }
-
-  @Test
   public void testChecksum() {
-    stream.getChecksum();
-
+    assertNotNull(stream.getChecksum());
   }
 
   @Test

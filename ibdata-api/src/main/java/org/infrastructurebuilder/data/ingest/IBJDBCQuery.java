@@ -36,6 +36,13 @@ public class IBJDBCQuery implements URLAndCreds {
   public IBJDBCQuery() {
   }
 
+  public IBJDBCQuery(IBJDBCQuery q) {
+    this.url = getUrl();
+    this.serverId = getCredentialsQuery().orElse(null);
+    this.table = getTable();
+    this.where = getWhere().orElse(null);
+  }
+
 
   public IBJDBCQuery(String url2, String serverId2, String table2, String where2) {
     this.url = url2;

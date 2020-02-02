@@ -201,42 +201,6 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   }
 
   /**
-   * This is tricky. The parent URL must exist to be able to get the child URL
-   * (obvs).
-   *
-   * @param parent non-null URL From IBDataSetIdentifier.pathAsURL().get()
-   *
-   *               The current version probably won't work on Windows because they
-   *               REALLY needed to have a different path separator than the rest
-   *               of the computing world.
-   *
-   * @return Optional URL mapped to a string
-   */
-
-  default Optional<URL> pathAsURL(IBDataSetIdentifier pDataSet) {
-    return nullSafeURLMapper.apply(ofNullable(getPath()).flatMap(path -> {
-      Optional<String> v = pDataSet.getPath()
-          .map(pPath -> cet.withReturningTranslation(() -> IBUtils.translateToWorkableArchiveURL(pPath)))
-          .map(parent -> {
-            String y = requireNonNull(parent).toExternalForm();
-            boolean isArchive = (y.endsWith(".jar") || y.endsWith(".zip"));
-            return new StringBuilder()
-                // archive identifier
-                .append(isArchive ? "jar:" : "")
-                // actual path
-                .append(y)
-                // URLS are paths into jar/zip files (at present)
-                .append(isArchive ? "!" : "")
-                // underlying (this) path
-                .append(path).toString();
-          });
-      return v;
-
-    }).orElse(null));
-
-  }
-
-  /**
    * Should archives be expanded. This is not part of a persisted dataset metadata
    *
    * @return

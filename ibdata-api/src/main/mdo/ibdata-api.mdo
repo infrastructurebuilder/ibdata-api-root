@@ -472,13 +472,6 @@
           </association>
         </field>
         <field java.getter="false">
-          <name>path</name>
-          <version>1.0.0+</version>
-          <required>false</required>
-          <description>Describes a path to the dataset</description>
-          <type>String</type>
-        </field>
-        <field java.getter="false">
           <name>metadata</name>
           <version>1.0.0+</version>
           <required>true</required>
@@ -514,10 +507,10 @@
     this.setGroupId(ds.getGroupId());
     this.setMetadata(ds.getMetadata());
     this.setModelVersion(ds.getModelVersion());
-    this.setPath(ds.getPath().orElse(null));
     this.setStreams(ds.getStreams().stream().map(DataStream::new).collect(java.util.stream.Collectors.toList()));
     this.setUuid(java.util.Optional.ofNullable(ds.getUuid()).map(java.util.UUID::toString).orElse(null));
     this.setVersion(ds.getVersion());
+    this.setPath(ds.getPathAsPath().orElse(null));
   }
 
   @Override
@@ -538,7 +531,8 @@
             <![CDATA[
   private void mutatingDataSetCloneHook(DataSet ds) {
     if (streams != null)
-      ds.getStreams().forEach(s -> s.setPath(org.infrastructurebuilder.data.IBDataModelUtils.relativizePath(ds, s)));
+      ds.getStreams().forEach(s -> s.setPath(org.infrastructurebuilder.data.model.IBDataModelUtils.relativizePath(ds, s)));
+    ds.underlyingPath = getPathAsPath().orElse(null);
   }
 
   ]]>
@@ -548,17 +542,53 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
+/* */
+
+
   private java.nio.file.Path underlyingPath = null;
 
-  protected DataSet setUnderlyingPath(java.nio.file.Path p) {
-    this.underlyingPath = p;
+  private java.util.Optional<java.nio.file.Path> _getPathAsPath() {
+    try {
+      return getPathAsURL().flatMap(url -> {
+        try {
+          return java.util.Optional.of(url.toURI());
+        } catch (Throwable t) {
+          return java.util.Optional.empty();
+        }
+      }).map(java.nio.file.Paths::get);
+    } catch (Throwable t) {
+      return java.util.Optional.empty();
+    }
+  }
+
+
+
+  public DataSet setPath(java.nio.file.Path p) {
+    this.underlyingPath = java.util.Optional.ofNullable(p).map(java.nio.file.Path::toAbsolutePath).orElse(null);
     return this;
   }
 
-  protected java.util.Optional<java.nio.file.Path> underLyingPath() {
-    return java.util.Optional.ofNullable(underlyingPath);
+  public DataSet setPath(java.net.URL p) {
+    try {
+      setPath(java.util.Optional.ofNullable(p).flatMap( url -> {
+        try {
+          return java.util.Optional.of(url.toURI());
+        } catch (Throwable t) {
+          return java.util.Optional.empty();
+        }
+      }).map(java.nio.file.Paths::get).orElse(null));
+    } catch (Throwable t) {
+      throw new org.infrastructurebuilder.data.IBDataException(t);
+    }
+    return this;
   }
 
+  public java.util.Optional<java.nio.file.Path> getPathAsPath() {
+    if (underlyingPath == null)
+      underlyingPath = _getPathAsPath().orElse(null);
+    return java.util.Optional.ofNullable(underlyingPath);
+  }
+/* */
   ]]>
           </code>
         </codeSegment>
@@ -571,7 +601,7 @@
   @Override
   public int hashCode() {
     return java.util.Objects.hash(artifactId, creationDate, description, name, groupId, metadata, modelEncoding,
-        modelVersion, path, streams, uuid, version);
+        modelVersion, streams, uuid, version);
   }
 
   @Override
@@ -594,7 +624,6 @@
         && java.util.Objects.equals(metadata, other.metadata)
         && java.util.Objects.equals(modelEncoding, other.modelEncoding)
         && java.util.Objects.equals(modelVersion, other.modelVersion)
-        && java.util.Objects.equals(path, other.path)
         && java.util.Objects.equals(uuid, other.uuid)
         && java.util.Objects.equals(version, other.version)
         && java.util.Objects.equals(getStreams(), other.getStreams())
@@ -624,18 +653,6 @@
   @Override
   public java.util.Optional<String> getDescription() {
     return java.util.Optional.ofNullable(description);
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  @Override
-  public java.util.Optional<String> getPath() {
-    return java.util.Optional.ofNullable(path);
   }
 
   ]]>

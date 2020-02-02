@@ -27,11 +27,11 @@ import static org.infrastructurebuilder.IBConstants.TEXT_PSV;
 import static org.infrastructurebuilder.IBConstants.TEXT_TSV;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
-import static org.infrastructurebuilder.data.IBDataModelUtils.forceToFinalizedPath;
-import static org.infrastructurebuilder.data.IBDataModelUtils.getStructuredSupplyTypeClass;
-import static org.infrastructurebuilder.data.IBDataModelUtils.relativizePath;
-import static org.infrastructurebuilder.data.IBDataModelUtils.safeMapURL;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML;
+import static org.infrastructurebuilder.data.model.IBDataModelUtils.forceToFinalizedPath;
+import static org.infrastructurebuilder.data.model.IBDataModelUtils.getStructuredSupplyTypeClass;
+import static org.infrastructurebuilder.data.model.IBDataModelUtils.relativizePath;
+import static org.infrastructurebuilder.data.model.IBDataModelUtils.safeMapURL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -51,6 +51,7 @@ import java.util.Optional;
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
+import org.infrastructurebuilder.data.model.IBDataModelUtils;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.files.DefaultIBResource;
@@ -113,16 +114,15 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
 
   @Test
   public void testRelPath() throws MalformedURLException {
-    Path p = wps.getTestClasses();
+    Path p = wps.getTestClasses().toAbsolutePath();
     DataSet set = new DataSet();
     DataStream stream = new DataStream();
     String v = relativizePath(set, stream);
     assertNull(v);
-    String uP = p.toUri().toURL().toExternalForm();
-    set.setPath(uP);
+    set.setPath(p);
     assertNull(relativizePath(set, stream));
-    stream.setPath(uP + File.separator + "X");
-    assertEquals(File.separator + "X", relativizePath(set, stream));
+    stream.setPath(p.resolve("X").toUri().toURL().toExternalForm());
+    assertEquals("X", relativizePath(set, stream));
   }
 
   @Test
@@ -131,7 +131,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     Path tPath = workingPath.getParent().resolve("75b331e0-faaa-3464-9219-2ca72f0ad31e");
     IBUtils.deletePath(tPath); // Fails if exists
     List<IBDataStreamSupplier> ibdssList = new ArrayList<>();
-    TypeToExtensionMapper t2e = new FakeTypeToExtensionMapper();
+    TypeToExtensionMapper t2e = new EverMoreFakeTypeToExtensionMapper();
     List<IBSchemaDAOSupplier> ibdssSchemaList = new ArrayList<>();
     IBResource v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, ibdssSchemaList , t2e, empty());
     assertEquals(tPath, v.getPath());

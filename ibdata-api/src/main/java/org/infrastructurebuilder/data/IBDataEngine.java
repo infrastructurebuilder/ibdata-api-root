@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data;
 
+import java.nio.file.spi.FileSystemProvider;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +34,17 @@ import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
 public interface IBDataEngine {
   // FIXME This won't work.  IbdataApiVersioning is loaded from the classpath, not localized
   public static final IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.apiVersion());  // The final name of the metadata resources
+
+  // FIXME Relocate to IBDataEngine
+  public static Optional<FileSystemProvider> getZipFSProvider() {
+    FileSystemProvider retVal = null;
+    for (FileSystemProvider provider : FileSystemProvider.installedProviders()) {
+      if ("jar".equals(provider.getScheme()))
+        retVal = provider;
+    }
+    return Optional.ofNullable(retVal);
+  }
+
 
   /**
    * Should be overriden in implementations because top-level erasure is a thingS
@@ -66,5 +78,10 @@ public interface IBDataEngine {
    * Return a list of UUIDs of Datasets currently available
    * @return
    */
+
+  /**
+   * Clear caches and remove existing loaded datasets
+   */
+  void reset();
 
 }

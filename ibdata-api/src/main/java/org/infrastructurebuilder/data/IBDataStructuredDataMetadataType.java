@@ -150,8 +150,15 @@ public enum IBDataStructuredDataMetadataType {
    * Stored as microseconds without denoted TZ as a LONG (Signed 64-bit integer)
    */
   TIMESTAMP,
+  /**
+   * Stored as microseconds since midnight
+   */
+  TIME,
 
   /**
+   *
+   * THIS IS DUMB.
+   *
    * A special IBData-specific type to denote that a given set of unstructured
    * data is itself actually somewhat structured. Specifically, the structure is a
    * set of strings delimited by newlines.

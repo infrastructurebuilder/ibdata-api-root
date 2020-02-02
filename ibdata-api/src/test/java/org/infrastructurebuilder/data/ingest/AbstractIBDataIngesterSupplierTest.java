@@ -16,14 +16,20 @@
 package org.infrastructurebuilder.data.ingest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.nio.file.Path;
-import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.IBDataIngester;
+import org.infrastructurebuilder.util.FakeCredentialsFactory;
+import org.infrastructurebuilder.util.artifacts.IBArtifactVersionMapper;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
+import org.infrastructurebuilder.util.config.FakeIBVersionsSupplier;
+import org.infrastructurebuilder.util.config.IBRuntimeUtils;
+import org.infrastructurebuilder.util.config.IBRuntimeUtilsTesting;
 import org.infrastructurebuilder.util.config.PathSupplier;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
@@ -32,19 +38,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AbstractIBDataIngesterSupplierTest {
-  private final Logger log = LoggerFactory.getLogger(AbstractIBDataIngesterTest.class);
+  private final static Logger log = LoggerFactory.getLogger(AbstractIBDataIngesterTest.class);
   private Path p;
   private Path c;
   private DefaultConfigMapSupplier cms;
   private AbstractIBDataIngesterSupplier<Object> i;
   private final static TestingPathSupplier wps = new TestingPathSupplier();
+  private final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(wps, log);
 
   @Before
   public void setUp() throws Exception {
     p = wps.get();
     c = wps.get();
     cms = new DefaultConfigMapSupplier();
-    i = new AbstractIBDataIngesterSupplier<Object>(wps, () -> log, cms) {
+    i = new AbstractIBDataIngesterSupplier<Object>(ibr, cms) {
 
       @Override
       public AbstractCMSConfigurableSupplier<IBDataIngester, Object> getConfiguredSupplier(ConfigMapSupplier cms) {
@@ -52,7 +59,7 @@ public class AbstractIBDataIngesterSupplierTest {
       }
 
       @Override
-      protected IBDataIngester getInstance(PathSupplier workingPath, Object in) {
+      protected IBDataIngester getInstance(IBRuntimeUtils ibr, Object in) {
         return null;
       }
     };
@@ -60,7 +67,7 @@ public class AbstractIBDataIngesterSupplierTest {
 
   @Test
   public void testGetLog() {
-    assertEquals(log, i.getLog());
+    assertNotNull(i.getLog());
   }
 
   @Test
