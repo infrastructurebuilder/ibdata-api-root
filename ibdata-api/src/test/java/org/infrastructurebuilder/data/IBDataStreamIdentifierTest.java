@@ -56,7 +56,7 @@ public class IBDataStreamIdentifierTest extends AbstractModelTest {
     assertEquals(STREAM_ID, stream.getId().toString());
     assertFalse(stream.getInputStreamLength().isPresent());
     assertFalse(stream.getNumRows().isPresent());
-    assertFalse(stream.getPathIfAvailable().isPresent());
+    assertFalse(stream.getPathAsPath().isPresent());
     assertFalse(stream.isExpandArchives());
   }
 

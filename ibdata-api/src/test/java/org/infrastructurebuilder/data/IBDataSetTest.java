@@ -67,7 +67,7 @@ public class IBDataSetTest extends AbstractModelTest {
 
   @Test
   public void testAsChecksumType() {
-    Checksum v = ds.asChecksumType().getChecksum();
+    Checksum v = ds.asIBResource().getChecksum();
     assertEquals(new Checksum(), v);
   }
 

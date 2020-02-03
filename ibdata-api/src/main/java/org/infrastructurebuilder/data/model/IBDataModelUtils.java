@@ -17,7 +17,6 @@ package org.infrastructurebuilder.data.model;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
-import static java.nio.file.Files.move;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 import static java.util.Objects.requireNonNull;
@@ -26,54 +25,64 @@ import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_XML;
-import static org.infrastructurebuilder.IBConstants.*;
+import static org.infrastructurebuilder.IBConstants.AVRO_BINARY;
 import static org.infrastructurebuilder.IBConstants.JAVA_LANG_STRING;
 import static org.infrastructurebuilder.IBConstants.ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD;
 import static org.infrastructurebuilder.IBConstants.ORG_W3C_DOM_NODE;
 import static org.infrastructurebuilder.IBConstants.TEXT_CSV;
+import static org.infrastructurebuilder.IBConstants.TEXT_CSV_WITH_HEADER;
 import static org.infrastructurebuilder.IBConstants.TEXT_PLAIN;
 import static org.infrastructurebuilder.IBConstants.TEXT_PSV;
+import static org.infrastructurebuilder.IBConstants.TEXT_PSV_WITH_HEADER;
 import static org.infrastructurebuilder.IBConstants.TEXT_TSV;
+import static org.infrastructurebuilder.IBConstants.TEXT_TSV_WITH_HEADER;
+import static org.infrastructurebuilder.IBConstants.UTF8;
 import static org.infrastructurebuilder.data.IBDataConstants.APPLICATION_IBDATA_ARCHIVE;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 import static org.infrastructurebuilder.data.IBMetadataUtils.toDataSchema;
 import static org.infrastructurebuilder.data.IBMetadataUtils.toDataStream;
-import static org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.infrastructurebuilder.data.IBDataException;
+import org.infrastructurebuilder.data.IBDataSchemaAsset;
 import org.infrastructurebuilder.data.IBDataSetIdentifier;
 import org.infrastructurebuilder.data.IBDataStreamSupplier;
 import org.infrastructurebuilder.data.IBSchemaDAO;
 import org.infrastructurebuilder.data.IBSchemaDAOSupplier;
-import org.infrastructurebuilder.data.model.DataSchema;
-import org.infrastructurebuilder.data.model.DataSet;
-import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
+import org.infrastructurebuilder.data.model.io.xpp3.PersistedIBSchemaXpp3Reader;
+import org.infrastructurebuilder.data.model.io.xpp3.PersistedIBSchemaXpp3Writer;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
+import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 import org.infrastructurebuilder.util.files.DefaultIBResource;
 import org.infrastructurebuilder.util.files.IBResource;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
@@ -141,6 +150,46 @@ public class IBDataModelUtils {
         .addChecksum(dataSetIdentifierChecksum.apply(ds)).asChecksum();
   }
 
+  public final static BiFunction<? super IBRuntimeUtils, ? super PersistedIBSchema, ? extends Path> writeSchemaToPath = (
+      ibr, schema) -> {
+    Path path = ibr.getWorkingPath().resolve(UUID.randomUUID().toString() + ".xml");
+    try (Writer w = Files.newBufferedWriter(path)) {
+      new PersistedIBSchemaXpp3Writer().write(w, schema);
+      return path;
+    } catch (IOException e) {
+      throw new IBDataException(String.format("Failed to persist InlineIBSchema to %s", path.toString()), e);
+    }
+
+  };
+
+  public final static Function<? super InputStream, ? extends PersistedIBSchema> mapInputStreamToPersistedSchema = (
+      in) -> {
+    PersistedIBSchemaXpp3Reader reader = new PersistedIBSchemaXpp3Reader();
+    try {
+      return cet.withReturningTranslation(() -> reader.read(in, true)).forceIndexUpdatePostRead().clone();
+    } finally {
+      cet.withTranslation(() -> in.close());
+    }
+  };
+
+  public final static Function<? super String, ? extends PersistedIBSchema> mapUTF8StringToPersistedSchema = (in) -> {
+    return mapInputStreamToPersistedSchema.apply(new ByteArrayInputStream(in.getBytes(UTF8)));
+  };
+
+  public final static Function<? super URL, ? extends PersistedIBSchema> mapURLToPersistedSchema = (in) -> {
+    try (InputStream ins = requireNonNull(in).openStream()) {
+      PersistedIBSchema d = mapInputStreamToPersistedSchema.apply(ins);
+      Path p = (in.getProtocol().contains("file:")) ? Paths.get(in.toURI()) : null;
+      return d;
+    } catch (IOException | URISyntaxException e) {
+      throw new IBDataException(e);
+    }
+  };
+
+  public final static Function<? super Path, ? extends PersistedIBSchema> mapPathToPersistedSchema = (in) -> {
+    return mapURLToPersistedSchema.apply(cet.withReturningTranslation(() -> requireNonNull(in).toUri().toURL()));
+  };
+
   public final static Function<? super InputStream, ? extends DataSet> mapInputStreamToDataSet = (in) -> {
     IBDataSourceModelXpp3Reader reader;
 
@@ -156,10 +205,16 @@ public class IBDataModelUtils {
     try (InputStream ins = requireNonNull(in).openStream()) {
       DataSet d = mapInputStreamToDataSet.apply(ins);
       Path p = (in.getProtocol().contains("file:")) ? Paths.get(in.toURI()) : null;
+      d.setPath(in);
       return d;
     } catch (IOException | URISyntaxException e) {
       throw new IBDataException(e);
     }
+  };
+
+  public final static Function<? super Path, ? extends DataSet> mapPathToDataSet = (in) -> {
+    return mapURLToDataSet.apply(cet.withReturningTranslation(() -> requireNonNull(in).toUri().toURL()));
+
   };
 
   /**
@@ -190,8 +245,17 @@ public class IBDataModelUtils {
       // The inbound data set
       , DataSet finalData
       // The inbound data streams (not including
-      , List<IBDataStreamSupplier> ibdssList, List<IBSchemaDAOSupplier> schemaSuppliers, TypeToExtensionMapper t2e,
-      Optional<String> basedir) throws IOException {
+      , List<IBDataStreamSupplier> ibdssList
+      // Schema suppliers
+      , List<IBSchemaDAOSupplier> schemaSuppliers
+      // Should be runtime utils
+      , TypeToExtensionMapper t2e
+      // ??
+      , Optional<String> basedir) throws IOException {
+
+    // FIXME We need to be able to do multiple schema ingestions somehow
+    if (Objects.requireNonNull(schemaSuppliers).size() > 1)
+      throw new IBDataException("Currently IBData limits schema ingestion to a single instance");
 
     // This archive is about to be created
     finalData.setCreationDate(requireNonNull(creationDate)); // That is now
@@ -211,36 +275,48 @@ public class IBDataModelUtils {
             // to a (unique) list
             .collect(toList());
 
-    List<DataSchema> schemasList = finalizedDataSchemaList.stream()
-        // Get the IBSchema
-        .map(IBSchemaDAO::getSchema)
-        // Convert it to a DataSchema
-        .map(toDataSchema)
-        // turn into a list to be processed later
-        .collect(toList());
+    // FIXME Currently this list should have ONE element at most
 
-    List<Map<String, IBDataStreamSupplier>> schemaDataStreams = //
-        // All finalized schema
-        finalizedDataSchemaList.stream()
-            //
-            .map(IBSchemaDAO::get)
-            //
-            .collect(toList());
-
-    Map<String, DataStream> schemaMap = new HashMap<>();
-    schemaDataStreams.forEach(dz -> {
-      dz.forEach((k, v) -> {
-        DataStream t = toDataStream.apply(v.get().relocateTo(newWorkingPath, t2e));
-        schemaMap.put(k, t);
-        // TODO Remap assets here
+    Map<String, DataSchema> tToDataSchema = new HashMap<>();
+    Map<String, Map<String, IBDataStreamSupplier>> tToMapOfDataStreamSuppliers = new HashMap<>();
+    Map<String, Map<String, DataStream>> tToMapOfDataStreamElementsForSuppliers = new HashMap<>();
+    for (IBSchemaDAO ff : finalizedDataSchemaList) {
+      String temporaryId = ff.getInboundId();
+      DataSchema q = toDataSchema.apply(ff.getSchema());
+      Map<String, IBDataStreamSupplier> schemaDataStreamSuppliers = ff.get();
+      Map<String, DataStream> remappedAssets = new HashMap<>();
+      schemaDataStreamSuppliers.forEach((schemaSpecificSupplier, assetStreamSupplier) -> {
+        DataStream assetStream = toDataStream.apply(assetStreamSupplier.get().relocateTo(newWorkingPath, t2e));
+        remappedAssets.put(schemaSpecificSupplier, assetStream);
       });
-    });
+      tToMapOfDataStreamElementsForSuppliers.put(temporaryId, remappedAssets);
+      tToMapOfDataStreamSuppliers.put(temporaryId, schemaDataStreamSuppliers);
+      DataStream theAsset = remappedAssets.get(ff.getPrimaryAssetKeyName());
+      String uuid = ofNullable(theAsset.getUuid())
+          .orElseThrow(() -> new IBDataException("No primary asset for " + temporaryId));
+      List<IBDataSchemaAsset> v = new ArrayList<>(q.getSchemaAssets());
+
+      tToDataSchema.put(temporaryId, q);
+    }
+    Set<String> temporaryIds = tToMapOfDataStreamElementsForSuppliers.keySet();
+
+    // FIXME This is all part of the "one schema ingested" problem
+    if (temporaryIds.size() > 1)
+      throw new IBDataException("Currently IBData can only handle a single set of elements");
+    Optional<String> temporaryId = ofNullable(temporaryIds.size() == 1 ? temporaryIds.iterator().next() : null);
+
+    // ?? Does order matter here?
+
+    Collection<DataStream> schemaMapValues; // schemaMap.values()
+    schemaMapValues = temporaryId.map(tToMapOfDataStreamElementsForSuppliers::get).map(Map::values)
+        .orElse(Collections.emptySet());
 
     List<DataStream> finalizedDataStreams =
         // Join the two streams
         Stream.concat(
             // Values from the schema
-            schemaMap.values().stream(),
+            schemaMapValues.stream(),
+//            schemaMap.values().stream(),
             // Values from regular data streams
             ibdssList.stream()
                 // Fetch the IBDS
@@ -256,7 +332,7 @@ public class IBDataModelUtils {
 
     // TODO Maybe we ADD streams and schema here?
     finalData.setStreams(finalizedDataStreams);
-    finalData.setSchemas(schemasList);
+    finalData.setSchemas(tToDataSchema.values().stream().collect(toList()));
     // finalData.getStreams().stream().forEach(dss ->
     // dss.setPath(IBDataModelUtils.relativizePath(finalData, dss)));
     // The id of the archive is based on the checksum of the data within it
@@ -264,7 +340,7 @@ public class IBDataModelUtils {
     finalData.setUuid(dsChecksum.asUUID().get().toString());
     // We're going to relocate the entire directory to a named UUID-backed directory
     Path newTarget = workingPath.getParent().resolve(finalData.getUuid().toString());
-    move(newWorkingPath, newTarget, ATOMIC_MOVE);
+    Files.move(newWorkingPath, newTarget, ATOMIC_MOVE);
     finalData.setPath(newTarget);
 
     // Create the IBDATA dir so that we can write the metadata xml

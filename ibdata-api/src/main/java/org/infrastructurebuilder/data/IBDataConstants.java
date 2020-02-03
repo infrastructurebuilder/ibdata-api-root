@@ -63,7 +63,9 @@ public interface IBDataConstants {
 
   public static final String METADATA = "metadata";
   public static final String INLINE = "inline";
+  public static final String ORIGINAL_ASSET = "originalAsset";
 
   public static final String JDBC_TYPE_NAME = "jdbcTypeName";
 
+  public static final String URLS = "URLS";
 }

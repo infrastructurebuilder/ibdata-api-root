@@ -30,30 +30,30 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ModelloReflectionReaderTest {
-  private static TestingPathSupplier wps = new TestingPathSupplier();
-
-  private ModelloReflectionReader<DataSchema> dsr;
-
-  private Path path;
-
-  @Before
-  public void setUp() throws Exception {
-    path = wps.getTestClasses().resolve("TestDataSchema.xml");
-    dsr = new ModelloReflectionReader<>(DataSchema.class);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-  }
-
-  @Test
-  public void testReadFromModel() throws XmlPullParserException, IOException {
-    DataSchema ds = null;
-    try (Reader reader = Files.newBufferedReader(path)) {
-      ds = dsr.readFromModel(reader);
-    }
-    assertNotNull(ds);
-    assertEquals("description", ds.getDescription());
-  }
-}
+//public class ModelloReflectionReaderTest {
+//  private static TestingPathSupplier wps = new TestingPathSupplier();
+//
+//  private ModelloReflectionReader<DataSchema> dsr;
+//
+//  private Path path;
+//
+//  @Before
+//  public void setUp() throws Exception {
+//    path = wps.getTestClasses().resolve("TestDataSchema.xml");
+//    dsr = new ModelloReflectionReader<>(DataSchema.class);
+//  }
+//
+//  @After
+//  public void tearDown() throws Exception {
+//  }
+//
+//  @Test
+//  public void testReadFromModel() throws XmlPullParserException, IOException {
+//    DataSchema ds = null;
+//    try (Reader reader = Files.newBufferedReader(path)) {
+//      ds = dsr.readFromModel(reader);
+//    }
+//    assertNotNull(ds);
+//    assertEquals("description", ds.getDescription());
+//  }
+//}

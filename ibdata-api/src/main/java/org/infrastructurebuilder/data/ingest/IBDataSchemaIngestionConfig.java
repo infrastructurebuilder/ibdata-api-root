@@ -23,6 +23,7 @@ import static org.infrastructurebuilder.data.IBDataConstants.CREDS_QUERY;
 import static org.infrastructurebuilder.data.IBDataConstants.METADATA;
 import static org.infrastructurebuilder.data.IBDataConstants.SCHEMA;
 import static org.infrastructurebuilder.data.IBDataConstants.SCHEMA_QUERY;
+import static org.infrastructurebuilder.data.IBDataConstants.URLS;
 
 import java.net.URL;
 import java.util.List;
@@ -81,6 +82,7 @@ public interface IBDataSchemaIngestionConfig {
     getDescription().ifPresent(d -> cm.put(DESCRIPTION, d));
     cm.put(METADATA, getMetadata());
     getInline().ifPresent(i -> cm.put(SCHEMA, i));
+    getUrls().ifPresent(i -> cm.put(URLS, i));
     getSchemaQuery().ifPresent(i -> cm.put(SCHEMA_QUERY, i));
     getCredentialsQuery().ifPresent(cq -> cm.put(CREDS_QUERY, cq));
     return cm;

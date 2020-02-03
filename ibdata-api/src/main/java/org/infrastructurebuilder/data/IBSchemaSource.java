@@ -48,7 +48,7 @@ public interface IBSchemaSource<P>
    *
    * @return
    */
-  String getId();
+  String getId();  // Mapped to the inbound "temporaryId"
 
 //  String getSourceURL();
 

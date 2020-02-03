@@ -124,7 +124,7 @@ public class IBMetadataUtils {
     ds.setSha512(ibds.getChecksum().toString());
     ds.setUuid(ibds.getChecksum().asUUID().get().toString());
     ds.setPath(ibds.getPath());
-    ibds.getPathIfAvailable().ifPresent(p -> {
+    ibds.getPathAsPath().ifPresent(p -> {
       ds.setOriginalLength(new Long(cet.withReturningTranslation(() -> Files.size(p))).toString());
     });
     ibds.getStructuredDataMetadata().ifPresent(smd -> {
@@ -141,11 +141,11 @@ public class IBMetadataUtils {
     ds.setCreationDate(ibds.getCreationDate());
     ds.setDescription(ibds.getDescription().orElseThrow(() -> new IBDataException("Description is required")));
     ds.setMetadata(ibds.getMetadata());
-    ds.setSha512(ibds.asChecksum().toString());
-    ds.setUuid(ibds.asChecksum().asUUID().get().toString());
+    Checksum c = ibds.asChecksum();
+    ds.setSha512(c.toString());
+    ds.setUuid(c.asUUID().get().toString());
     SchemaType schemaType = new SchemaType();
-    schemaType.setVersionedProvider(new DefaultGAV(IbdataApiVersioning.getJSONCoordinates())
-        .setVersion(IbdataApiVersioning.apiVersion()).asMavenDependencyGet().get());
+    schemaType.setVersionedProvider(IbdataApiVersioning.getXMLCoordinates());
     ds.setSchemaType(schemaType);
     List<SchemaAsset> schemaAssets = new ArrayList<>();
     ibds.getSchemaResourcesMappedFromName().forEach((k, v) -> {

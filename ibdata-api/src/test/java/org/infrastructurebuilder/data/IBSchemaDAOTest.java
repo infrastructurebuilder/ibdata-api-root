@@ -50,7 +50,7 @@ public class IBSchemaDAOTest {
 
   @Before
   public void setUp() throws Exception {
-    path= wps.getTestClasses().resolve(TESTFILE);
+    path = wps.getTestClasses().resolve(TESTFILE);
     ds = new FakeIBDataStream(path, Optional.empty());
     dss = new IBDataStreamSupplier() {
       @Override
@@ -60,6 +60,12 @@ public class IBSchemaDAOTest {
     };
     map = new HashMap<>();
     d = new IBSchemaDAO() {
+      @Override
+      public String getInboundId() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
       @Override
       public Map<String, IBDataStreamSupplier> get() {
         return map;
@@ -87,6 +93,5 @@ public class IBSchemaDAOTest {
   public void testGetSource() {
     assertFalse(d.getSource().isPresent());
   }
-
 
 }

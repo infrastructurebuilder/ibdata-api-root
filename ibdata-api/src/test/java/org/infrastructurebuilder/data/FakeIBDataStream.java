@@ -118,7 +118,7 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
   }
 
   @Override
-  public Optional<Path> getPathIfAvailable() {
+  public Optional<Path> getPathAsPath() {
     return of(this.localPath);
   }
 }

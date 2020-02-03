@@ -33,6 +33,7 @@ import org.infrastructurebuilder.util.files.IBResource;
 
 /**
  * An IBDataSet is a logical grouping of D
+ *
  * @author mykel.alvis
  *
  */
@@ -44,10 +45,10 @@ public interface IBDataSet extends IBDataSetIdentifier {
 
   /**
    * Get the aggregated checksum of all the checksums of all the data streams.
-   * This is not a checksum of all the data bytes.  This is a checksum of
-   * the list of data stream checksums
+   * This is not a checksum of all the data bytes. This is a checksum of the list
+   * of data stream checksums
    *
-   * @return Checksum of all the summary streams' data.  Empty if no streams
+   * @return Checksum of all the summary streams' data. Empty if no streams
    */
   default Optional<Checksum> getDataChecksum() {
     return ofNullable(getStreamSuppliers().size() > 0
@@ -56,7 +57,8 @@ public interface IBDataSet extends IBDataSetIdentifier {
   }
 
   /**
-   * Get the aggregated checksum of all the
+   * Get the aggregated checksum of all the underlying streams
+   *
    * @return
    */
   default Checksum getDataSetMetadataChecksum() {
@@ -64,12 +66,10 @@ public interface IBDataSet extends IBDataSetIdentifier {
     return ChecksumBuilder.newInstance()
         // data checksum
         .addListChecksumEnabled(l).asChecksum();
-
   }
 
-  default IBResource asChecksumType() {
-    Checksum c = new Checksum();
-    return DefaultIBResource.from(Paths.get(getPath().get()), c, APPLICATION_IBDATA_ARCHIVE);
+  default Optional<IBResource> asIBResource() {
+    return getLocalPath().map(p -> DefaultIBResource.from(p, new Checksum(), APPLICATION_IBDATA_ARCHIVE));
   }
 
   default List<IBDataStream> asStreamsList() {

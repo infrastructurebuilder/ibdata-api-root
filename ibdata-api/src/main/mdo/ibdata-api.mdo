@@ -510,7 +510,7 @@
     this.setStreams(ds.getStreams().stream().map(DataStream::new).collect(java.util.stream.Collectors.toList()));
     this.setUuid(java.util.Optional.ofNullable(ds.getUuid()).map(java.util.UUID::toString).orElse(null));
     this.setVersion(ds.getVersion());
-    this.setPath(ds.getPathAsPath().orElse(null));
+    this.setPath(ds.getLocalPath().map(p -> p.toString()).orElse(null));
   }
 
   @Override
@@ -547,21 +547,6 @@
 
   private java.nio.file.Path underlyingPath = null;
 
-  private java.util.Optional<java.nio.file.Path> _getPathAsPath() {
-    try {
-      return getPathAsURL().flatMap(url -> {
-        try {
-          return java.util.Optional.of(url.toURI());
-        } catch (Throwable t) {
-          return java.util.Optional.empty();
-        }
-      }).map(java.nio.file.Paths::get);
-    } catch (Throwable t) {
-      return java.util.Optional.empty();
-    }
-  }
-
-
 
   public DataSet setPath(java.nio.file.Path p) {
     this.underlyingPath = java.util.Optional.ofNullable(p).map(java.nio.file.Path::toAbsolutePath).orElse(null);
@@ -572,7 +557,7 @@
     try {
       setPath(java.util.Optional.ofNullable(p).flatMap( url -> {
         try {
-          return java.util.Optional.of(url.toURI());
+          return java.util.Optional.of(url.toURI()).map(java.nio.file.Paths::get);
         } catch (Throwable t) {
           return java.util.Optional.empty();
         }
@@ -583,9 +568,7 @@
     return this;
   }
 
-  public java.util.Optional<java.nio.file.Path> getPathAsPath() {
-    if (underlyingPath == null)
-      underlyingPath = _getPathAsPath().orElse(null);
+  public java.util.Optional<java.nio.file.Path> getLocalPath() {
     return java.util.Optional.ofNullable(underlyingPath);
   }
 /* */

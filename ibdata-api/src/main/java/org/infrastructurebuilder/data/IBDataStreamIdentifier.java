@@ -15,24 +15,18 @@
  */
 package org.infrastructurebuilder.data;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.data.IBDataException.cet;
 import static org.infrastructurebuilder.util.IBUtils.nullSafeDateComparator;
-import static org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper;
 import static org.infrastructurebuilder.util.IBUtils.nullSafeUUIDComparator;
 
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.infrastructurebuilder.util.CredentialsFactory;
 import org.infrastructurebuilder.util.DefaultURLAndCreds;
-import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.URLAndCreds;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
@@ -217,8 +211,8 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
    *
    * @return
    */
-  default Optional<Path> getPathIfAvailable() {
-    return empty();
+  default Optional<Path> getPathAsPath() {
+    return getParentPath().map(p -> p.resolve(ofNullable(getPath()).orElse(".")));
   }
 
   /**
@@ -348,4 +342,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
     return getUrl().map(u -> new DefaultURLAndCreds(u, getCredentialsQuery()));
   }
 
+  default Optional<Path> getParentPath() {
+    return getParent().flatMap(p -> p.getPathAsPath()).map(pp -> pp.resolve(getPath()));
+  }
 }

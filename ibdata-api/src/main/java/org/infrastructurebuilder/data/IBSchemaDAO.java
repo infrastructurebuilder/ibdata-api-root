@@ -17,6 +17,7 @@ package org.infrastructurebuilder.data;
 
 import static java.util.Optional.empty;
 import static org.infrastructurebuilder.IBConstants.DEFAULT;
+import static org.infrastructurebuilder.data.model.IBDataModelUtils.mapInputStreamToPersistedSchema;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,12 +30,10 @@ import org.infrastructurebuilder.data.model.io.xpp3.PersistedIBSchemaXpp3Reader;
 
 public interface IBSchemaDAO extends Supplier<Map<String, IBDataStreamSupplier>> {
 
+  String getInboundId();
+
   default IBSchema getSchema() {
-    try (InputStream ins = get().get(getPrimaryAssetKeyName()).get().get()) {
-      return getReader().read(ins);
-    } catch (IOException | XmlPullParserException e) {
-      throw new IBDataException(e);
-    }
+    return mapInputStreamToPersistedSchema.apply(get().get(getPrimaryAssetKeyName()).get().get());
   }
 
   default public String getPrimaryAssetKeyName() {
@@ -49,7 +48,4 @@ public interface IBSchemaDAO extends Supplier<Map<String, IBDataStreamSupplier>>
     return empty();
   }
 
-  default PersistedIBSchemaXpp3Reader getReader() {
-    return new PersistedIBSchemaXpp3Reader();
-  }
 }

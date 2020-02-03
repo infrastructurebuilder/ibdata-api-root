@@ -19,10 +19,8 @@ import static org.infrastructurebuilder.data.IBDataException.cet;
 import static org.infrastructurebuilder.util.IBUtils.nullSafeDateComparator;
 import static org.infrastructurebuilder.util.IBUtils.nullSafeUUIDComparator;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
@@ -80,21 +78,10 @@ public interface IBDataSetIdentifier extends ChecksumEnabled {
   /**
    * Optional representation of where this dataset <b><i>currently exists</i></b>.
    *
-   * @return {@code URL#toExternalForm()} of the path to the root of the dataset if available
+   * @return {@code URL#toExternalForm()} of the path to the root of the dataset
+   *         if available
    */
-  default Optional<String> getPath() {
-    return getPathAsURL().map(URL::toExternalForm);
-  }
-
-  Optional<Path> getPathAsPath();
-
-  default Optional<URL> getPathAsURL() {
-    try {
-      return getPathAsPath().map(u -> cet.withReturningTranslation(() -> u.toUri().toURL()));
-    } catch (Throwable t) {
-      return java.util.Optional.empty();
-    }
-  }
+  Optional<Path> getLocalPath();
 
   @Override
   default Checksum asChecksum() {

@@ -26,28 +26,28 @@ import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
 import org.joor.Reflect;
 
-public class ModelloReflectionReader<T> {
-  private final IBDataSourceModelXpp3Reader reader = new IBDataSourceModelXpp3Reader(); // No transformations
-  private final Class<T> clazz;
-
-  public ModelloReflectionReader(Class<T> clazz) {
-    this.clazz = Objects.requireNonNull(clazz);
-  }
-
-  public T readFromXpp3Dom(Xpp3Dom d) {
-    return readFromModel(new StringReader(d.toString()));
-  }
-
-  @SuppressWarnings("unchecked")
-  public T readFromModel(Reader r) {
-    return IBDataException.cet.withReturningTranslation(() -> {
-      XmlPullParser parser = new MXParser();
-      parser.setInput(r);
-
-      if (parser.nextTag() != XmlPullParser.START_TAG)
-        throw new IBDataException("No start tag");
-      return (T) Reflect.on(reader).call("parse" + clazz.getSimpleName(), parser, false).get();
-    });
-  }
-
-}
+//public class ModelloReflectionReader<T> {
+//  private final IBDataSourceModelXpp3Reader reader = new IBDataSourceModelXpp3Reader(); // No transformations
+//  private final Class<T> clazz;
+//
+//  public ModelloReflectionReader(Class<T> clazz) {
+//    this.clazz = Objects.requireNonNull(clazz);
+//  }
+//
+//  public T readFromXpp3Dom(Xpp3Dom d) {
+//    return readFromModel(new StringReader(d.toString()));
+//  }
+//
+//  @SuppressWarnings("unchecked")
+//  public T readFromModel(Reader r) {
+//    return IBDataException.cet.withReturningTranslation(() -> {
+//      XmlPullParser parser = new MXParser();
+//      parser.setInput(r);
+//
+//      if (parser.nextTag() != XmlPullParser.START_TAG)
+//        throw new IBDataException("No start tag");
+//      return (T) Reflect.on(reader).call("parse" + clazz.getSimpleName(), parser, false).get();
+//    });
+//  }
+//
+//}
