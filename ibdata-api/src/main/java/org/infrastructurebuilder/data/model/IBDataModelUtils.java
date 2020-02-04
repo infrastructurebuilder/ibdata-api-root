@@ -45,6 +45,7 @@ import static org.infrastructurebuilder.data.IBMetadataUtils.toDataSchema;
 import static org.infrastructurebuilder.data.IBMetadataUtils.toDataStream;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
@@ -114,8 +115,8 @@ public class IBDataModelUtils {
   }
 
   public final static String relativizePath(DataSet ds, DataStream s) {
-    return ds.getPathAsURL().map(u -> {
-      String u1 = u.toExternalForm();
+    return ds.getLocalPath().map(u -> {
+      String u1 = u.toAbsolutePath().toString() + File.separator;
       String s2P = s.getPath();
       return ofNullable(s2P).map(s2 -> (s2.startsWith(u1)) ? s2.substring(u1.length()) : s2).orElse(null);
     }).orElse(s.getPath());

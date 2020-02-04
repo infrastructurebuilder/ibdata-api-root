@@ -510,7 +510,7 @@
     this.setStreams(ds.getStreams().stream().map(DataStream::new).collect(java.util.stream.Collectors.toList()));
     this.setUuid(java.util.Optional.ofNullable(ds.getUuid()).map(java.util.UUID::toString).orElse(null));
     this.setVersion(ds.getVersion());
-    this.setPath(ds.getLocalPath().map(p -> p.toString()).orElse(null));
+    this.setPath(ds.getLocalPath().orElse(null));
   }
 
   @Override
@@ -532,7 +532,7 @@
   private void mutatingDataSetCloneHook(DataSet ds) {
     if (streams != null)
       ds.getStreams().forEach(s -> s.setPath(org.infrastructurebuilder.data.model.IBDataModelUtils.relativizePath(ds, s)));
-    ds.underlyingPath = getPathAsPath().orElse(null);
+    ds.underlyingPath = getLocalPath().orElse(null);
   }
 
   ]]>
@@ -554,17 +554,9 @@
   }
 
   public DataSet setPath(java.net.URL p) {
-    try {
-      setPath(java.util.Optional.ofNullable(p).flatMap( url -> {
-        try {
-          return java.util.Optional.of(url.toURI()).map(java.nio.file.Paths::get);
-        } catch (Throwable t) {
-          return java.util.Optional.empty();
-        }
-      }).map(java.nio.file.Paths::get).orElse(null));
-    } catch (Throwable t) {
-      throw new org.infrastructurebuilder.data.IBDataException(t);
-    }
+      setPath(java.util.Optional.ofNullable(p)
+          .map(u ->  org.infrastructurebuilder.data.IBDataException.cet.withReturningTranslation(() -> u.toURI()))
+              .map(java.nio.file.Paths::get).orElse(null));
     return this;
   }
 

@@ -343,6 +343,6 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   }
 
   default Optional<Path> getParentPath() {
-    return getParent().flatMap(p -> p.getPathAsPath()).map(pp -> pp.resolve(getPath()));
+    return getParent().flatMap(p -> p.getLocalPath()).map(pp -> pp.resolve(getPath()));
   }
 }

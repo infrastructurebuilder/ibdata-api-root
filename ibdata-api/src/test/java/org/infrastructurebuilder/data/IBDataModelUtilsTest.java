@@ -121,7 +121,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     assertNull(v);
     set.setPath(p);
     assertNull(relativizePath(set, stream));
-    stream.setPath(p.resolve("X").toUri().toURL().toExternalForm());
+    stream.setPath(p.resolve("X").toAbsolutePath().toString());
     assertEquals("X", relativizePath(set, stream));
   }
 

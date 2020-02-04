@@ -130,7 +130,7 @@ public class DefaultIBDataSetIdentifier extends DataSet {
     ds.setName(getName().orElse(null));
     ds.setDescription(getDescription().orElse(null));
     ds.setMetadata(getMetadata());
-    ds.setPath(getPathAsPath().orElse(null));
+    ds.setPath(getLocalPath().orElse(null));
     ds.setCreationDate(getCreationDate());
     ds.setStreams(getStreams());
     ds.setSchemas(getSchemas());

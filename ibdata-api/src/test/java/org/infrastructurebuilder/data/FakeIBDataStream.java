@@ -60,7 +60,7 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
     this.setDescription("desc");
     this.setName("name");
     this.setMetadata(new Metadata());
-    this.setPath(".");
+    this.setPath(p.toAbsolutePath().toString());
     this.setMimeType(IBConstants.APPLICATION_OCTET_STREAM);
     this.smd = null;
   }
@@ -106,7 +106,7 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
   public IBDataStream relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e) {
     if (throwMeOnRelocate.isPresent())
       throw new IBDataException("throwMeOnRelocate", throwMeOnRelocate.get());
-    Path p = newWorkingPath.resolve(UUID.randomUUID().toString() + t2e.getExtensionForType(getMimeType()));
+    Path p = newWorkingPath.resolve(UUID.randomUUID().toString() + t2e.getExtensionForType(getMimeType())).toAbsolutePath();
     cet.withReturningTranslation(() -> Files.move(Paths.get(getPath()), p));
     this.setPath(p.toString());
     return this;
