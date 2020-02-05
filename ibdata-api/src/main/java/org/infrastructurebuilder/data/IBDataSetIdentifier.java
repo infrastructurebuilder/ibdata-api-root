@@ -15,11 +15,10 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.infrastructurebuilder.data.IBDataException.cet;
+import static org.infrastructurebuilder.data.model.IBDataModelUtils.dataSetIdentifierChecksum;
 import static org.infrastructurebuilder.util.IBUtils.nullSafeDateComparator;
 import static org.infrastructurebuilder.util.IBUtils.nullSafeUUIDComparator;
 
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Date;
@@ -27,7 +26,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
@@ -85,15 +83,7 @@ public interface IBDataSetIdentifier extends ChecksumEnabled {
 
   @Override
   default Checksum asChecksum() {
-    return ChecksumBuilder.newInstance() //
-        .addChecksumEnabled(getGAV())//
-        .addString(getName())//
-        .addString(getDescription())//
-        .addDate(getCreationDate()) //
-        .addString(Optional.ofNullable(getMetadata()).map(s -> s.toString())) //
-        // fin
-        .asChecksum();
-
+    return dataSetIdentifierChecksum.apply(this);
   }
 
 }

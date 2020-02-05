@@ -128,17 +128,15 @@ public class IBDataModelUtils {
   public final static Function<IBDataSetIdentifier, Checksum> dataSetIdentifierChecksum = (ds) -> {
     return ChecksumBuilder.newInstance()
         // Group
-        .addString(ds.getGroupId())
-        // artifact
-        .addString(ds.getArtifactId())
-        // version
-        .addString(ds.getVersion())
+        .addChecksumEnabled(ds.getGAV())
         //
         .addString(ds.getName())
         //
         .addString(ds.getDescription())
         //
         .addDate(ds.getCreationDate())
+        //
+        .addChecksumEnabled(ds.getMetadata())
         // fin
         .asChecksum();
   };
@@ -147,8 +145,10 @@ public class IBDataModelUtils {
     return ChecksumBuilder.newInstance(of(workingPath))
         // Checksum of data of streams
         .addChecksum(new Checksum(ds.getStreams().stream().map(s -> s.getChecksum()).collect(toList())))
-        // Checksum of stream metadata
-        .addChecksum(dataSetIdentifierChecksum.apply(ds)).asChecksum();
+        // Checksum of data
+        .addChecksumEnabled(ds)
+        // FIXME Why not DataSet.asChecksum?
+        /*.addChecksum(dataSetIdentifierChecksum.apply(ds))*/.asChecksum();
   }
 
   public final static BiFunction<? super IBRuntimeUtils, ? super PersistedIBSchema, ? extends Path> writeSchemaToPath = (

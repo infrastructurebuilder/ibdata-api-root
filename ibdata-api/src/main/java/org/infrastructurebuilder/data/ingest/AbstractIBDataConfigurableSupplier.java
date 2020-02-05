@@ -15,13 +15,11 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
-public abstract class AbstractIBDataConfigurableSupplier<T, P> extends AbstractCMSConfigurableSupplier<T, P>
-    implements IBLoggerEnabled {
+public abstract class AbstractIBDataConfigurableSupplier<T, P> extends AbstractCMSConfigurableSupplier<T, P> {
   public AbstractIBDataConfigurableSupplier(IBRuntimeUtils ibr, ConfigMapSupplier config) {
     super(ibr, config);
   }

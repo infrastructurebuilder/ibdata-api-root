@@ -18,8 +18,6 @@ package org.infrastructurebuilder.data;
 import java.util.List;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.BasicCredentials;
-import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.URLAndCreds;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
@@ -42,7 +40,7 @@ import org.infrastructurebuilder.util.files.IBResource;;
  * @author mykel.alvis
  *
  */
-public interface IBDataSource<P> extends ConfigurableSupplier<List<IBResource>, ConfigMap, P>, IBLoggerEnabled {
+public interface IBDataSource<P> extends ConfigurableSupplier<List<IBResource>, ConfigMap, P> {
 //  public static final String TARGET_PATH = "Source-Target-Path";
 
   URLAndCreds getSource();

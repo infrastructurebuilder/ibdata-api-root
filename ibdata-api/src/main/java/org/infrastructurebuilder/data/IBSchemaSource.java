@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.BasicCredentials;
-import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigurableSupplier;
@@ -41,14 +40,13 @@ import org.infrastructurebuilder.util.files.IBResource;;
  * @author mykel.alvis
  *
  */
-public interface IBSchemaSource<P>
-    extends ConfigurableSupplier<Map<String,IBResource>, ConfigMap, P>, IBLoggerEnabled {
+public interface IBSchemaSource<P> extends ConfigurableSupplier<Map<String, IBResource>, ConfigMap, P> {
   /**
    * This is really a descriptive value, although it needs to be unique as well
    *
    * @return
    */
-  String getId();  // Mapped to the inbound "temporaryId"
+  String getId(); // Mapped to the inbound "temporaryId"
 
 //  String getSourceURL();
 
