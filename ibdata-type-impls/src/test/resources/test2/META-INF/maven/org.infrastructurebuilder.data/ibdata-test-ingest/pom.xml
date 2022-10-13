@@ -1,0 +1,106 @@
+<!--
+
+    Copyright © 2019 admin (admin@infrastructurebuilder.org)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.infrastructurebuilder.data</groupId>
+    <artifactId>ibdata-reference-root</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>ibdata-test-ingest</artifactId>
+  <packaging>ibdata</packaging>
+  <properties>
+    <surefire.failIfNoTests>false</surefire.failIfNoTests>
+  </properties>
+  <dependencies>
+  <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.infrastructurebuilder.data</groupId>
+    <artifactId>ibdata-testing</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+    </dependency>
+
+  </dependencies>
+  <build>
+
+    <plugins>
+      <plugin>
+        <groupId>org.infrastructurebuilder.data</groupId>
+        <artifactId>ibdata-maven-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.infrastructurebuilder.data</groupId>
+            <artifactId>ibdata-type-impls</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>ABS</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>ingest</goal>
+            </goals>
+            <configuration>
+              <ingest>
+                <id>xyz</id>
+                <ingester>default</ingester>
+                <dataSet>
+                  <name>jeff</name>
+                  <description>Describe Jeff in 5 words</description>
+                  <metadata>
+                    <y>
+                      <x />
+                    </y>
+                  </metadata>
+                  <streams>
+                    <stream>
+                      <temporaryId>temp1</temporaryId>
+                      <name>one</name>
+                      <mimeType>text/csv</mimeType>
+                      <url>https://file-examples.com/wp-content/uploads/2017/02/file_example_CSV_5000.csv</url>
+                      <sha512>c369ba6d026298ec8b5d0915fe35582b89882b11b48a04d8ffff586ec78fa391291deb8b72dad8dbd84b07ef4d87aba332b0b08572b6113344958805226d7b4d</sha512>
+                      <metadata>
+                        <here>
+                          <x>also</x>
+                        </here>
+                        <abc />
+                      </metadata>
+                    </stream>
+                  </streams>
+                </dataSet>
+              </ingest>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

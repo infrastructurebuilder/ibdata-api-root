@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSet xsi:schemaLocation="https://resources.infrastructurebuilder.org/IBDataSet/0.11 https://resources.infrastructurebuilder.org/xsd/IBDataSet-0.11"
+    xmlns="https://resources.infrastructurebuilder.org/IBDataSet/0.11"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>1.0.0</modelVersion>
+  <groupId>org.infrastructurebuilder.data</groupId>
+  <artifactId>ibdata-test-ingest</artifactId>
+  <version>0.1.1-SNAPSHOT</version>
+  <uuid>99139ebc-4c01-3c93-89c1-2219c7e4ebf6</uuid>
+  <dataSetName>jeff</dataSetName>
+  <dataSetDescription>Describe Jeff in 5 words</dataSetDescription>
+  <creationDate>2019-10-28T05:50:41.935</creationDate>
+  <streams>
+    <stream>
+      <uuid>cf031c5a-3a34-3175-8140-26819803d395</uuid>
+      <dataStreamName>jeff</dataStreamName>
+      <dataStreamDescription>Describe Jeff in 5 words</dataStreamDescription>
+      <mimeType>text/csv</mimeType>
+      <creationDate>2019-10-28T05:50:41.417</creationDate>
+      <sourceURL>https://file-examples.com/wp-content/uploads/2017/02/file_example_CSV_5000.csv</sourceURL>
+      <sha512>c369ba6d026298ec8b5d0915fe35582b89882b11b48a04d8ffff586ec78fa391291deb8b72dad8dbd84b07ef4d87aba332b0b08572b6113344958805226d7b4d</sha512>
+      <metadata>
+        <here>
+          <x>also</x>
+        </here>
+        <abc />
+      </metadata>
+      <path>cf031c5a-3a34-3175-8140-26819803d395.csv</path>
+    </stream>
+  </streams>
+  <metadata>
+    <y>
+      <x />
+    </y>
+  </metadata>
+</dataSet>

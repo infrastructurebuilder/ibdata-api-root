@@ -1,0 +1,189 @@
+<!--
+
+    Copyright © 2019 admin (admin@infrastructurebuilder.org)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!-- Copyright © 2019 admin (admin@infrastructurebuilder.org) Licensed under
+  the Apache License, Version 2.0 (the "License"); you may not use this file
+  except in compliance with the License. You may obtain a copy of the License
+  at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
+  law or agreed to in writing, software distributed under the License is distributed
+  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+  express or implied. See the License for the specific language governing permissions
+  and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.infrastructurebuilder.data</groupId>
+    <artifactId>ibdata-reference-root</artifactId>
+    <version>@project.version@</version>
+  </parent>
+
+  <groupId>org.sample</groupId>
+  <artifactId>multi</artifactId>
+  <version>1.0</version>
+  <packaging>ibdata</packaging>
+  <properties>
+    <surefire.failIfNoTests>false</surefire.failIfNoTests>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+    </dependency>
+
+  </dependencies>
+  <build>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.infrastructurebuilder.data</groupId>
+        <artifactId>ibdata-maven-plugin</artifactId>
+        <version>@project.version@</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>ABS</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>ingest</goal>
+            </goals>
+            <configuration>
+              <ingest>
+                <id>xyz</id>
+                <ingester>default</ingester>
+                <dataSet>
+                  <name>jeff</name>
+                  <description>Describe Jeff in 5 words</description>
+                  <metadata>
+                    <y>
+                      <x />
+                    </y>
+                  </metadata>
+                  <streams>
+                    <stream>
+                      <temporaryId>temp1</temporaryId>
+                      <name>one</name>
+                      <url>https://www.cms.gov/Medicare/Coding/NationalCorrectCodInitEd/downloads/2019-July-Hospital-PTP-Edits-v252-f1.zip?agree=yes</url>
+                      <sha512>a19fea88c433f698ee3634138075b9403fc4cf162f91b499ea5dd38a469753f14532d6ba59c8da9111b8394d3afb835cb4c12b2a3a4ef136b742742665c49f41</sha512>
+                      <metadata>
+                        <here>
+                          <x>also</x>
+                        </here>
+                        <abc />
+                      </metadata>
+                    </stream>
+                    <stream>
+                      <temporaryId>temp2</temporaryId>
+                      <name>two</name>
+                      <url>https://www.cms.gov/Medicare/Coding/NationalCorrectCodInitEd/downloads/2019-July-Hospital-PTP-Edits-v252-f2.zip?agree=yes</url>
+                      <sha512>107ea19531d7e7939db4d90e528e3bb6dfc1c3c46693756334bed38e09f8f28ee166c8dd0b49ada5b9e2acf5f989c493c01ee368c186b39c899b204a91ac72b9</sha512>
+                      <metadata>
+                        <here>
+                          <x>also</x>
+                        </here>
+                        <abc />
+                      </metadata>
+                    </stream>
+                    <stream>
+                      <temporaryId>temp3</temporaryId>
+                      <name>three</name>
+                      <url>https://www.cms.gov/Medicare/Coding/NationalCorrectCodInitEd/downloads/2019-July-Hospital-PTP-Edits-v252-f3.zip?agree=yes</url>
+                      <sha512>733b4af862768bf0c58bb9402fba7a13b2512fe0806c67521d03a2212df5b47286525c55f8b6186513181b10127c09ce0bdc471fdcc2968d0202f26d9a2586c4</sha512>
+                      <metadata>
+                        <here>
+                          <x>also</x>
+                        </here>
+                        <abc />
+                      </metadata>
+                    </stream>
+                    <stream>
+                      <temporaryId>temp4</temporaryId>
+                      <name>four</name>
+                      <url>https://www.cms.gov/Medicare/Coding/NationalCorrectCodInitEd/downloads/2019-July-Hospital-PTP-Edits-v252-f4.zip?agree=yes</url>
+                      <sha512>425d9f23232761bb27164ee709fe5634ac916f480bd6bd3404ef7be41a5613a0c098b30616a7da7fe1c25a55278e5a51d0b6a0b68a3b444fe9f77f7b4ee27238</sha512>
+                      <metadata>
+                        <here>
+                          <x>also</x>
+                        </here>
+                        <abc />
+                      </metadata>
+                    </stream>
+                    <stream>
+                      <temporaryId>five5</temporaryId>
+                      <name>five</name>
+                      <url>https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip</url>
+                      <sha512>f545eeb9c46e29f5d8e29639840457de5d1bdbc34e16cbe5c1ca4b7efcbf294da0a3df41485c041cee1a25d8f0afec246cd02be1298dee9ab770a7cfed73dc71</sha512>
+                      <metadata>
+                        <here>
+                          <x>also</x>
+                        </here>
+                        <abc />
+                      </metadata>
+                      <expandArchives>true</expandArchives>
+                    </stream>
+                    <stream>
+                      <temporaryId>SICKS</temporaryId>
+                      <name>six</name>
+                      <url>file://${basedir}/src/main/resources/test.zip</url>
+                      <expandArchives>true</expandArchives>
+                    </stream>
+                    <stream>
+                      <temporaryId>v</temporaryId>
+                      <name>vee</name>
+                      <url>file://${basedir}/src/main/resources/verify.zip</url>
+                      <expandArchives>false</expandArchives>
+                    </stream>
+                  </streams>
+                </dataSet>
+              </ingest>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <skip>false</skip>
+          <ingest>
+            <dataSet>
+              <name>name</name>
+              <description>desc</description>
+              <metadata>
+                <x>
+                  <ab>cdefg</ab>
+                  <xx.tty />
+                </x>
+              </metadata>
+            </dataSet>
+          </ingest>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

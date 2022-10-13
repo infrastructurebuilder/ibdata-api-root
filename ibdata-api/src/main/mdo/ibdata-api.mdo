@@ -1,0 +1,580 @@
+<model xmlns="http://codehaus-plexus.github.io/MODELLO/1.8.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://codehaus-plexus.github.io/MODELLO/1.8.0 http://codehaus-plexus.github.io/modello/xsd/modello-1.8.0.xsd"
+  java.suppressAllWarnings="false"
+  xml.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
+  xml.schemaLocation="https://resources.infrastructurebuilder.org/xsd/IBDataSet-${apiVersion}"
+  xsd.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
+  xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}">
+  <id>datasource</id>
+  <name>IBDataSourceModel</name>
+  <!-- Must be a single (no spaces, no dashes, no periods) identifier in
+    order to create reader/writer -->
+  <description>Mechanism to read config for an IBDataSource</description>
+  <defaults>
+    <default>
+      <key>package</key>
+      <value>${project.groupId}.model</value>
+    </default>
+  </defaults>
+  <versionDefinition>
+    <type>field</type>
+    <value>modelVersion</value>
+  </versionDefinition>
+  <classes>
+    <!-- MODEL -->
+
+    <class xml.tagName="dataStream"
+       java.clone="deep">
+      <name>DataStream</name>
+      <version>1.0.0+</version>
+      <description>
+        <![CDATA[
+        The <code>&lt;dataSet&gt;</code> element contains information about a set of DataStream instances.
+        ]]>
+      </description>
+      <fields>
+        <field>
+          <name>uuid</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>UUID identifier of the datastream, which is the UUID of the bytes of the checksum of the data.</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>name</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>The full name of the datastream.</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>description</name>
+          <version>1.0.0+</version>
+          <description>A detailed description of the datastream</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>mimeType</name>
+          <version>1.0.0+</version>
+          <description>Stringified version of a MIME type for the datastream</description>
+          <required>true</required>
+          <defaultValue>application/octet-stream</defaultValue>
+          <type>String</type>
+        </field>
+        <field>
+          <name>creationDate</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Creation date of this stream, required</description>
+          <type>Date</type>
+        </field>
+        <field >
+          <name>url</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>URL of the source of this stream, if available</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>sha512</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Sha-512 Checksum  of the source of this stream</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>path</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Describes a path to the stream</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>structuredDataDescriptor</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Optional DataStreamStructuredMetadata element for datastream</description>
+          <association>
+            <type>DataStreamStructuredMetadata</type>
+            <multiplicity>1</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>originalLength</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Length in bytes of the original stream, if known</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>originalRowCount</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Number of rows of the stream</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>metadata</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Additional metadata</description>
+          <type>DOM</type>
+        </field>
+        <field >
+          <name>provenance</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Datastream provenance</description>
+          <association>
+            <type>DataStreamProvenance</type>
+            <multiplicity>1</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>referencedSchema</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>UUID of schema that this DataStream is meant to map to</description>
+          <type>String</type>
+        </field>
+      </fields>
+    </class>
+    <class xml.tagName="dataSet" rootElement="true"
+       java.clone="deep">
+      <name>DataSet</name>
+      <description>
+        <![CDATA[
+        The <code>&lt;dataSet&gt;</code> element is the root of the configuration.
+        ]]>
+      </description>
+      <version>1.0.0+</version>
+      <fields>
+
+        <!-- ====================================================================== -->
+        <!-- DataSet Version -->
+        <!-- ====================================================================== -->
+        <field>
+          <name>modelVersion</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Declares to which version of project descriptor this configuration conforms.  This value is the api version (major.minor) of ibdata-api and conforms to semantic versioning</description>
+          <type>String</type>
+        </field>
+
+
+        <field>
+          <name>groupId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Namespace of the dataset.  This defaults to the project.groupId of the building project</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>artifactId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Artifact Identifier of the dataset.  This defaults to the project.artifactId of the building project</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>version</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Version of the dataset.  This defaults to the project.version of the building project</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>uuid</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>UUID identifier of the dataset.  This is the UUID from the Checksums of all the DataStream elements</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>name</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>The full name of the dataset.  This defaults to the project.name of the building project</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>description</name>
+          <version>1.0.0+</version>
+          <description>A detailed description of the dataset.  This defaults to the project.description of the building project</description>
+          <type>String</type>
+        </field>
+        <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSS"
+          >
+          <name>creationDate</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>A Date that is very close to the moment when this DataSet was persisted.  It has essentially no relationship to when the streams were read, except that it must be later.</description>
+          <type>Date</type>
+        </field>
+        <field>
+          <name>streams</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Instances of DataStreams</description>
+          <association>
+            <type>DataStream</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>schemas</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Instances of DataSchema</description>
+          <association>
+            <type>DataSchema</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field >
+          <name>metadata</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Additional metadata</description>
+          <type>DOM</type>
+        </field>
+      </fields>
+    </class>
+    <class locationTracker="locations" java.clone="shallow">
+      <name>DataSetInputLocation</name>
+      <version>1.0.0+</version>
+      <fields>
+        <!-- line, column and source fields are auto-generated by Modello -->
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+
+    @Override
+    public String toString()
+    {
+        return getLineNumber() + " : " + getColumnNumber() + ", " + getSource();
+    }
+            ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+    <class sourceTracker="source" java.clone="shallow">
+      <name>DataSetInputSource</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>modelId</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>
+            <![CDATA[
+            The identifier of the deployment model in the format {@code <groupId>:<artifactId>:<version>}.
+            ]]>
+          </description>
+        </field>
+        <field>
+          <name>location</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>
+            <![CDATA[
+            The path/URL of the deployment model or {@code null} if unknown.
+            ]]>
+          </description>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    @Override
+    public String toString()
+    {
+        return getModelId() + " " + getLocation();
+    }
+            ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+
+    <class xml.tagName="structuredFieldMetadata"
+       java.clone="deep">
+      <name>StructuredFieldMetadata</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>index</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Describes the field within the structured metadata that this SFM describes, from a base of 0.  Default value set to -1 to ensure setting proper index</description>
+          <type>int</type>
+          <defaultValue>-1</defaultValue>
+        </field>
+        <field >
+          <name>max</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes the "maximum length" or "maximum size" of the data in the field.</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>min</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes the "minimum length" or "maximum size" of the data in the field.</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>nulled</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes if the field contains a null value.</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>uniqueValuesCount</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes the number of unique value in the stream data</description>
+          <type>String</type>
+        </field>
+      </fields>
+    </class>
+
+    <class xml.tagName="dataStreamStructuredMetadata"
+
+      java.clone="deep">
+      <name>DataStreamStructuredMetadata</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>uuid</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>UUID identifier of the datastream that this metadata references</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>fields</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>List of structured data for a given field. </description>
+          <association>
+            <type>StructuredFieldMetadata</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+      </fields>
+    </class>
+
+    <class xml.tagName="dataStreamProvenance"
+
+      java.clone="deep">
+      <name>DataStreamProvenance</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>originator</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>UUID identifier of the datastream that this metadata references</description>
+          <association>
+            <type>Dependency</type>
+            <multiplicity>1</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>url</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description> Originating URL</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>transformations</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>List of structured data for a given field. </description>
+          <association>
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+      </fields>
+    </class>
+    <class xml.tagName="gav" java.clone="deep">
+      <name>Dependency</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>groupId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Group ID</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>artifactId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>ArtifactId ID</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>version</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>version</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>extension</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>extension (not type-mapped)</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>classifier</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Addl classifier</description>
+          <type>String</type>
+        </field>
+      </fields>
+    </class>
+
+
+    <class xml.tagName="schema"
+       java.clone="deep">
+      <name>DataSchema</name>
+      <version>1.0.0+</version>
+      <description>
+        <![CDATA[
+        The <code>&lt;schema&gt;</code> element contains information about a single schema.
+        ]]>
+      </description>
+      <fields>
+        <field >
+          <name>uuid</name>
+          <version>1.0.0+</version>
+          <description>Identifier.  During ingestion, this is NOT a uuid.</description>
+          <required>true</required>
+          <type>String</type>
+        </field>
+        <field>
+          <name>schemaType</name>
+          <association>
+            <type>SchemaType</type>
+            <multiplicity>1</multiplicity>
+          </association>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Type of schema.  This is the component hint used to lookup the provider.</description>
+        </field>
+        <field>
+          <name>name</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>The full name of the DataSchema.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>description</name>
+          <version>1.0.0+</version>
+          <description>A detailed description of the DataSchema</description>
+          <required>true</required>
+          <type>String</type>
+        </field>
+        <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSS">
+          <name>creationDate</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Creation date of this stream, required</description>
+          <type>Date</type>
+        </field>
+        <field>
+          <name>sha512</name>
+          <version>1.0.0+</version>
+          <description>Persisted value of computed checksum</description>
+          <required>true</required>
+          <type>String</type>
+        </field>
+
+        <field >
+          <name>metadata</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Additional metadata</description>
+          <type>DOM</type>
+        </field>
+        <field >
+          <name>schemaAssets</name>
+          <version>1.0.0+</version>
+          <association>
+            <type>SchemaAsset</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+      </fields>
+    </class>
+
+    <class xml.tagName="asset" java.clone="deep">
+      <name>SchemaAsset</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>id</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Schema technology identifier (component hint)</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>sha512</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Technology underlying the schema management</description>
+          <type>String</type>
+        </field>
+      </fields>
+    </class>
+
+    <class xml.tagName="schemaType" java.clone="deep">
+      <name>SchemaType</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>type</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Schema technology identifier (component hint)</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>technology</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Technology underlying the schema management</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>versionedProvider</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Identifier for the underlying provider's artifact</description>
+          <type>String</type>
+        </field>
+      </fields>
+      <!-- Code Segments generated in ibdata-schema.mdo -->
+    </class>
+
+  </classes>
+</model>

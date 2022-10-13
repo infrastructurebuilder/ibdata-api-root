@@ -1,0 +1,19 @@
+<schema>
+  <uuid>aa</uuid>
+  <sha512>abcd</sha512>
+  <url>some:url://</url>
+  <name>name</name>
+  <description>description</description>
+  <creationDate>2015-11-22T11:12:13.145</creationDate>
+  <metadata>
+    <here>
+      <is>some</is>
+    </here>
+    <metadata>
+      <for>you</for>
+    </metadata>
+  </metadata>
+  <fields>
+  </fields>
+  <forcedMap></forcedMap>
+</schema>

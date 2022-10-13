@@ -1,0 +1,127 @@
+<!--
+
+    Copyright © 2019 admin (admin@infrastructurebuilder.org)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.infrastructurebuilder.data</groupId>
+    <artifactId>ibdata-root</artifactId>
+    <version>0.30.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>ibdata-utils</artifactId>
+  <packaging>jar</packaging>
+  <name>${project.artifactId}</name>
+  <description>Utils and Factories for dealing with data streams</description>
+  <!-- URL for site gen -->
+  <properties>
+    <test.coverage.percentage.required>50</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>99</jacoco.max.missed.classes>
+  </properties>
+  <url>${github.url.base}/${project.artifactId}</url>
+  <dependencies>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.data</groupId>
+      <artifactId>ibdata-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.data</groupId>
+      <artifactId>ibdata-model</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>copy-resources</id>
+              <!-- here the phase you need -->
+              <phase>validate</phase>
+              <goals>
+                <goal>copy-resources</goal>
+              </goals>
+              <configuration>
+                <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                <resources>
+                  <resource>
+                    <directory>src/main/mdo/</directory>
+                    <filtering>true</filtering>
+                  </resource>
+                </resources>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.infrastructurebuilder.maven</groupId>
+        <artifactId>ibversions-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>validate</phase> <!-- Needs to be before resource filtering -->
+            <goals>
+              <goal>generate-java-version</goal>
+              <goal>generate-java-test-version</goal>
+            </goals>
+            <configuration>
+              <apiVersionPropertyName>apiVersion</apiVersionPropertyName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

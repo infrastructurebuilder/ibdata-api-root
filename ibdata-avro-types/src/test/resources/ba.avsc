@@ -1,0 +1,36 @@
+{
+  "type" : "record",
+  "name" : "BA",
+  "namespace" : "org.infrastructurebuilder.data.transform",
+  "fields" : [ {
+    "name" : "index",
+    "type" : {
+      "type" : "int",
+      "order" : "ignore"
+    }
+  }, {
+    "name" : "first_name",
+    "type" : "string"
+  }, {
+    "name" : "last_name",
+    "type" : "string"
+  }, {
+    "name" : "gender",
+    "type" : "string"
+  }, {
+    "name" : "country",
+    "type" : "string"
+  }, {
+    "name" : "age",
+    "type" : "int"
+  }, {
+    "name" : "date_of_birth",
+    "type" : {
+      "type" : "int",
+      "logicalType" : "date"
+    }
+  }, {
+    "name" : "id",
+    "type" : "string"
+  } ]
+}

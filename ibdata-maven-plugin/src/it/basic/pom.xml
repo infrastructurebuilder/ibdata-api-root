@@ -1,0 +1,125 @@
+<!--
+
+    Copyright © 2019 admin (admin@infrastructurebuilder.org)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.infrastructurebuilder.data</groupId>
+    <artifactId>ibdata-reference-root</artifactId>
+    <version>@project.version@</version>
+  </parent>
+
+  <groupId>org.sample</groupId>
+  <artifactId>basic</artifactId>
+  <version>1.0</version>
+  <packaging>ibdata</packaging>
+  <properties>
+    <surefire.failIfNoTests>false</surefire.failIfNoTests>
+  </properties>
+  <dependencies>
+  <!-- Unfortunately, this work within the release process with a dependency that was ALSO created during the reactor
+    <dependency>
+      <groupId>org.infrastructurebuilder.data</groupId>
+      <artifactId>ibdata-testing</artifactId>
+      <version>@project.version@</version>
+      <scope>test</scope>
+    </dependency>
+   -->
+  <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <scope>test</scope>
+  </dependency>
+  </dependencies>
+  <build>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.infrastructurebuilder.data</groupId>
+        <artifactId>ibdata-maven-plugin</artifactId>
+        <version>@project.version@</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>ABS</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>ingest</goal>
+            </goals>
+            <configuration>
+              <ingest>
+                <id>xyz</id>
+                <ingester>default</ingester>
+                <dataSet>
+                  <name>jeff</name>
+                  <description>Describe Jeff in 5 words</description>
+                  <metadata>
+                    <y>
+                      <x />
+                    </y>
+                  </metadata>
+                  <streams>
+                    <stream>
+                      <temporaryId>temp1</temporaryId>
+                      <name>one</name>
+                      <mimeType>application/pdf</mimeType>
+                      <url>https://file-examples.com/wp-content/uploads/2017/10/file-sample_150kB.pdf</url>
+                      <sha512>09253eb87d097bdaa39f98cbbea3e6d83ee4641bca76c32c7eb1add17e9cb3117adb412d2e04ab251cca1fb19afa8b631d1e774b5dc8ae727f753fe2ffb5f288</sha512>
+                      <metadata>
+                        <here>
+                          <x>also</x>
+                        </here>
+                        <abc />
+                      </metadata>
+                    </stream>
+                  </streams>
+                </dataSet>
+              </ingest>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <skip>false</skip>
+          <ingestionConfig>
+            <id>id</id>
+            <dataSet>
+              <name>name</name>
+              <description>desc</description>
+              <metadata>
+                <x>
+                  <y>z                  </y>
+                  <xx.tty />
+                </x>
+              </metadata>
+            </dataSet>
+          </ingestionConfig>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

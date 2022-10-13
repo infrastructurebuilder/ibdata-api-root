@@ -1,0 +1,36 @@
+@namespace ( "org.infrastructurebuilder.data.transform" )
+
+// NOT THE SAME AS ba.avsc!
+protocol BAProtocol {
+  record BASub {
+    int id;
+    string name;
+  }
+  enum Shapes {
+    SQUARE,
+    TRIANGLE,
+    CIRCLE,
+    OVAL
+  }
+  record BA {
+    @order ( "ignore" ) int index;
+    string first_name;
+    string last_name;
+    string gender;
+    union { null, string } country;
+    int age;
+    date date_of_birth;
+    string id;
+    union { null, boolean } alive;
+    time_ms time1;
+    timestamp_ms time2;
+    decimal ( 5, 2 ) dec;
+    double dub;
+    long l;
+    float f;
+    null nullType;
+    bytes bytesType;
+    Shapes shape;
+    union { null, array<array<array<BASub>>> } arrayOfArrays;
+  }
+}

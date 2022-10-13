@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test data for version 0.11 of the model (will be obsoleted and moved to 1.0 eventually -->
+<dataSet
+  xsi:schemaLocation="https://resources.infrastructurebuilder.org/IBDataSet/0.11 https://resources.infrastructurebuilder.org/xsd/IBDataSet-0.11"
+  xmlns="https://resources.infrastructurebuilder.org/IBDataSet/0.11"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>0.11</modelVersion>
+  <uuid>310dc0e2-109d-4237-9729-e266176e1c7a</uuid>
+  <description>setdataStreamDescription</description>
+  <name>theName</name>
+  <creationDate>2019-09-21T08:30:10.478</creationDate>
+  <groupId>X</groupId>
+  <artifactId>Y</artifactId>
+  <version>1.0.0</version>
+  <metadata>
+    <hi>Fred</hi>
+  </metadata>
+  <streams>
+    <stream>
+      <uuid>183d3030-6dae-4f33-acde-79eacbaa8c2d</uuid>
+      <name>one</name>
+      <description>description one
+      </description>
+      <creationDate>2019-09-21T08:30:29.769</creationDate>
+      <url>https://www.google.com</url>
+      <metadata>
+        <hi>Mom</hi>
+      </metadata>
+      <path>183d3030-6dae-4f33-acde-79eacbaa8c2d.txt</path>
+    </stream>
+    <stream>
+      <uuid>0dfb7bc9-73aa-4f7e-b735-cbccfa052733</uuid>
+      <name>two</name>
+      <description>description two
+      </description>
+      <creationDate>2019-09-21T08:30:29.769</creationDate>
+      <url>file:/home/mykel.alvis/git/ibdata-reference-root/integration/ibdata-test-transform/target/ibdata/c70e413a-87c1-4866-8129-4bd45ee9641b</url>
+      <sha512>cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e</sha512>
+      <metadata>
+        <sst>Racing</sst>
+      </metadata>
+      <path>0dfb7bc9-73aa-4f7e-b735-cbccfa052733.txt</path>
+    </stream>
+  </streams>
+</dataSet>
